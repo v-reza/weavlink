@@ -10,6 +10,7 @@ import Register from "./pages/Auth/Register";
 import Navbar from "./components/Navbar/Navbar";
 import GoogleSetPassword from "./pages/Auth/GoogleSetPassword";
 import Profile from "./pages/Profile/Profile";
+import Settings from "./pages/Settings/Settings";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
@@ -52,6 +53,12 @@ function App() {
               path="/profile/:username"
               element={
                 isAuthenticated ? <Profile /> : <Navigate to="/" replace />
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                isAuthenticated ? <Settings /> : <Navigate to="/" replace />
               }
             />
           </Routes>

@@ -9,12 +9,12 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import { ThemeContext } from "../../Theme/ThemeContext";
 import { useNavigate } from "react-router-dom";
 
-const user = {
-  name: "Whitney Francis",
-  email: "whitneyfrancis@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
+// const user = {
+//   name: "Whitney Francis",
+//   email: "whitneyfrancis@example.com",
+//   imageUrl:
+//     "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+// };
 const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Jobs", href: "#", current: false },
@@ -29,17 +29,25 @@ function classNames(...classes) {
 const Navbar = () => {
   const { dispatch } = useAuth();
   const navigate = useNavigate();
+
+  const { user } = useAuth();
+
+  const { theme, setTheme } = useContext(ThemeContext);
+  const username = user.firstname + user.lastname + "-" + user._id;
+
   const userNavigation = [
-    { name: "Your Profile", href: "#", onclick: () => console.log("Profile") },
-    { name: "Settings", href: "#", onclick: () => console.log("Settings") },
+    {
+      name: "Your Profile",
+      href: "#",
+      onclick: () => navigate("/profile/" + username.replace(" ", "-").toLowerCase()),
+    },
+    { name: "Settings", href: "#", onclick: () => navigate("/settings") },
     {
       name: "Sign out",
       href: "#",
       onclick: () => dispatch({ type: "LOGOUT" }),
     },
   ];
-
-  const { theme, setTheme } = useContext(ThemeContext);
   return (
     <div className="sticky top-0 z-50">
       <Notification />
@@ -152,7 +160,8 @@ const Navbar = () => {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="rounded-full h-8 w-8"
-                            src={user.imageUrl}
+                            src={user.profilePicture}
+                            referrerPolicy="no-referrer"
                             alt=""
                           />
                         </Menu.Button>
@@ -212,13 +221,14 @@ const Navbar = () => {
                   <div className="flex-shrink-0">
                     <img
                       className="rounded-full h-10 w-10"
-                      src={user.imageUrl}
+                      src={user.profilePicture}
+                      referrerPolicy="no-referrer"
                       alt=""
                     />
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-gray-800">
-                      {user.name}
+                      {user.firstname} {user.lastname}
                     </div>
                     <div className="text-sm font-medium text-gray-500">
                       {user.email}

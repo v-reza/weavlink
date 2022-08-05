@@ -52,7 +52,7 @@ const UserReducer = (state, action) => {
         isLoading: false,
         error: false,
         isGoogleSetPassword: true,
-        googleSetUser: action.payload
+        googleSetUser: action.payload,
       };
     case "UPDATE_PROFILE_INFORMATION":
       return {
@@ -60,6 +60,24 @@ const UserReducer = (state, action) => {
         user: {
           ...state.user,
           ...action.payload,
+        },
+      };
+    case "FOLLOW":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followings: [...state.user.followings, action.payload],
+        },
+      };
+    case "UNFOLLOW":
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followings: state.user.followings.filter(
+            (following) => following !== action.payload
+          ),
         },
       };
     default:

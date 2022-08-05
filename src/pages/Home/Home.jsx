@@ -11,6 +11,10 @@ export default function Home() {
   const [openNewPost, setOpenNewPost] = useState(false);
   const [isNewPost, setIsNewPost] = useState(false);
   const [postsTimeline, setPostsTimeline] = useState([]);
+  /* Set Title */
+  useEffect(() => {
+    document.title = "Velkey"
+  }, [])
 
   /* Get Post Timeline */
   useEffect(() => {
