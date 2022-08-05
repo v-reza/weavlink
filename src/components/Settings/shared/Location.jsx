@@ -2,17 +2,33 @@
 import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import useAuth from "../../../hooks/useAuth";
+import { axiosGet } from "../../../helper/axiosHelper";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Location({ countries, setLocationCountries }) {
+  const [isExistCountry, setIsExistCountry] = useState(false);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     setLocationCountries(selected?.name);
   }, [selected, setLocationCountries]);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const isExistCountry = async () => {
+      const res = await axiosGet("/userprofile/" + user._id);
+      if (res.data.country) {
+        setIsExistCountry(true);
+        setSelected({ name: res.data.country });
+      }
+    };
+    isExistCountry();
+  }, [user._id]);
 
   return (
     <Listbox value={countries} onChange={setSelected}>

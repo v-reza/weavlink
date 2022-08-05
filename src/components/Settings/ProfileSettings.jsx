@@ -32,8 +32,8 @@ const ProfileSettings = ({ user }) => {
     user.firstname + user.lastname + "-" + user._id
   );
   const [userProfile, setUserProfile] = useState([]);
-  const [about, setAbout] = useState(userProfile?.about);
-  const [headline, setHeadline] = useState(userProfile?.headLine);
+  const [about, setAbout] = useState("");
+  const [headline, setHeadline] = useState("");
   const [phone, setPhone] = useState(user.phone);
   const [listCountries, setListCountries] = useState([]);
   const [locationCountries, setLocationCountries] = useState(null);
@@ -47,6 +47,8 @@ const ProfileSettings = ({ user }) => {
     const getUserProfile = async () => {
       const res = await axiosGet("/userprofile/" + user._id);
       setUserProfile(res.data);
+      setAbout(res.data.about);
+      setHeadline(res.data.headLine);
     };
     getUserProfile();
     setRefreshProfile(false);
@@ -71,7 +73,7 @@ const ProfileSettings = ({ user }) => {
         {
           firstname: firstname,
           lastname: lastname,
-          username: username,
+          username: username.replace(" ", "-").toLowerCase(),
           phone: phone,
           headLine: headline,
           about: about,
@@ -80,7 +82,6 @@ const ProfileSettings = ({ user }) => {
         },
         headers
       );
-      console.log(res.data)
       dispatch({
         type: "UPDATE_PROFILE_INFORMATION",
         payload: res.data,
@@ -264,18 +265,18 @@ const ProfileSettings = ({ user }) => {
 
             <div className="col-span-12 sm:col-span-6">
               <label
-                htmlFor="url"
+                htmlFor="headline"
                 className="block text-sm font-medium text-gray-700"
               >
                 Headline
               </label>
               <input
                 type="text"
-                name="url"
-                id="url"
+                name="headline"
+                id="headline"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
-                placeholder={!headline && "Web Developer"}
+                // placeholder={!headline && "Web Developer"}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
               />
             </div>

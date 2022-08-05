@@ -3,6 +3,8 @@ import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import axios from "axios";
+import useAuth from "../../../hooks/useAuth";
+import { axiosGet } from "../../../helper/axiosHelper";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -11,6 +13,8 @@ function classNames(...classes) {
 export default function City({ locationCountries, setLocationCities }) {
   const [selected, setSelected] = useState(null);
   const [listCity, setListCity] = useState([]);
+  const [isExistCity, setIsExistCity] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const getListCity = async () => {
@@ -24,10 +28,22 @@ export default function City({ locationCountries, setLocationCities }) {
     };
     getListCity();
   }, [locationCountries]);
-  
+
   useEffect(() => {
     setLocationCities(selected);
   }, [selected, setLocationCities]);
+
+  useEffect(() => {
+    const isExistCity = async () => {
+      const res = await axiosGet("/userprofile/" + user._id);
+      if (res.data.city) {
+        setIsExistCity(true);
+        setSelected(res.data.city);
+      }
+    };
+    isExistCity();
+  }, [user._id]);
+
   return (
     <Listbox value={listCity} onChange={setSelected}>
       {({ open }) => (
