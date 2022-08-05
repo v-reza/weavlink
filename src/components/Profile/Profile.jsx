@@ -86,8 +86,8 @@ const ProfileComp = ({
                     {user.firstname} {user.lastname}
                   </h1>
                   <small className="text-sm text-gray-600">
-                    {userProfile.headline
-                      ? userProfile.headline
+                    {userProfile.headLine
+                      ? userProfile.headLine
                       : "No headline"}
                   </small>
                 </div>
@@ -212,7 +212,8 @@ const ProfileComp = ({
             <div className="sm:col-span-1">
               <dt className="text-sm font-medium text-gray-500">Address</dt>
               <dd className="mt-1 text-sm text-gray-900">
-                {userProfile.address ? userProfile.address : "-"}
+                {userProfile.country ? userProfile.country : "-"}
+                {userProfile.city ? ", " + userProfile.city : ""}
               </dd>
             </div>
 
