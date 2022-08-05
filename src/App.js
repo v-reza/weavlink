@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import useAuth from "./hooks/useAuth";
@@ -11,9 +11,11 @@ import Navbar from "./components/Navbar/Navbar";
 import GoogleSetPassword from "./pages/Auth/GoogleSetPassword";
 import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
+import Notfound from "./pages/Notfound/404";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
+  const [isNotfound, setIsNotfound] = useState(false);
 
   return (
     <>
@@ -60,6 +62,14 @@ function App() {
               element={
                 isAuthenticated ? <Settings /> : <Navigate to="/" replace />
               }
+            />
+            <Route
+              path="/404"
+              element={<Notfound setIsNotfound={setIsNotfound} />}
+            />
+            <Route
+              path="*"
+              element={<Notfound setIsNotfound={setIsNotfound} />}
             />
           </Routes>
         </Layout>
