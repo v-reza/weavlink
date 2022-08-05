@@ -1,3 +1,3 @@
 export default function useFolder() {
-    return "http://localhost:1000/images"
+    return process.env.REACT_APP_API_IMAGES || "http://localhost:1000/images"
 }
