@@ -46,7 +46,7 @@ export default function Home() {
               <Post postsTimeline={postsTimeline} setIsNewPost={setIsNewPost}/>
             </main>
             <aside className="hidden xl:block xl:col-span-4">
-              <div className="sticky top-4 space-y-4">
+              <div className="top-4 space-y-4">
                 <Follow />
                 <Trending />
               </div>
