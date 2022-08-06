@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-redundant-roles */
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
@@ -6,6 +7,25 @@ import { AtSymbolIcon, CodeIcon, LinkIcon } from "@heroicons/react/solid";
 import { axiosPost } from "../../../helper/axiosHelper";
 import useAuth from "../../../hooks/useAuth";
 import useNotif from "../../../hooks/useNotif";
+
+const files = [
+  {
+    name: "IMG_4985.HEIC",
+    size: "3.9 MB",
+    source:
+      "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
+    current: true,
+  },
+  {
+    name: "IMG_49852.HEIC",
+    size: "3.9 MB",
+    source:
+      "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
+    current: true,
+  },
+
+  // More files...
+];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -16,6 +36,8 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
   const [desc, setDesc] = useState("");
   const { token } = useAuth();
   const { dispatch } = useNotif();
+  const [file, setFile] = useState([]);
+
   const handleNewPost = async (e) => {
     if (!desc) {
       dispatch({ type: "NOTIF_ERROR", message: "Please enter a description" });
@@ -39,12 +61,26 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
           title: "Success",
           message: "Post created",
         });
-        setIsNewPost(true)
-        setOpen(false)
+        setIsNewPost(true);
+        setOpen(false);
       });
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleFile = (e) => {
+    e.preventDefault();
+    const listFile = [];
+    listFile.push(e.target.files);
+    for (let i = 0; i < listFile.length; i++) {
+      setFile([...file, listFile[0][i]]);
+    }
+  };
+
+  const revokeFile = (fileName) => {
+    const newFile = file.filter((item) => item.name !== fileName);
+    setFile(newFile);
   };
 
   return (
@@ -111,6 +147,7 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
                                     selected
                                       ? "text-gray-900 bg-gray-100 hover:bg-gray-200"
                                       : "text-gray-500 hover:text-gray-900 bg-white hover:bg-gray-100",
+                                      desc || file.length > 0 ? "text-indigo-500" : "",
                                     "ml-2 px-3 py-1.5 border border-transparent text-sm font-medium rounded-md"
                                   )
                                 }
@@ -128,11 +165,24 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
                                     >
                                       <span className="sr-only">
                                         Insert link
+                                        <input
+                                          accept="image/*"
+                                          className="input"
+                                          id="contained-button-list-file"
+                                          multiple
+                                          type="file"
+                                          onChange={(e) => handleFile(e)}
+                                        />
                                       </span>
-                                      <LinkIcon
-                                        className="h-5 w-5"
-                                        aria-hidden="true"
-                                      />
+                                      <label
+                                        htmlFor="contained-button-list-file"
+                                        className="cursor-pointer"
+                                      >
+                                        <LinkIcon
+                                          className="h-5 w-5"
+                                          aria-hidden="true"
+                                        />
+                                      </label>
                                     </button>
                                   </div>
                                   <div className="flex items-center">
@@ -185,8 +235,67 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
                               </Tab.Panel>
                               <Tab.Panel className="p-0.5 -m-0.5 rounded-lg">
                                 <div className="border-b">
-                                  <div className="mx-px mt-px px-3 pt-2 pb-12 text-sm leading-5 text-gray-800">
-                                    Preview content will render here.
+                                  <div className="mx-px mt-px px-3 pb-4 text-sm leading-5 text-gray-800">
+                                    {/* Gallery */}
+                                    <section
+                                      className="mt-2 pb-16"
+                                      aria-labelledby="gallery-heading"
+                                    >
+                                      <h2
+                                        id="gallery-heading"
+                                        className="sr-only"
+                                      >
+                                        Recently viewed
+                                      </h2>
+                                      <ul
+                                        role="list"
+                                        className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
+                                      >
+                                        {(file || []).map((file, index) => (
+                                          <li key={index} className="relative">
+                                            <div
+                                              onClick={() =>
+                                                revokeFile(file.name)
+                                              }
+                                              className={classNames(
+                                                file.current
+                                                  ? "ring-2 ring-offset-2 ring-indigo-500"
+                                                  : "focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500",
+                                                "group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden relative"
+                                              )}
+                                            >
+                                              <label className="relative text-sm leading-4 font-medium text-red-500 pointer-events-none">
+                                                <span>Delete</span>
+                                              </label>
+                                              <img
+                                                src={URL.createObjectURL(file)}
+                                                alt=""
+                                                id="mobile-user-photo"
+                                                className={classNames(
+                                                  file.current
+                                                    ? ""
+                                                    : "group-hover:opacity-75",
+                                                  "object-cover pointer-events-none"
+                                                )}
+                                              />
+                                              <button
+                                                type="button"
+                                                className="absolute inset-0 focus:outline-none"
+                                              >
+                                                <span className="sr-only">
+                                                  View details for {file.name}
+                                                </span>
+                                              </button>
+                                            </div>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                      <div className="flex mt-4">
+                                        <span className="text-base">
+                                          {desc ? desc : "No description"}
+                                        </span>
+                                      </div>
+                                    </section>
                                   </div>
                                 </div>
                               </Tab.Panel>

@@ -11,10 +11,10 @@ const Post = ({ postsTimeline, setIsNewPost }) => {
       <ul role="list" className="space-y-4">
         <Suspense fallback={<LinearProgress />}>
           {postsTimeline.length > 0 ? (
-            postsTimeline.map((post) => (
+            postsTimeline.map((post, index) => (
               <Timeline
                 post={post}
-                key={post._id}
+                key={index}
                 setIsNewPost={setIsNewPost}
               />
             ))

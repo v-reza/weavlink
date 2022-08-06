@@ -35,6 +35,8 @@ import useAuth from "../../../../hooks/useAuth";
 import useNotif from "../../../../hooks/useNotif";
 // import TimelineComment from "./TimelineComment";
 import { useNavigate } from "react-router-dom";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel as ReactCarousel } from "react-responsive-carousel";
 const TimelineComment = lazy(() => import("./TimelineComment"));
 const moods = [
   {
@@ -217,7 +219,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                         navigate(
                           "/profile/" + username.replace(" ", "-").toLowerCase()
                         )
-                        }
+                      }
                       className="cursor-pointer hover:underline"
                     >
                       {user.firstname + " " + user.lastname}
@@ -342,6 +344,22 @@ const Timeline = ({ post, setIsNewPost }) => {
               </div>
             </div>
           </div>
+          {/* Carousel */}
+          {post.images?.length > 0 && (
+            <div className="flex flex-col justify-center items-center mt-4">
+              <ReactCarousel
+                showThumbs={false}
+                showStatus={false}
+                dynamicHeight={true}
+              >
+                {post.images?.map((img, index) => (
+                  <div key={index}>
+                    <img src={img} alt="" />
+                  </div>
+                ))}
+              </ReactCarousel>
+            </div>
+          )}
           <div
             className="mt-4 text-sm text-base text-gray-700 space-y-4"
             dangerouslySetInnerHTML={{ __html: `<p>${post.desc}</p>` }}
