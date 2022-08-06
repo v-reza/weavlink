@@ -36,9 +36,7 @@ router.put("/", verifyBearerToken, async (req, res) => {
       },
     });
 
-    const userUpdated = await User.findOne({
-      userId: req.user.id,
-    });
+    const userUpdated = await User.findById(req.user.id);
     res.status(200).json(userUpdated);
   } catch (error) {
     return res.status(500).json(error);
