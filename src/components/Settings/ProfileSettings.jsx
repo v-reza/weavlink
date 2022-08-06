@@ -7,15 +7,9 @@ import Location from "./shared/Location";
 import { LinearProgress } from "@mui/material";
 import useHeader from "../../hooks/useHeader";
 import useNotif from "../../hooks/useNotif";
+import Skills from "./shared/Skills";
+import AddSkills from "./shared/AddSkills";
 const City = lazy(() => import("./shared/City"));
-
-// const user = {
-//   name: "Debbie Lewis",
-//   handle: "deblewis",
-//   email: "debbielewis@example.com",
-//   imageUrl:
-//     "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=320&h=320&q=80",
-// };
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -42,6 +36,8 @@ const ProfileSettings = ({ user }) => {
   const { token, dispatch } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchNotif } = useNotif();
+  const [openModalSkills, setOpenModalSkills] = useState(false);
+  const [skills, setSkills] = useState([]);
 
   useEffect(() => {
     const getUserProfile = async () => {
@@ -66,7 +62,6 @@ const ProfileSettings = ({ user }) => {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    // if (firstname === "" || lastname === "" || username === "") {
     try {
       const res = await axiosPut(
         "/userprofile",
@@ -96,6 +91,17 @@ const ProfileSettings = ({ user }) => {
       console.log(error);
     }
   };
+
+  /* Get User Skills */
+  useEffect(() => {
+    const getUserSkills = async () => {
+      const res = await axiosGet("/userprofile/render/skills", headers);
+      setSkills(res.data);
+    };
+    getUserSkills();
+    setRefreshProfile(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshProfile]);
 
   return (
     <>
@@ -326,7 +332,17 @@ const ProfileSettings = ({ user }) => {
             )}
           </div>
         </div>
-
+        {/* Skills section */}
+        <Skills
+          setOpenModalSkills={setOpenModalSkills}
+          skills={skills}
+          setRefreshProfile={setRefreshProfile}
+        />
+        <AddSkills
+          openModalSkills={openModalSkills}
+          setOpenModalSkills={setOpenModalSkills}
+          setRefreshProfile={setRefreshProfile}
+        />
         {/* Privacy section */}
         <div className="pt-6 divide-y divide-gray-200">
           <div className="px-4 sm:px-6">
