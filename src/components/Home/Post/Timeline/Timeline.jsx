@@ -188,8 +188,8 @@ const Timeline = ({ post, setIsNewPost }) => {
     <>
       <li
         key={post._id}
-        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg"
-      >
+        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg dark:bg-slate-800">
+      
         <article aria-labelledby={"question-title-" + post._id}>
           <div>
             <div className="flex space-x-3">
@@ -222,13 +222,13 @@ const Timeline = ({ post, setIsNewPost }) => {
                           "/profile/" + username.replace(" ", "-").toLowerCase()
                         )
                       }
-                      className="cursor-pointer hover:underline"
+                      className="cursor-pointer hover:underline dark:text-slate-300"
                     >
                       {user.firstname + " " + user.lastname}
                     </span>
                   )}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-slate-400">
                   <span className="cursor-pointer hover:underline">
                     <time dateTime={post.createdAt}>
                       {format(
@@ -363,7 +363,7 @@ const Timeline = ({ post, setIsNewPost }) => {
             </div>
           )}
           <div
-            className="mt-4 text-sm text-base text-gray-700 space-y-4"
+            className="mt-4 text-sm text-base text-gray-700 space-y-4 dark:text-slate-400"
             dangerouslySetInnerHTML={{ __html: `<p>${post.desc}</p>` }}
           />
           <div className="mt-6 flex justify-between space-x-8">
@@ -381,7 +381,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                     )}
                     aria-hidden="true"
                   />
-                  <span className="font-medium text-gray-900">{likes}</span>
+                  <span className="font-medium text-gray-900 dark:text-slate-400">{likes}</span>
                   <span className="sr-only">likes</span>
                 </button>
               </span>
@@ -408,7 +408,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                     )}
                     aria-hidden="true"
                   />
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-slate-400">
                     {post.comments.length}
                   </span>
                   <span className="sr-only">replies</span>
@@ -422,7 +422,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                   className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"
                 >
                   <ShareIcon className="h-5 w-5" aria-hidden="true" />
-                  <span className="font-medium text-gray-900">Share</span>
+                  <span className="font-medium text-gray-900 dark:text-slate-400">Share</span>
                 </button>
               </span>
             </div>
