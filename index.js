@@ -14,6 +14,7 @@ const authRouter = require("./router/auth");
 const postsRouter = require("./router/posts");
 const usersRouter = require("./router/users");
 const userProfileRouter = require("./router/userprofile");
+const imagesRouter = require("./router/images");
 const verifyBearerToken = require("./helper/verifyBearerToken");
 
 /* Connect Env */
@@ -35,12 +36,16 @@ app.use(
 );
 app.use(morgan("dev"));
 app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "public/assets")));
+
 
 /* Use Router */
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/userprofile", userProfileRouter);
+app.use("/api/images", imagesRouter);
+
 
 /* Check Token */
 app.get("/api/checkToken", verifyBearerToken, (req, res) => {

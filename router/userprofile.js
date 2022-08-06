@@ -55,7 +55,10 @@ router.get("/render/skills", verifyBearerToken, async (req, res) => {
 
 router.post("/add/skills", verifyBearerToken, async (req, res) => {
   try {
-    const userSkills = await UserSkills.findOne({ userId: req.user.id });
+    const userSkills = await UserSkills.findOne({
+      userId: req.user.id,
+    });
+
     await userSkills.updateOne({
       $push: {
         skills: req.body.skills,
@@ -67,18 +70,22 @@ router.post("/add/skills", verifyBearerToken, async (req, res) => {
   }
 });
 
-router.delete("/delete/skills/:skillname", verifyBearerToken, async (req, res) => {
-  try {
-    const userSkills = await UserSkills.findOne({ userId: req.user.id });
-    await userSkills.updateOne({
-      $pull: {
-        skills: req.params.skillname,
-      },
-    });
-    return res.status(200).json("Skill has been deleted");
-  } catch (error) {
-    return res.status(500).json(error);
+router.delete(
+  "/delete/skills/:skillname",
+  verifyBearerToken,
+  async (req, res) => {
+    try {
+      const userSkills = await UserSkills.findOne({ userId: req.user.id });
+      await userSkills.updateOne({
+        $pull: {
+          skills: req.params.skillname,
+        },
+      });
+      return res.status(200).json("Skill has been deleted");
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   }
-});
+);
 
 module.exports = router;
