@@ -339,10 +339,12 @@ const ProfileSettings = ({ user }) => {
           setRefreshProfile={setRefreshProfile}
         />
         <AddSkills
+          listSkills={skills}
           openModalSkills={openModalSkills}
           setOpenModalSkills={setOpenModalSkills}
           setRefreshProfile={setRefreshProfile}
         />
+
         {/* Privacy section */}
         <div className="pt-6 divide-y divide-gray-200">
           <div className="px-4 sm:px-6">

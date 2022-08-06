@@ -3,7 +3,7 @@ import { FireIcon } from "@heroicons/react/solid";
 import {
   HomeIcon,
   TrendingUpIcon,
-  UserGroupIcon,
+
 } from "@heroicons/react/outline";
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },

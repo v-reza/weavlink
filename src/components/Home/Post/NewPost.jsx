@@ -7,25 +7,26 @@ import { AtSymbolIcon, CodeIcon, LinkIcon } from "@heroicons/react/solid";
 import { axiosPost } from "../../../helper/axiosHelper";
 import useAuth from "../../../hooks/useAuth";
 import useNotif from "../../../hooks/useNotif";
+import useHeader from "../../../hooks/useHeader";
 
-const files = [
-  {
-    name: "IMG_4985.HEIC",
-    size: "3.9 MB",
-    source:
-      "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
-    current: true,
-  },
-  {
-    name: "IMG_49852.HEIC",
-    size: "3.9 MB",
-    source:
-      "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
-    current: true,
-  },
+// const files = [
+//   {
+//     name: "IMG_4985.HEIC",
+//     size: "3.9 MB",
+//     source:
+//       "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
+//     current: true,
+//   },
+//   {
+//     name: "IMG_49852.HEIC",
+//     size: "3.9 MB",
+//     source:
+//       "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
+//     current: true,
+//   },
 
-  // More files...
-];
+//   // More files...
+// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -35,6 +36,7 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
   const cancelButtonRef = useRef(null);
   const [desc, setDesc] = useState("");
   const { token } = useAuth();
+  const headers = useHeader(token);
   const { dispatch } = useNotif();
   const [file, setFile] = useState([]);
 
@@ -45,17 +47,31 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
     }
 
     try {
-      await axiosPost(
-        "/posts/newpost",
-        {
-          desc: desc,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const newPost = {
+        desc: desc,
+      };
+
+      const formData = new FormData();
+      const fileNameList = [];
+
+      /* Upload Image */
+      if (file.length > 0) {
+        for (const key of Object.keys(file)) {
+          const fileName =
+            Math.random().toString(36).substring(2, 15) +
+            Math.random().toString(36).substring(2, 15);
+          const customFile = new File([file[key]], fileName, {
+            type: file[key].type,
+          });
+          formData.append("images", customFile);
+          fileNameList.push(fileName + "." + file[key].type.split("/")[1]);
         }
-      ).then(() => {
+      }
+      await axiosPost("/images/upload", formData);
+      /* Update New Post */
+      newPost.images = fileNameList;
+
+      await axiosPost("/posts/newpost", newPost, headers).then(() => {
         dispatch({
           type: "NOTIF_SUCCESS",
           title: "Success",
@@ -147,7 +163,9 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
                                     selected
                                       ? "text-gray-900 bg-gray-100 hover:bg-gray-200"
                                       : "text-gray-500 hover:text-gray-900 bg-white hover:bg-gray-100",
-                                      desc || file.length > 0 ? "text-indigo-500" : "",
+                                    desc || file.length > 0
+                                      ? "text-indigo-500"
+                                      : "",
                                     "ml-2 px-3 py-1.5 border border-transparent text-sm font-medium rounded-md"
                                   )
                                 }

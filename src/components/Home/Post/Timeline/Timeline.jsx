@@ -37,6 +37,7 @@ import useNotif from "../../../../hooks/useNotif";
 import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
+import useFolder from "../../../../hooks/useFolder";
 const TimelineComment = lazy(() => import("./TimelineComment"));
 const moods = [
   {
@@ -97,6 +98,7 @@ const Timeline = ({ post, setIsNewPost }) => {
   const [likes, setLikes] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [textComment, setTextComment] = useState("");
+  const folder = useFolder()
 
   const [hiddenComments, setHiddenComments] = useState([]);
 
@@ -258,7 +260,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <div className="py-1">
                         <Menu.Item>
                           {({ active }) => (
@@ -332,7 +334,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                                 />
                                 <span className="text-red-500">
                                   Delete Post
-                                </span>
+                                </span> 
                               </div>
                             )}
                           </Menu.Item>
@@ -354,7 +356,7 @@ const Timeline = ({ post, setIsNewPost }) => {
               >
                 {post.images?.map((img, index) => (
                   <div key={index}>
-                    <img src={img} alt="" />
+                    <img src={folder + img} alt="" />
                   </div>
                 ))}
               </ReactCarousel>
