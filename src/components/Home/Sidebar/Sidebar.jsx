@@ -8,18 +8,8 @@ import {
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },
   { name: "Popular", href: "#", icon: FireIcon, current: false },
-  { name: "Communities", href: "#", icon: UserGroupIcon, current: false },
+  // { name: "Communities", href: "#", icon: UserGroupIcon, current: false },
   { name: "Trending", href: "#", icon: TrendingUpIcon, current: false },
-];
-const communities = [
-  { name: "Movies", href: "#" },
-  { name: "Food", href: "#" },
-  { name: "Sports", href: "#" },
-  { name: "Animals", href: "#" },
-  { name: "Science", href: "#" },
-  { name: "Dinosaurs", href: "#" },
-  { name: "Talents", href: "#" },
-  { name: "Gaming", href: "#" },
 ];
 
 function classNames(...classes) {
@@ -58,28 +48,6 @@ const Sidebar = () => {
               <span className="truncate">{item.name}</span>
             </a>
           ))}
-        </div>
-        <div className="pt-10">
-          <p
-            className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-            id="communities-headline"
-          >
-            My communities
-          </p>
-          <div
-            className="mt-3 space-y-2"
-            aria-labelledby="communities-headline"
-          >
-            {communities.map((community) => (
-              <a
-                key={community.name}
-                href={community.href}
-                className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
-              >
-                <span className="truncate">{community.name}</span>
-              </a>
-            ))}
-          </div>
         </div>
       </nav>
     </div>
