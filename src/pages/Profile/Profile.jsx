@@ -14,11 +14,13 @@
   }
   ```
 */
-import { Fragment, useEffect, useState } from "react";
+import { LinearProgress } from "@mui/material";
+import { Fragment, lazy, useEffect, useState, Suspense } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { axiosGet } from "../../helper/axiosHelper";
 import useAuth from "../../hooks/useAuth";
-import ProfileComp from "../../components/Profile/Profile";
+// import ProfileComp from "../../components/Profile/Profile";
+const ProfileComp = lazy(() => import("../../components/Profile/Profile"));
 
 const team = [
   {
@@ -50,10 +52,6 @@ const team = [
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
   },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Profile() {
   const { username } = useParams();
@@ -110,14 +108,16 @@ export default function Profile() {
         <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
           <div className="flex-1 relative z-0 flex overflow-hidden">
             <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
-              <ProfileComp
-                currentUser={currentUser}
-                tabs={tabs}
-                team={team}
-                user={user}
-                userProfile={userProfile}
-                setRefreshProfile={setRefreshProfile}
-              />
+              <Suspense fallback={<LinearProgress />}>
+                <ProfileComp
+                  currentUser={currentUser}
+                  tabs={tabs}
+                  team={team}
+                  user={user}
+                  userProfile={userProfile}
+                  setRefreshProfile={setRefreshProfile}
+                />
+              </Suspense>
             </main>
           </div>
         </div>

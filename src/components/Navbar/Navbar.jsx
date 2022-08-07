@@ -1,20 +1,13 @@
 import React, { useContext } from "react";
 import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { SearchIcon } from "@heroicons/react/solid";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import useAuth from "../../hooks/useAuth";
 import Notification from "../custom/Notifications/Notification";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { ThemeContext } from "../../Theme/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { UsersIcon } from "@heroicons/react/outline";
-import { Combobox, Dialog } from "@headlessui/react";
-
-const people = [
-  { id: 1, name: "Leslie Alexander", url: "#" },
-  // More people...
-];
+import SearchModal from "./SearchModal";
 
 // const user = {
 //   name: "Whitney Francis",
@@ -35,24 +28,13 @@ function classNames(...classes) {
 
 const Navbar = () => {
   const { dispatch } = useAuth();
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const { user } = useAuth();
 
   const { theme, setTheme } = useContext(ThemeContext);
   const username = user.firstname + user.lastname + "-" + user._id;
-
-  const [query, setQuery] = useState("");
-
-  const [open, setOpen] = useState(true);
-
-  const filteredPeople =
-    query === ""
-      ? []
-      : people.filter((person) => {
-          return person.name.toLowerCase().includes(query.toLowerCase());
-        });
-
   const userNavigation = [
     {
       name: "Your Profile",
@@ -78,7 +60,8 @@ const Navbar = () => {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
-                      className="h-8 w-auto"
+                      onClick={() => navigate("/")}
+                      className="cursor-pointer h-8 w-auto"
                       src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
                       alt="Workflow"
                     />
@@ -110,6 +93,7 @@ const Navbar = () => {
                   {/* Search section */}
                   <div className="max-w-lg w-full lg:max-w-xs">
                     <button
+                      onClick={() => setOpen(true)}
                       type="button"
                       className="hidden w-full lg:flex items-center text-sm leading-6 text-slate-400 rounded-md ring-1 ring-slate-900/10 shadow-sm py-1.5 pl-2 pr-3 hover:ring-slate-300 dark:bg-slate-800 dark:highlight-white/5 dark:hover:bg-slate-700"
                     >
@@ -123,18 +107,18 @@ const Navbar = () => {
                         <path
                           d="m19 19-3.5-3.5"
                           stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         ></path>
                         <circle
                           cx="11"
                           cy="11"
                           r="6"
                           stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         ></circle>
                       </svg>
                       Quick search...
@@ -145,68 +129,24 @@ const Navbar = () => {
                     <label htmlFor="search" className="sr-only">
                       Search
                     </label>
-                    {/* <div className="relative text-gray-400 focus-within:text-gray-500"> */}
-                    {/* <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
-                        <SearchIcon className="h-5 w-5" aria-hidden="true" />
-                      </div> */}
-                    {/* <input
-                        id="search"
-                        className="cursor-pointer block w-full bg-white py-2 pl-10 pr-3 border border-gray-300 rounded-md leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500 focus:placeholder-gray-500 sm:text-sm"
-                        placeholder="Search"
-                        type="search"
-                        name="search"
-                      /> */}
-                    {/* <Combobox
-                        as="div"
-                        className="transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
-                        onChange={(person) => (window.location = person.url)}
-                      >
-                        {filteredPeople.length > 0 && (
-                          <Combobox.Options
-                            static
-                            className="scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800"
-                          >
-                            {filteredPeople.map((person) => (
-                              <Combobox.Option
-                                key={person.id}
-                                value={person}
-                                className={({ active }) =>
-                                  classNames(
-                                    "cursor-default select-none px-4 py-2",
-                                    active && "bg-indigo-600 text-white"
-                                  )
-                                }
-                              >
-                                {person.name}
-                              </Combobox.Option>
-                            ))}
-                          </Combobox.Options>
-                        )}
-
-                        {query !== "" && filteredPeople.length === 0 && (
-                          <p className="p-4 text-sm text-gray-500">
-                            No people found.
-                          </p>
-                        )}
-                      </Combobox> */}
-                    {/* </div> */}
                   </div>
                 </div>
                 <div className="flex lg:hidden">
                   {/* Mobile menu button */}
                   <button
+                    onClick={() => setOpen(true)}
                     type="button"
-                    class="ml-auto mr-4 text-slate-500 inline-flex items-center justify-center hover:text-slate-600 lg:hidden dark:text-slate-400 dark:hover:text-slate-300"
+                    className="ml-auto mr-4 text-slate-500 inline-flex items-center justify-center hover:text-slate-600 lg:hidden dark:text-slate-400 dark:hover:text-slate-300"
                   >
-                    <span class="sr-only">Search</span>
+                    <span className="sr-only">Search</span>
                     <svg
                       width="24"
                       height="24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       aria-hidden="true"
                     >
                       <path d="m19 19-3.5-3.5"></path>
@@ -311,7 +251,9 @@ const Navbar = () => {
                     as="a"
                     href={item.href}
                     className={classNames(
-                      item.current ? "bg-gray-100 dark:bg-slate-500 dark:text-white" : "hover:bg-gray-100 dark:hover:bg-slate-500",
+                      item.current
+                        ? "bg-gray-100 dark:bg-slate-500 dark:text-white"
+                        : "hover:bg-gray-100 dark:hover:bg-slate-500",
                       "block px-3 py-2 rounded-md font-medium text-gray-900 dark:text-white"
                     )}
                     aria-current={item.current ? "page" : undefined}
@@ -388,6 +330,7 @@ const Navbar = () => {
           </>
         )}
       </Disclosure>
+      <SearchModal open={open} setOpen={setOpen} />
     </div>
   );
 };
