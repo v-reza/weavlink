@@ -492,7 +492,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                     rows={3}
                     name="comment"
                     id="comment"
-                    className="block w-full border-0 border-b border-transparent p-0 pb-2 resize-none focus:ring-0 focus:border-indigo-600 sm:text-sm"
+                    className="block dark:bg-transparent dark:text-white w-full border-0 border-b border-transparent p-0 pb-2 resize-none focus:ring-0 focus:border-indigo-600 sm:text-sm"
                     placeholder="Add your comment..."
                     value={textComment}
                     onChange={(e) => setTextComment(e.target.value)}

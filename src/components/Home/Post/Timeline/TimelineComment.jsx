@@ -40,7 +40,7 @@ const TimelineComment = ({ comment }) => {
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between">
               <h3
-                className="text-sm font-medium cursor-pointer"
+                className="text-sm font-medium cursor-pointer dark:text-white"
                 onClick={() =>
                   navigate(
                     "/profile/" + username.replace(" ", "-").toLowerCase()
@@ -54,7 +54,7 @@ const TimelineComment = ({ comment }) => {
                 {formatTime(comment.createdAt)}
               </p>
             </div>
-            <p className="text-sm text-gray-500">{comment.text}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-300">{comment.text}</p>
           </div>
         </div>
       </li>

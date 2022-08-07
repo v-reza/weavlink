@@ -196,7 +196,7 @@ const Navbar = () => {
                   {/* Mobile menu button */}
                   <button
                     type="button"
-                    class="ml-auto text-slate-500 inline-flex items-center justify-center hover:text-slate-600 lg:hidden dark:text-slate-400 dark:hover:text-slate-300"
+                    class="ml-auto mr-4 text-slate-500 inline-flex items-center justify-center hover:text-slate-600 lg:hidden dark:text-slate-400 dark:hover:text-slate-300"
                   >
                     <span class="sr-only">Search</span>
                     <svg
@@ -213,7 +213,7 @@ const Navbar = () => {
                       <circle cx="11" cy="11" r="6"></circle>
                     </svg>
                   </button>
-                  <Disclosure.Button className="bg-gray-50 dark:bg-slate-900 p-2 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500">
+                  <Disclosure.Button className="bg-gray-50 dark:bg-slate-900 p-2 inline-flex items-center justify-center rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500 dark:focus:ring-slate-700">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
                       <XIcon className="block h-6 w-6" aria-hidden="true" />

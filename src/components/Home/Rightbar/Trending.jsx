@@ -18,11 +18,11 @@ const trendingPosts = [
 const Trending = () => {
   return (
     <section aria-labelledby="trending-heading">
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow dark:bg-slate-800">
         <div className="p-6">
           <h2
             id="trending-heading"
-            className="text-base font-medium text-gray-900"
+            className="text-base font-medium text-gray-900 dark:text-white"
           >
             Trending
           </h2>
@@ -38,7 +38,7 @@ const Trending = () => {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-800">{post.body}</p>
+                    <p className="text-sm text-gray-800 dark:text-white">{post.body}</p>
                     <div className="mt-2 flex">
                       <span className="inline-flex items-center text-sm">
                         <button
@@ -46,7 +46,7 @@ const Trending = () => {
                           className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"
                         >
                           <ChatAltIcon className="h-5 w-5" aria-hidden="true" />
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-gray-900 dark:text-slate-400">
                             {post.comments}
                           </span>
                         </button>
@@ -58,7 +58,7 @@ const Trending = () => {
             </ul>
           </div>
           <div className="mt-6">
-            <div className="cursor-pointer w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            <div className="cursor-pointer w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 dark:bg-slate-900 dark:border-2 dark:border-slate-700 dark:text-white dark:highlight-white/5 dark:hover:bg-slate-700">
               View all
             </div>
           </div>
