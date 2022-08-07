@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
@@ -49,6 +49,18 @@ const Navbar = () => {
       onclick: () => dispatch({ type: "LOGOUT" }),
     },
   ];
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const keydownCtrlK = (e) => {
+    if (e.keyCode === 81 && e.ctrlKey) {
+      setOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', keydownCtrlK)
+  }, [keydownCtrlK])
+
   return (
     <div className="sticky top-0 z-50">
       <Notification />
@@ -123,7 +135,7 @@ const Navbar = () => {
                       </svg>
                       Quick search...
                       <span className="ml-auto pl-3 flex-none text-xs font-semibold">
-                        Ctrl K
+                        Ctrl + Q
                       </span>
                     </button>
                     <label htmlFor="search" className="sr-only">
