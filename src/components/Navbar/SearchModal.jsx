@@ -52,7 +52,7 @@ export default function SearchModal({ open, setOpen }) {
     <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery("")}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-10 overflow-y-auto p-4 sm:p-6 md:p-20"
+        className="fixed inset-0 z-60 overflow-y-auto p-4 sm:p-6 md:p-20 xs:mt-16 md:mt-0 sm:mt-16"
         onClose={setOpen}
       >
         <Transition.Child
