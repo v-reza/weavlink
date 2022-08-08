@@ -4,19 +4,23 @@ import React, { lazy, Suspense } from "react";
 
 const Timeline = lazy(() => import("./Timeline/Timeline"));
 
-const Post = ({ postsTimeline, setIsNewPost }) => {
+const Post = ({
+  postsTimeline,
+  setIsNewPost,
+  recent,
+  mostLiked,
+  mostComments,
+}) => {
+  // console.log(postsTimeline.sort((a, b) => b.likes.length - a.likes.length));
+
   return (
     <div className="mt-4">
       <h1 className="sr-only">Recent questions</h1>
       <ul role="list" className="space-y-4">
         <Suspense fallback={<LinearProgress />}>
           {postsTimeline.length > 0 ? (
-            postsTimeline.map((post, index) => (
-              <Timeline
-                post={post}
-                key={index}
-                setIsNewPost={setIsNewPost}
-              />
+            postsTimeline.map((post) => (
+              <Timeline post={post} key={post._id} setIsNewPost={setIsNewPost} />
             ))
           ) : (
             <span className="flex items-center justify-center">

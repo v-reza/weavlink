@@ -1,14 +1,57 @@
 import React from "react";
-const tabs = [
-  { name: "Recent", href: "#", current: true },
-  { name: "Most Liked", href: "#", current: false },
-  { name: "Most Answers", href: "#", current: false },
-];
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Feeds = ({ setOpenNewPost }) => {
+const Feeds = ({
+  setOpenNewPost,
+  recent,
+  setRecent,
+  mostLiked,
+  setMostLiked,
+  mostComments,
+  setMostComments,
+}) => {
+  const tabs = [
+    {
+      id: 1,
+      name: "Recent",
+      href: "#",
+      current: recent ? true : false,
+      onClick: () => setRecent(!recent),
+      // onclick: setRecent(!recent),
+    },
+    {
+      id: 2,
+      name: "Most Liked",
+      href: "#",
+      current: mostLiked ? true : false,
+      // onclick: setMostLiked(!mostLiked),
+    },
+    {
+      id: 3,
+      name: "Most Comments",
+      href: "#",
+      current: mostComments ? true : false,
+      // onclick: setMostComments(!mostComments),
+    },
+  ];
+  const tabClick = (e, tabId) => {
+    e.preventDefault();
+    if (tabId === 1) {
+      setRecent(true);
+      setMostLiked(false);
+      setMostComments(false);
+    } else if (tabId === 2) {
+      setMostLiked(true);
+      setRecent(false);
+      setMostComments(false);
+    } else if (tabId === 3) {
+      setMostComments(true);
+      setRecent(false);
+      setMostLiked(false);
+    }
+  };
   return (
     <div className="px-4 sm:px-0">
       <div
@@ -24,7 +67,7 @@ const Feeds = ({ setOpenNewPost }) => {
         <select
           id="question-tabs"
           className="block w-full rounded-md border-gray-300 text-base font-medium text-gray-900 shadow-sm focus:border-rose-500 focus:ring-rose-500"
-          defaultValue={tabs.find((tab) => tab.current).name}
+          // defaultValue={tabs.find((tab) => tab.current).name}
         >
           {tabs.map((tab) => (
             <option key={tab.name}>{tab.name}</option>
@@ -33,13 +76,13 @@ const Feeds = ({ setOpenNewPost }) => {
       </div>
       <div className="hidden sm:block">
         <nav
-          className="relative z-0 rounded-lg shadow flex divide-x divide-gray-200 dark:divide-slate-600"
+          className="cursor-pointer relative z-0 rounded-lg shadow flex divide-x divide-gray-200 dark:divide-slate-600"
           aria-label="Tabs"
         >
           {tabs.map((tab, tabIdx) => (
-            <a
+            <div
               key={tab.name}
-              href={tab.href}
+              onClick={(e) => tabClick(e, tab.id)}
               aria-current={tab.current ? "page" : undefined}
               className={classNames(
                 tab.current
@@ -58,7 +101,7 @@ const Feeds = ({ setOpenNewPost }) => {
                   "absolute inset-x-0 bottom-0 h-0.5"
                 )}
               />
-            </a>
+            </div>
           ))}
         </nav>
       </div>

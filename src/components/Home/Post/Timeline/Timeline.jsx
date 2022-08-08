@@ -98,7 +98,7 @@ const Timeline = ({ post, setIsNewPost }) => {
   const [likes, setLikes] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [textComment, setTextComment] = useState("");
-  const folder = useFolder()
+  const folder = useFolder();
 
   const [hiddenComments, setHiddenComments] = useState([]);
 
@@ -188,8 +188,8 @@ const Timeline = ({ post, setIsNewPost }) => {
     <>
       <li
         key={post._id}
-        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg dark:bg-slate-800">
-      
+        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg dark:bg-slate-800"
+      >
         <article aria-labelledby={"question-title-" + post._id}>
           <div>
             <div className="flex space-x-3">
@@ -334,7 +334,7 @@ const Timeline = ({ post, setIsNewPost }) => {
                                 />
                                 <span className="text-red-500">
                                   Delete Post
-                                </span> 
+                                </span>
                               </div>
                             )}
                           </Menu.Item>
@@ -381,7 +381,9 @@ const Timeline = ({ post, setIsNewPost }) => {
                     )}
                     aria-hidden="true"
                   />
-                  <span className="font-medium text-gray-900 dark:text-slate-400">{likes}</span>
+                  <span className="font-medium text-gray-900 dark:text-slate-400">
+                    {likes}
+                  </span>
                   <span className="sr-only">likes</span>
                 </button>
               </span>
@@ -422,7 +424,9 @@ const Timeline = ({ post, setIsNewPost }) => {
                   className="inline-flex space-x-2 text-gray-400 hover:text-gray-500"
                 >
                   <ShareIcon className="h-5 w-5" aria-hidden="true" />
-                  <span className="font-medium text-gray-900 dark:text-slate-400">Share</span>
+                  <span className="font-medium text-gray-900 dark:text-slate-400">
+                    Share
+                  </span>
                 </button>
               </span>
             </div>
