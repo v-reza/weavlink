@@ -2,6 +2,15 @@ const router = require("express").Router();
 const verifyBearerToken = require("../helper/verifyBearerToken");
 const User = require("../models/User");
 
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
