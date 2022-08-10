@@ -36,17 +36,17 @@ const Feeds = ({
       // onclick: setMostComments(!mostComments),
     },
   ];
-  const tabClick = (e, tabId) => {
-    e.preventDefault();
-    if (tabId === 1) {
+  const tabClick = (tabId) => {
+    // console.log(tabId === "1")
+    if (tabId === 1 || tabId === "1") {
       setRecent(true);
       setMostLiked(false);
       setMostComments(false);
-    } else if (tabId === 2) {
+    } else if (tabId === 2 || tabId === "2") {
       setMostLiked(true);
       setRecent(false);
       setMostComments(false);
-    } else if (tabId === 3) {
+    } else if (tabId === 3 || tabId === "3") {
       setMostComments(true);
       setRecent(false);
       setMostLiked(false);
@@ -68,9 +68,12 @@ const Feeds = ({
           id="question-tabs"
           className="block w-full rounded-md border-gray-300 text-base font-medium text-gray-900 shadow-sm focus:border-rose-500 focus:ring-rose-500"
           // defaultValue={tabs.find((tab) => tab.current).name}
+          onChange={(e) => tabClick(e.target.value)}
         >
           {tabs.map((tab) => (
-            <option key={tab.name}>{tab.name}</option>
+            <option key={tab.name} value={tab.id}>
+              {tab.name}
+            </option>
           ))}
         </select>
       </div>
@@ -82,7 +85,7 @@ const Feeds = ({
           {tabs.map((tab, tabIdx) => (
             <div
               key={tab.name}
-              onClick={(e) => tabClick(e, tab.id)}
+              onClick={() => tabClick(tab.id)}
               aria-current={tab.current ? "page" : undefined}
               className={classNames(
                 tab.current

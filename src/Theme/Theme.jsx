@@ -2,7 +2,7 @@ import React from "react";
 
 const Theme = ({ children }) => {
   return (
-    <div className="bg-white dark:bg-slate-900 transition-all">{children}</div>
+    <div className="bg-gray-100 dark:bg-slate-900 transition-all">{children}</div>
   );
 };
 

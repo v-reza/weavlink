@@ -11,8 +11,7 @@ const Post = ({
   mostLiked,
   mostComments,
 }) => {
-  // console.log(postsTimeline.sort((a, b) => b.likes.length - a.likes.length));
-
+  
   return (
     <div className="mt-4">
       <h1 className="sr-only">Recent questions</h1>

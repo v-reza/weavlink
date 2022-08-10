@@ -12,6 +12,7 @@ import GoogleSetPassword from "./pages/Auth/GoogleSetPassword";
 import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
 import Notfound from "./pages/Notfound/404";
+import LandingPage from "./pages/LandingPage/LandingPage";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
@@ -25,9 +26,7 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={
-                isAuthenticated ? <Home /> : <Navigate to="/login" replace />
-              }
+              element={isAuthenticated ? <Home /> : <LandingPage />}
             />
             <Route
               path="/login"
