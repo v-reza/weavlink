@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const User = require("../models/User");
+const Company = require("../models/Company");
 const UserProfile = require("../models/UserProfile");
 const UserSkills = require("../models/UserSkills");
 const Experience = require("../models/Experience");
@@ -167,6 +168,66 @@ router.post("/deleteall", async (req, res) => {
   try {
     await User.deleteMany({});
     return res.status(200).json("All users deleted");
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+/* Auth Company */
+router.post("/register-company", async (req, res) => {
+  try {
+    const oldUser = await Company.findOne({ email: req.body.email });
+    if (oldUser) {
+      return res.status(400).send("Company already exists");
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const company = new Company({
+      ...req.body,
+      password: hashedPassword,
+    });
+    const token = jwt.sign(
+      { id: company._id, isCompany: true },
+      process.env.JWT_TOKEN,
+      {
+        expiresIn: "2h",
+      }
+    );
+
+    const { password, ...companyDocs } = company._doc;
+
+    await company.save();
+    return res.status(201).json({
+      user: companyDocs,
+      token: token,
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.post("/company-login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const company = await Company.findOne({ email: req.body.email });
+    if (!company) {
+      return res.status(400).json("Company does not exist");
+    }
+    const isMatch = await bcrypt.compare(password, company.password);
+    if (!isMatch) {
+      return res.status(400).json("Invalid password");
+    }
+    const token = jwt.sign(
+      { id: company._id, isCompany: true },
+      process.env.JWT_TOKEN,
+      {
+        expiresIn: "2h",
+      }
+    );
+    return res.status(200).json({
+      user: company,
+      token: token,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
