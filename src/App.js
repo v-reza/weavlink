@@ -1,25 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Sidebar from "./components/Home/Sidebar/Sidebar";
+import useAuth from "./hooks/useAuth";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import Home from "./pages/Home/Home";
+import Job from "./pages/Job/Job";
 
 function App() {
+  const { isAuthenticated } = useAuth();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        {isAuthenticated && <Sidebar />}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? <Home /> : <Navigate to="/login" replace />
+            }
+          />
+          <Route
+            path="/login"
+            element={!isAuthenticated ? <Login /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/register"
+            element={
+              !isAuthenticated ? <Register /> : <Navigate to="/" replace />
+            }
+          />
+          <Route
+            path="/job"
+            element={isAuthenticated ? <Job /> : <Navigate to="/" replace />}
+          />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
