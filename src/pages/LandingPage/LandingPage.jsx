@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export default function LandingPage() {
   const navigate = useNavigate();
   return (
-    <div className="bg-white">
+    <div className="bg-white h-max-w-lg">
       <div className="relative overflow-hidden">
         <main>
           <div className="pt-10 bg-gray-900 sm:pt-16 lg:pt-8 lg:pb-14 lg:overflow-hidden">
