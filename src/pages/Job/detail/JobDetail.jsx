@@ -77,7 +77,7 @@ export default function JobDetail({
   setJobDetail,
 }) {
   const [selected, setSelected] = useState(publishingOptions[0]);
-  console.log(jobDetail);
+  
   return (
     <>
       <div className="min-h-full">
