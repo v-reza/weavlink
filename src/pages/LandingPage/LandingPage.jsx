@@ -1,15 +1,3 @@
-import { Fragment } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import {
-  CloudUploadIcon,
-  CogIcon,
-  LockClosedIcon,
-  MenuIcon,
-  RefreshIcon,
-  ServerIcon,
-  ShieldCheckIcon,
-  XIcon,
-} from "@heroicons/react/outline";
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
