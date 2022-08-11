@@ -22,7 +22,10 @@ export default function Notification() {
   }, [isNotification]);
 
   return (
-    <div>
+    <div
+      className="sticky z-40
+    "
+    >
       {/* Global notification live region, render this permanently at the end of the document */}
       <div
         aria-live="assertive"

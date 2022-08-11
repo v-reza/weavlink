@@ -5,19 +5,15 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { AuthContextProvider } from "./redux/context/UserContext";
-import { ThemeProvider } from "./Theme/ThemeContext";
-import Theme from "./Theme/Theme";
-import ThemeToggle from "./Theme/ThemeToggle";
+import { NotificationContextProvider } from "./redux/context/NotificationContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-      {/* <ThemeProvider> */}
-        {/* <Theme> */}
-          <App />
-        {/* </Theme> */}
-      {/* </ThemeProvider> */}
+      <NotificationContextProvider>
+        <App />
+      </NotificationContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );

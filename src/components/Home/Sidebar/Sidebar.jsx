@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
@@ -5,64 +6,19 @@ import {
   ClockIcon,
   HomeIcon,
   MenuAlt1Icon,
-  ViewListIcon,
   XIcon,
   BriefcaseIcon,
   UsersIcon,
 } from "@heroicons/react/outline";
-import {
-  ChevronRightIcon,
-  DotsVerticalIcon,
-  SearchIcon,
-  SelectorIcon,
-} from "@heroicons/react/solid";
+import { SearchIcon, SelectorIcon } from "@heroicons/react/solid";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 
 const teams = [
   { name: "Engineering", href: "#", bgColorClass: "bg-indigo-500" },
   { name: "Human Resources", href: "#", bgColorClass: "bg-green-500" },
   { name: "Customer Success", href: "#", bgColorClass: "bg-yellow-500" },
 ];
-const projects = [
-  {
-    id: 1,
-    title: "GraphQL API",
-    initials: "GA",
-    team: "Engineering",
-    members: [
-      {
-        name: "Dries Vincent",
-        handle: "driesvincent",
-        imageUrl:
-          "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      },
-      {
-        name: "Lindsay Walton",
-        handle: "lindsaywalton",
-        imageUrl:
-          "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      },
-      {
-        name: "Courtney Henry",
-        handle: "courtneyhenry",
-        imageUrl:
-          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      },
-      {
-        name: "Tom Cook",
-        handle: "tomcook",
-        imageUrl:
-          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      },
-    ],
-    totalMembers: 12,
-    lastUpdated: "March 17, 2020",
-    pinned: true,
-    bgColorClass: "bg-pink-600",
-  },
-  // More projects...
-];
-const pinnedProjects = projects.filter((project) => project.pinned);
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -94,6 +50,7 @@ const Sidebar = () => {
     { name: "Recent", href: "#", icon: ClockIcon, current: false },
   ];
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { dispatch, user } = useAuth();
 
   return (
     <>
@@ -232,17 +189,17 @@ const Sidebar = () => {
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
-                        <a
-                          href="#"
+                        <div
+                          onClick={() => dispatch({ type: "LOGOUT" })}
                           className={classNames(
                             active
                               ? "bg-gray-100 text-gray-900"
                               : "text-gray-700",
-                            "block px-4 py-2 text-sm"
+                            "cursor-pointer block px-4 py-2 text-sm"
                           )}
                         >
                           Logout
-                        </a>
+                        </div>
                       )}
                     </Menu.Item>
                   </div>
@@ -398,10 +355,7 @@ const Sidebar = () => {
                     />
                     <span className="flex-1 flex flex-col min-w-0">
                       <span className="text-gray-900 text-sm font-medium truncate">
-                        Jessy Schwarz
-                      </span>
-                      <span className="text-gray-500 text-sm truncate">
-                        @jessyschwarz
+                        {user.companyName}
                       </span>
                     </span>
                   </span>
@@ -504,17 +458,17 @@ const Sidebar = () => {
                 <div className="py-1">
                   <Menu.Item>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <div
+                        onClick={() => dispatch({ type: "LOGOUT" })}
                         className={classNames(
                           active
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-700",
-                          "block px-4 py-2 text-sm"
+                          "cursor-pointer block px-4 py-2 text-sm"
                         )}
                       >
                         Logout
-                      </a>
+                      </div>
                     )}
                   </Menu.Item>
                 </div>

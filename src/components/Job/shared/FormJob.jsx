@@ -1,6 +1,23 @@
 import React from "react";
 
-const FormJob = () => {
+const FormJob = ({
+  jobTitle,
+  setJobTitle,
+  jobDesc,
+  setJobDesc,
+  jobLocation,
+  setJobLocation,
+  salary,
+  setSalary,
+  jobType,
+  setJobType,
+  jobCondition,
+  setJobCondition,
+  jobRequirements,
+  setJobRequirements,
+  closedJob,
+  setClosedJob,
+}) => {
   return (
     <>
       <div className="relative border border-gray-300 mb-6 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600">
@@ -11,6 +28,8 @@ const FormJob = () => {
           Job Title*
         </label>
         <input
+          value={jobTitle}
+          onChange={(e) => setJobTitle(e.target.value)}
           type="text"
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
         />
@@ -23,8 +42,9 @@ const FormJob = () => {
           Job Description*
         </label>
         <textarea
+          value={jobDesc}
+          onChange={(e) => setJobDesc(e.target.value)}
           rows={4}
-          type="text"
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
         />
       </div>
@@ -36,8 +56,9 @@ const FormJob = () => {
           Job Location*
         </label>
         <textarea
+          value={jobLocation}
+          onChange={(e) => setJobLocation(e.target.value)}
           rows={3}
-          type="text"
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
         />
       </div>
@@ -49,10 +70,27 @@ const FormJob = () => {
           Salary Rp*
         </label>
         <input
+          value={salary}
+          onChange={(e) => setSalary(e.target.value)}
           type="number"
+          min={0}
+          onInput={(e) => {
+            e.target.value = Math.max(0, parseInt(e.target.value));
+          }}
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
           placeholder="8.000.000"
         />
+      </div>
+      <div className="relative mb-6 px-2 py-2">
+        <label
+          htmlFor="salaryFormat"
+          className="absolute -top-2 left-0 -mt-px text-gray-600 inline-block px-1 bg-white text-xs font-medium text-gray-900"
+        >
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(salary)}
+        </label>
       </div>
       <div className="relative border border-gray-300 mb-6 rounded-md px-3 py-2 shadow-sm focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600">
         <label
@@ -61,10 +99,16 @@ const FormJob = () => {
         >
           Job Type*
         </label>
-        <select className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm">
+        <select
+          onChange={(e) => setJobType(e.target.value)}
+          value={jobType || ""}
+          defaultValue={jobType || "default"}
+          className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
+        >
           <option
             value="default"
             selected
+            defaultValue={"default"}
             className="cursor-default select-none relative py-2 pl-3 pr-9"
           >
             Select a job type
@@ -90,10 +134,16 @@ const FormJob = () => {
         >
           Job Condition*
         </label>
-        <select className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm">
+        <select
+          onChange={(e) => setJobCondition(e.target.value)}
+          value={jobCondition || ""}
+          // defaultValue="default"
+          className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
+        >
           <option
             value="default"
             selected
+            defaultValue={"default"}
             className="cursor-default select-none relative py-2 pl-3 pr-9"
           >
             Select a job condition
@@ -120,8 +170,9 @@ const FormJob = () => {
           Job Requirements*
         </label>
         <textarea
+          value={jobRequirements}
+          onChange={(e) => setJobRequirements(e.target.value)}
           rows={3}
-          type="text"
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
         />
       </div>
@@ -133,6 +184,8 @@ const FormJob = () => {
           Closed Job*
         </label>
         <input
+          value={closedJob}
+          onChange={(e) => setClosedJob(e.target.value)}
           type="date"
           className="block w-full border-0 p-0 text-gray-900 placeholder-gray-500 focus:ring-0 sm:text-sm"
         />

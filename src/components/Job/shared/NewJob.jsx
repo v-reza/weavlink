@@ -1,57 +1,100 @@
 /* eslint-disable jsx-a11y/no-redundant-roles */
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useRef, useState } from "react";
-import { Dialog, Transition, Listbox } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { Tab } from "@headlessui/react";
 import { AtSymbolIcon, CodeIcon, LinkIcon } from "@heroicons/react/solid";
 import { axiosPost } from "../../../helper/axiosHelper";
 import useAuth from "../../../hooks/useAuth";
 import useNotif from "../../../hooks/useNotif";
 import useHeader from "../../../hooks/useHeader";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import FormJob from "./FormJob";
-import {
-  CalendarIcon,
-  LocationMarkerIcon,
-  UsersIcon,
-} from "@heroicons/react/outline";
-
-const people = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-  { id: 7, name: "Caroline Schultz" },
-  { id: 8, name: "Mason Heaney" },
-  { id: 9, name: "Claudie Smitham" },
-  { id: 10, name: "Emil Schaefer" },
-];
+import { CalendarIcon, LocationMarkerIcon } from "@heroicons/react/outline";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-const positions = [
-  {
-    id: 1,
-    title: "Back End Developer",
-    type: "Full-time",
-    location: "Remote",
-    closeDate: "2020-01-07",
-    closeDateFull: "2020-01-07",
-  },
-];
 
-export default function NewJob({ open, setOpen }) {
+export default function NewJob({
+  open,
+  setOpen,
+  setIsNewJob,
+  setOpenPublishJob,
+}) {
   const cancelButtonRef = useRef(null);
-  const [desc, setDesc] = useState("");
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch } = useNotif();
-  const [file, setFile] = useState([]);
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDesc, setJobDesc] = useState("");
+  const [jobLocation, setJobLocation] = useState("");
   const [salary, setSalary] = useState("");
-  const [selected, setSelected] = useState(people[3]);
+  const [jobType, setJobType] = useState("");
+  const [jobCondition, setJobCondition] = useState("");
+  const [jobRequirements, setJobRequirements] = useState("");
+  const [closedJob, setClosedJob] = useState("");
+
+  const handleAddJob = async (e) => {
+    e.preventDefault();
+
+    if (
+      !jobTitle ||
+      !jobDesc ||
+      !jobLocation ||
+      !salary ||
+      !jobType ||
+      !jobCondition ||
+      !jobRequirements ||
+      !closedJob
+    ) {
+      dispatch({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: "Please fill all the fields",
+      });
+      return;
+    }
+
+    try {
+      const data = {
+        title: jobTitle,
+        description: jobDesc,
+        location: jobLocation,
+        salary: salary,
+        jobType: jobType,
+        jobCondition: jobCondition,
+        requirements: jobRequirements,
+        closed: closedJob,
+      };
+      await axiosPost("/jobs", data, headers)
+        .then(() => {
+          dispatch({
+            type: "NOTIF_SUCCESS",
+            title: "Success",
+            message: "Job has been added, please publish it.",
+          });
+          setIsNewJob(true);
+          setOpen(false);
+          setJobTitle("");
+          setJobDesc("");
+          setJobLocation("");
+          setSalary("");
+          setJobType("");
+          setJobCondition("");
+          setJobRequirements("");
+          setClosedJob("");
+        })
+        .catch(() => {
+          dispatch({
+            type: "NOTIF_ERROR",
+            title: "Error",
+            message: "Something went wrong",
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -117,7 +160,10 @@ export default function NewJob({ open, setOpen }) {
                                     selected
                                       ? "text-gray-900 bg-gray-100 hover:bg-gray-200"
                                       : "text-gray-500 hover:text-gray-900 bg-white hover:bg-gray-100",
-                                    desc || file.length > 0
+                                    jobTitle ||
+                                      jobType ||
+                                      jobCondition ||
+                                      closedJob
                                       ? "text-indigo-500"
                                       : "",
                                     "ml-2 px-3 py-1.5 border border-transparent text-sm font-medium rounded-md"
@@ -190,7 +236,24 @@ export default function NewJob({ open, setOpen }) {
                             </Tab.List>
                             <Tab.Panels className="mt-6">
                               <Tab.Panel className="p-0.5 -m-0.5 rounded-lg">
-                                <FormJob />
+                                <FormJob
+                                  jobTitle={jobTitle}
+                                  setJobTitle={setJobTitle}
+                                  jobDesc={jobDesc}
+                                  setJobDesc={setJobDesc}
+                                  jobLocation={jobLocation}
+                                  setJobLocation={setJobLocation}
+                                  salary={salary}
+                                  setSalary={setSalary}
+                                  jobType={jobType}
+                                  setJobType={setJobType}
+                                  jobCondition={jobCondition}
+                                  setJobCondition={setJobCondition}
+                                  jobRequirements={jobRequirements}
+                                  setJobRequirements={setJobRequirements}
+                                  closedJob={closedJob}
+                                  setClosedJob={setClosedJob}
+                                />
                               </Tab.Panel>
                               <Tab.Panel className="p-0.5 -m-0.5 rounded-lg">
                                 <div className="border-b">
@@ -212,57 +275,47 @@ export default function NewJob({ open, setOpen }) {
                                             role="list"
                                             className="divide-y divide-gray-200"
                                           >
-                                            {positions.map((position) => (
-                                              <li key={position.id}>
-                                                <a
-                                                  href="#"
-                                                  className="block hover:bg-gray-50"
-                                                >
-                                                  <div className="px-4 py-4 sm:px-6">
-                                                    <div className="flex items-center justify-between">
-                                                      <p className="text-sm font-medium text-indigo-600 truncate">
-                                                        {position.title}
+                                            <li>
+                                              <div className="block hover:bg-gray-50">
+                                                <div className="px-4 py-4 sm:px-6">
+                                                  <div className="flex items-center justify-between">
+                                                    <p className="text-sm font-medium text-indigo-600 truncate">
+                                                      {jobTitle}
+                                                    </p>
+                                                    <div className="ml-2 flex-shrink-0 flex">
+                                                      <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        {jobType}
                                                       </p>
-                                                      <div className="ml-2 flex-shrink-0 flex">
-                                                        <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                          {position.type}
-                                                        </p>
-                                                      </div>
                                                     </div>
-                                                    <div className="mt-2 sm:flex sm:justify-between">
-                                                      <div className="sm:flex">
-                                                        
-                                                        <p className="mt-2 flex items-center text-sm text-gray-500">
-                                                          <LocationMarkerIcon
-                                                            className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                                            aria-hidden="true"
-                                                          />
-                                                          {position.location}
-                                                        </p>
-                                                        <p className="mt-2 flex items-center text-sm text-gray-500 sm:ml-6">
-                                                          <CalendarIcon
-                                                            className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                                                            aria-hidden="true"
-                                                          />
-                                                          <p>
-                                                            Closing on{" "}
-                                                            <time
-                                                              dateTime={
-                                                                position.closeDate
-                                                              }
-                                                            >
-                                                              {
-                                                                position.closeDateFull
-                                                              }
-                                                            </time>
-                                                          </p>
+                                                  </div>
+                                                  <div className="mt-2 sm:flex sm:justify-between">
+                                                    <div className="sm:flex">
+                                                      <p className="mt-2 flex items-center text-sm text-gray-500">
+                                                        <LocationMarkerIcon
+                                                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                                                          aria-hidden="true"
+                                                        />
+                                                        {jobType}
+                                                      </p>
+                                                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:ml-6">
+                                                        <CalendarIcon
+                                                          className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                                                          aria-hidden="true"
+                                                        />
+                                                        <p>
+                                                          Closing on{" "}
+                                                          <time
+                                                            dateTime={closedJob}
+                                                          >
+                                                            {closedJob}
+                                                          </time>
                                                         </p>
                                                       </div>
                                                     </div>
                                                   </div>
-                                                </a>
-                                              </li>
-                                            ))}
+                                                </div>
+                                              </div>
+                                            </li>
                                           </ul>
                                         </div>
                                       </div>
@@ -281,8 +334,8 @@ export default function NewJob({ open, setOpen }) {
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-rose-600 text-base font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
-                  //   onClick={(e) => handleNewPost(e)}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
+                  onClick={(e) => handleAddJob(e)}
                 >
                   Post
                 </button>

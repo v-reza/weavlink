@@ -15,33 +15,10 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
-import {
-  ClockIcon,
-  HomeIcon,
-  MenuAlt1Icon,
-  ViewListIcon,
-  XIcon,
-} from "@heroicons/react/outline";
-import {
-  ChevronRightIcon,
-  DotsVerticalIcon,
-  SearchIcon,
-  SelectorIcon,
-} from "@heroicons/react/solid";
-import Sidebar from "../../components/Home/Sidebar/Sidebar";
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronRightIcon, DotsVerticalIcon } from "@heroicons/react/solid";
 
-const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
-  { name: "My tasks", href: "#", icon: ViewListIcon, current: false },
-  { name: "Recent", href: "#", icon: ClockIcon, current: false },
-];
-const teams = [
-  { name: "Engineering", href: "#", bgColorClass: "bg-indigo-500" },
-  { name: "Human Resources", href: "#", bgColorClass: "bg-green-500" },
-  { name: "Customer Success", href: "#", bgColorClass: "bg-yellow-500" },
-];
 const projects = [
   {
     id: 1,
@@ -88,14 +65,11 @@ function classNames(...classes) {
 }
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <>
       <div className="min-h-full">
         {/* Main column */}
         <div className="lg:pl-64 flex flex-col">
-          
           <main className="flex-1">
             {/* Page title & actions */}
             <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
@@ -129,12 +103,9 @@ export default function Home() {
                     </div>
                     <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
                       <div className="flex-1 px-4 py-2 text-sm truncate">
-                        <a
-                          href="#"
-                          className="text-gray-900 font-medium hover:text-gray-600"
-                        >
+                        <div className="cursor-pointer text-gray-900 font-medium hover:text-gray-600">
                           {project.title}
-                        </a>
+                        </div>
                         <p className="text-gray-500">
                           {project.totalMembers} Members
                         </p>
@@ -160,7 +131,7 @@ export default function Home() {
                             <div className="py-1">
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
+                                  <div
                                     href="#"
                                     className={classNames(
                                       active
@@ -170,14 +141,14 @@ export default function Home() {
                                     )}
                                   >
                                     View
-                                  </a>
+                                  </div>
                                 )}
                               </Menu.Item>
                             </div>
                             <div className="py-1">
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
+                                  <div
                                     href="#"
                                     className={classNames(
                                       active
@@ -187,12 +158,12 @@ export default function Home() {
                                     )}
                                   >
                                     Removed from pinned
-                                  </a>
+                                  </div>
                                 )}
                               </Menu.Item>
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
+                                  <div
                                     href="#"
                                     className={classNames(
                                       active
@@ -202,7 +173,7 @@ export default function Home() {
                                     )}
                                   >
                                     Share
-                                  </a>
+                                  </div>
                                 )}
                               </Menu.Item>
                             </div>
@@ -228,7 +199,7 @@ export default function Home() {
               >
                 {projects.map((project) => (
                   <li key={project.id}>
-                    <a
+                    <div
                       href="#"
                       className="group flex items-center justify-between px-4 py-4 hover:bg-gray-50 sm:px-6"
                     >
@@ -251,7 +222,7 @@ export default function Home() {
                         className="ml-4 h-5 w-5 text-gray-400 group-hover:text-gray-500"
                         aria-hidden="true"
                       />
-                    </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -287,7 +258,7 @@ export default function Home() {
                               )}
                               aria-hidden="true"
                             />
-                            <a
+                            <div
                               href="#"
                               className="truncate hover:text-gray-600"
                             >
@@ -297,7 +268,7 @@ export default function Home() {
                                   in {project.team}
                                 </span>
                               </span>
-                            </a>
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-3 text-sm text-gray-500 font-medium">
@@ -323,12 +294,12 @@ export default function Home() {
                           {project.lastUpdated}
                         </td>
                         <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                          <a
+                          <div
                             href="#"
                             className="text-indigo-600 hover:text-indigo-900"
                           >
                             Edit
-                          </a>
+                          </div>
                         </td>
                       </tr>
                     ))}
