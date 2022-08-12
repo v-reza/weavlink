@@ -124,9 +124,43 @@ router.put("/:id/draft", verifyBearerToken, async (req, res) => {
   }
 });
 
-router.delete("/joball", async (req, res) => {
-  const job = await Job.deleteMany();
-  return res.status(200).json("Success deleted");
+router.get("/listjobs", async (req, res) => {
+  try {
+    const jobs = await Job.aggregate([
+      {
+        $addFields: {
+          companyId: { $toObjectId: "$companyId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "companies",
+          localField: "companyId",
+          foreignField: "_id",
+          as: "company",
+        },
+      },
+      {
+        $unwind: "$company",
+      },
+      {
+        $unset: ["company.password"],
+      },
+      {
+        $match: {
+          isActive: true,
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+    return res.status(200).json(jobs);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 });
 
 module.exports = router;
