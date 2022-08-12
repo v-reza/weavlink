@@ -89,7 +89,36 @@ router.put("/:id/publish", verifyBearerToken, async (req, res) => {
       },
     });
 
-    return res.status(200).json("Successfully published");
+    const jobAfterUpdate = await Job.findById(req.params.id);
+
+    return res.status(200).json(jobAfterUpdate);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.put("/:id/draft", verifyBearerToken, async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({
+        code: 404,
+        message: "Job not found",
+      });
+    }
+    if (job.companyId !== req.user.id) {
+      return res.status(401).json({
+        code: 401,
+        message: "You are not authorized to do this action",
+      });
+    }
+    await job.updateOne({
+      $set: {
+        isActive: false,
+      },
+    });
+    const jobAfterUpdate = await Job.findById(req.params.id);
+    return res.status(200).json(jobAfterUpdate);
   } catch (error) {
     return res.status(500).json(error);
   }
