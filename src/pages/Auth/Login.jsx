@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import Toast from "../../components/custom/Toast/Toast";
 import loginCall from "../../helper/loginCall";
 import useAuth from "../../hooks/useAuth";
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -10,7 +13,7 @@ export default function Login() {
   const [isToast, setToast] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(false);
-  const { dispatch, error: err } = useAuth();
+  const { dispatch, error: err, isLoading } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -113,9 +116,14 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={(e) => handleLogin(e)}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className={classNames(
+                    isLoading
+                      ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                      : "bg-indigo-600 hover:bg-indigo-700",
+                    "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  )}
                 >
-                  Masuk
+                  {isLoading ? "Loading..." : "Masuk"}
                 </button>
               </div>
             </form>

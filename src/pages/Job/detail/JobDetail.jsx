@@ -16,7 +16,7 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import {
   ArrowNarrowLeftIcon,
@@ -29,11 +29,15 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CurrencyDollarIcon,
-  LinkIcon,
   LocationMarkerIcon,
   MailIcon,
   PencilIcon,
 } from "@heroicons/react/solid";
+import { axiosPut } from "../../../helper/axiosHelper";
+import PublishJob from "../../../components/Job/shared/PublishJob";
+import useAuth from "../../../hooks/useAuth";
+import useHeader from "../../../hooks/useHeader";
+import useNotif from "../../../hooks/useNotif";
 
 const tabs = [
   { name: "Applied", href: "#", count: "2", current: false },
@@ -54,18 +58,6 @@ const candidates = [
   },
   // More candidates...
 ];
-const publishingOptions = [
-  {
-    name: "Published",
-    description: "This job posting can be viewed by anyone who has the link.",
-    current: true,
-  },
-  {
-    name: "Draft",
-    description: "This job posting will no longer be publicly accessible.",
-    current: false,
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -75,11 +67,96 @@ export default function JobDetail({
   jobDetail,
   setRedirectJobDetail,
   setJobDetail,
+  setIsNewJob,
 }) {
-  const [selected, setSelected] = useState(publishingOptions[0]);
-  
+  const publishingOptions = [
+    {
+      id: 1,
+      name: "Published",
+      description: "This job posting can be viewed by anyone who has the link.",
+      current: jobDetail.isActive ? true : false,
+    },
+    {
+      id: 2,
+      name: "Draft",
+      description: "This job posting will no longer be publicly accessible.",
+      current: jobDetail.isActive ? false : true,
+    },
+  ];
+  const [selected, setSelected] = useState(
+    jobDetail.isActive ? publishingOptions[0] : publishingOptions[1]
+  );
+
+  // useEffect(() => {
+  //   setSelected
+  // }, []);
+
+  const [open, setOpen] = useState(false);
+  const [cancel, setCancel] = useState(false);
+
+  const { token } = useAuth();
+  const headers = useHeader(token);
+  const { dispatch } = useNotif();
+
+  useEffect(() => {
+    const modalPublishJob = () => {
+      if (selected.id === 1 && selected.current === false) {
+        setOpen(true);
+      }
+    };
+    modalPublishJob();
+  }, [selected]);
+  console.log(jobDetail);
+
+  useEffect(() => {
+    if (cancel && selected.id === 1 && !selected.current) {
+      setSelected(publishingOptions[1]);
+    }
+    setCancel(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cancel, selected]);
+
+  useEffect(() => {
+    const updateJobStatus = async () => {
+      if (selected.id === 2 && !selected.current) {
+        const data = {
+          isActive: false,
+        };
+        await axiosPut("/jobs/" + jobDetail._id + "/draft", data, headers)
+          .then((res) => {
+            dispatch({
+              type: "NOTIF_SUCCESS",
+              title: "Success",
+              message: "Successfully updated job status to draft",
+            });
+            setJobDetail(res.data);
+            setIsNewJob(true);
+          })
+          .catch(() => {
+            dispatch({
+              type: "NOTIF_ERROR",
+              title: "Error",
+              message: "Failed to update job status to draft",
+            });
+          });
+      }
+    };
+    updateJobStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+
   return (
     <>
+      <PublishJob
+        pagesDetail
+        open={open}
+        setOpen={setOpen}
+        jobPublish={jobDetail}
+        setIsNewJob={setIsNewJob}
+        setJobPublish={setJobDetail}
+        setCancel={setCancel}
+        setJobDetail={setJobDetail}
+      />
       <div className="min-h-full">
         {/* Navbar */}
         <div className="lg:pl-64 flex flex-col">
@@ -134,7 +211,8 @@ export default function JobDetail({
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
-                    }).format(jobDetail.salary)}
+                    }).format(jobDetail.salary)}{" "}
+                    {jobDetail.hiddenSalary && "(Salary is Hidden)"}
                   </div>
                   <div className="mt-2 flex items-center text-sm text-gray-500">
                     <CalendarIcon
@@ -156,19 +234,6 @@ export default function JobDetail({
                       aria-hidden="true"
                     />
                     Edit
-                  </button>
-                </span>
-
-                <span className="hidden sm:block ml-3">
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-purple-500"
-                  >
-                    <LinkIcon
-                      className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    View
                   </button>
                 </span>
 
@@ -213,6 +278,9 @@ export default function JobDetail({
                             <Listbox.Options className="origin-top-right absolute left-0 mt-2 -mr-1 w-72 rounded-md shadow-lg overflow-hidden bg-white divide-y divide-gray-200 ring-1 ring-black ring-opacity-5 focus:outline-none sm:left-auto sm:right-0">
                               {publishingOptions.map((option) => (
                                 <Listbox.Option
+                                  onClick={() => {
+                                    setSelected(option);
+                                  }}
                                   key={option.name}
                                   className={({ active }) =>
                                     classNames(
@@ -303,19 +371,6 @@ export default function JobDetail({
                             )}
                           >
                             Edit
-                          </div>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <div
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            View
                           </div>
                         )}
                       </Menu.Item>

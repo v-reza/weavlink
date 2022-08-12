@@ -44,6 +44,7 @@ const Job = () => {
           jobDetail={jobDetail}
           setJobDetail={setJobDetail}
           setRedirectJobDetail={setRedirectJobDetail}
+          setIsNewJob={setIsNewJob}
         />
       </Suspense>
     );

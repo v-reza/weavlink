@@ -19,8 +19,11 @@ export default function PublishJob({
   setIsNewJob,
   jobPublish,
   setJobPublish,
+  pagesDetail,
+  setCancel,
+  setJobDetail
 }) {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(jobPublish.hiddenSalary ? true : false);
   const cancelButtonRef = useRef(null);
   const { token } = useAuth();
   const headers = useHeader(token);
@@ -32,15 +35,16 @@ export default function PublishJob({
         hiddenSalary: enabled,
       };
       await axiosPut("/jobs/" + jobId + "/publish", data, headers)
-        .then(() => {
+        .then((res) => {
           dispatch({
             type: "NOTIF_SUCCESS",
             title: "Success",
             message: enabled
-              ? "Job is published and salary will be visible"
-              : "Job is publisehd and salary will be hidden",
+              ? "Job is published and salary will be hidden"
+              : "Job is published and salary will be visible",
           });
           setIsNewJob(true);
+          pagesDetail && setJobDetail(res.data)
           setOpen(false);
         })
         .catch(() => {
@@ -61,7 +65,10 @@ export default function PublishJob({
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
         initialFocus={cancelButtonRef}
-        onClose={setOpen}
+        onClose={() => {
+          setOpen(false);
+          pagesDetail && setCancel(true);
+        }}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -172,7 +179,8 @@ export default function PublishJob({
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                   onClick={() => {
                     setOpen(false);
-                    setJobPublish({});
+                    // setJobPublish({});
+                    pagesDetail ? setCancel(true) : setJobPublish({});
                   }}
                   ref={cancelButtonRef}
                 >
