@@ -53,7 +53,7 @@ const Feeds = ({
     }
   };
   return (
-    <div className="px-4 sm:px-0">
+    <div className="px-4 sm:px-0 xs:px-0">
       <div
         onClick={() => setOpenNewPost(true)}
         className="cursor-pointer mb-3 w-full inline-flex text-center justify-center items-center px-4 py-2 border border-transparent text-sm font-medium text-end rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"

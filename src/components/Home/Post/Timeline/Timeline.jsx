@@ -188,7 +188,7 @@ const Timeline = ({ post, setIsNewPost }) => {
     <>
       <li
         key={post._id}
-        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg dark:bg-slate-800"
+        className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg xs:rounded-lg dark:bg-slate-800"
       >
         <article aria-labelledby={"question-title-" + post._id}>
           <div>

@@ -6,7 +6,7 @@ import useAuth from "../../hooks/useAuth";
 import Notification from "../custom/Notifications/Notification";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { ThemeContext } from "../../Theme/ThemeContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SearchModal from "./SearchModal";
 
 // const user = {
@@ -15,12 +15,6 @@ import SearchModal from "./SearchModal";
 //   imageUrl:
 //     "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 // };
-const navigation = [
-  { name: "Home", href: "/", current: true },
-  { name: "Jobs", href: "#", current: false },
-  { name: "Applicants", href: "#", current: false },
-  { name: "Company", href: "#", current: false },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -30,11 +24,18 @@ const Navbar = () => {
   const { dispatch } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { user } = useAuth();
-
   const { theme, setTheme } = useContext(ThemeContext);
+
   const username = user.firstname + user.lastname + "-" + user._id;
+
+  const navigation = [
+    { name: "Home", href: "/", current: location.pathname === "/" ? true : false, },
+    { name: "Jobs", href: "/job", current: location.pathname === "/job" ? true : false },
+    { name: "Applicants", href: "#", current: false },
+    { name: "Company", href: "#", current: false },
+  ];
   const userNavigation = [
     {
       name: "Your Profile",
@@ -58,8 +59,8 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', keydownCtrlK)
-  }, [keydownCtrlK])
+    document.addEventListener("keydown", keydownCtrlK);
+  }, [keydownCtrlK]);
 
   return (
     <div className="sticky top-0 z-50">
@@ -73,8 +74,8 @@ const Navbar = () => {
                   <div className="flex-shrink-0">
                     <img
                       onClick={() => navigate("/")}
-                      className="cursor-pointer h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark.svg?color=rose&shade=500"
+                      className="cursor-pointer h-10 w-auto"
+                      src="logo_large.png"
                       alt="Workflow"
                     />
                   </div>

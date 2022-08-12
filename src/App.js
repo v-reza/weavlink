@@ -13,6 +13,7 @@ import Profile from "./pages/Profile/Profile";
 import Settings from "./pages/Settings/Settings";
 import Notfound from "./pages/Notfound/404";
 import LandingPage from "./pages/LandingPage/LandingPage";
+import Job from "./pages/Job/Job";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
@@ -61,6 +62,10 @@ function App() {
               element={
                 isAuthenticated ? <Settings /> : <Navigate to="/" replace />
               }
+            />
+            <Route
+              path="/job"
+              element={isAuthenticated ? <Job /> : <Navigate to="/" replace />}
             />
             <Route
               path="/404"

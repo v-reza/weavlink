@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
     <>
       <div className="flex flex-auto">
         <div className="grow">
-          <div className="min-h-screen transition duration-200">{children}</div>
+          <div className="min-h-screen w-screen md:w-full sm:w-full lg:w-full transition duration-200">{children}</div>
         </div>
       </div>
     </>
