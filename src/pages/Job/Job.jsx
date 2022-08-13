@@ -4,7 +4,7 @@ import Follow from "../../components/Home/Rightbar/Follow";
 import Trending from "../../components/Home/Rightbar/Trending";
 import { useEffect } from "react";
 import Filter from "../../components/Job/Filter/Filter";
-import MobileSidebar from "../../components/Job/Sidebar/shared/MobileSidebar";
+import MobileSidebar from "../../components/Job/Sidebar/MobileSidebar";
 
 export default function Job() {
   /* Set Title */

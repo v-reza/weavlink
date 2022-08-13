@@ -38,6 +38,7 @@ import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
 import useFolder from "../../../../hooks/useFolder";
+import useLoading from "../../../../hooks/useLoading";
 const TimelineComment = lazy(() => import("./TimelineComment"));
 const moods = [
   {
@@ -99,6 +100,7 @@ const Timeline = ({ post, setIsNewPost }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [textComment, setTextComment] = useState("");
   const folder = useFolder();
+  const { dispatch: loading } = useLoading();
 
   const [hiddenComments, setHiddenComments] = useState([]);
 
@@ -121,11 +123,13 @@ const Timeline = ({ post, setIsNewPost }) => {
 
   const handleDeletePost = async (postId) => {
     try {
+      loading({ type: "PROCESSING" });
       await axiosDelete("/posts/delete/" + postId, {
         headers: {
           Authorization: "Bearer " + token,
         },
       }).then(() => {
+        loading({ type: "FINISHED" });
         setIsNewPost(true);
         dispatch({
           type: "NOTIF_SUCCESS",

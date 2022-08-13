@@ -18,7 +18,7 @@ function classNames(...classes) {
 
 const Sidebar = () => {
   return (
-    <div className="hidden lg:block h-max lg:col-span-3 xl:col-span-2 bg-white dark:bg-slate-800 rounded-lg shadow">
+    <div className="hidden lg:block h-max lg:col-span-3 xl:col-span-2 bg-white dark:bg-slate-800 rounded-lg shadow sticky top-24">
       <nav aria-label="Sidebar" className="top-4 divide-y divide-gray-300">
         <div className="pb-6 space-y-1 mt-4 px-3">
           {navigation.map((item) => (

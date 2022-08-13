@@ -8,6 +8,7 @@ import { axiosPost } from "../../../helper/axiosHelper";
 import useAuth from "../../../hooks/useAuth";
 import useNotif from "../../../hooks/useNotif";
 import useHeader from "../../../hooks/useHeader";
+import useLoading from "../../../hooks/useLoading";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -20,9 +21,10 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
   const headers = useHeader(token);
   const { dispatch } = useNotif();
   const [file, setFile] = useState([]);
+  const { dispatch: loading } = useLoading();
 
   const handleNewPost = async (e) => {
-    if (!desc) {
+    if (!desc && file.length === 0) {
       dispatch({ type: "NOTIF_ERROR", message: "Please enter a description" });
       return;
     }
@@ -47,12 +49,15 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
           formData.append("images", customFile);
           fileNameList.push(fileName + "." + file[key].type.split("/")[1]);
         }
+        /* Update New Post */
+        await axiosPost("/images/upload", formData);
+        newPost.images = fileNameList;
       }
-      await axiosPost("/images/upload", formData);
-      /* Update New Post */
-      newPost.images = fileNameList;
+
+      loading({ type: "PROCESSING" });
 
       await axiosPost("/posts/newpost", newPost, headers).then(() => {
+        loading({ type: "FINISHED" });
         dispatch({
           type: "NOTIF_SUCCESS",
           title: "Success",

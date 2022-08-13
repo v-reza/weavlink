@@ -22,7 +22,7 @@ const Post = ({
               <Timeline post={post} key={post._id} setIsNewPost={setIsNewPost} />
             ))
           ) : (
-            <span className="flex items-center justify-center">
+            <span className="flex items-center justify-center dark:text-white">
               {" "}
               Recent Post Not Found
             </span>

@@ -14,6 +14,7 @@ import Settings from "./pages/Settings/Settings";
 import Notfound from "./pages/Notfound/404";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import Job from "./pages/Job/Job";
+import Loading from "./components/custom/Loading/Loading";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
@@ -24,6 +25,7 @@ function App() {
       <Router>
         <Layout>
           {isAuthenticated && <Navbar />}
+          <Loading/>
           <Routes>
             <Route
               path="/"

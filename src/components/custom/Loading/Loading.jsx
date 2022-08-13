@@ -1,22 +1,21 @@
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import React from 'react'
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import React from "react";
+import useLoading from "../../../hooks/useLoading";
 
-const Loading = ({open, setOpen}) => {
-    const handleClose = () => {
-        setOpen(false)
-    }
+const Loading = () => {
+  const { isLoading } = useLoading();
   return (
     <div>
-        <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-        onClick={handleClose}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
       >
         <CircularProgress color="inherit" />
+        <span className="font-md ml-4">Processing...</span>
       </Backdrop>
     </div>
-  )
-}
+  );
+};
 
-export default Loading
+export default Loading;
