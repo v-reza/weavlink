@@ -2,15 +2,28 @@ import Sidebar from "../../components/Job/Sidebar/Sidebar";
 import Post from "../../components/Job/Post/Post";
 import Follow from "../../components/Home/Rightbar/Follow";
 import Trending from "../../components/Home/Rightbar/Trending";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Filter from "../../components/Job/Filter/Filter";
 import MobileSidebar from "../../components/Job/Sidebar/MobileSidebar";
+import { axiosGet } from "../../helper/axiosHelper";
 
 export default function Job() {
   /* Set Title */
   useEffect(() => {
     document.title = "Jobs | Velkey";
   }, []);
+  const [jobs, setJobs] = useState([])
+  useEffect(() => {
+    const getListJobs = async () => {
+      try {
+        const res = await axiosGet("/jobs/listjobs")
+        setJobs(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getListJobs()
+  }, [])
 
   return (
     <>
@@ -21,9 +34,9 @@ export default function Job() {
             <Sidebar />
             <main className="lg:col-span-9 xl:col-span-6">
               <Filter />
-              <MobileSidebar />
               {/* Mobile Sidebar */}
-              <Post />
+              <MobileSidebar />
+              <Post jobs={jobs}/>
             </main>
             <aside className="hidden xl:block xl:col-span-4">
               <div className="top-4 space-y-4">

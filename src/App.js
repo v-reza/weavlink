@@ -15,6 +15,7 @@ import Notfound from "./pages/Notfound/404";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import Job from "./pages/Job/Job";
 import Loading from "./components/custom/Loading/Loading";
+import JobRecommended from "./pages/Job/JobRecommended";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword } = useAuth();
@@ -68,6 +69,10 @@ function App() {
             <Route
               path="/job"
               element={isAuthenticated ? <Job /> : <Navigate to="/" replace />}
+            />
+            <Route
+              path="/job/collections/recommended/:id"
+              element={isAuthenticated ? <JobRecommended /> : <Navigate to="/" replace />}
             />
             <Route
               path="/404"

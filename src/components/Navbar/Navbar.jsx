@@ -31,8 +31,16 @@ const Navbar = () => {
   const username = user.firstname + user.lastname + "-" + user._id;
 
   const navigation = [
-    { name: "Home", href: "/", current: location.pathname === "/" ? true : false, },
-    { name: "Jobs", href: "/job", current: location.pathname === "/job" ? true : false },
+    {
+      name: "Home",
+      href: "/",
+      current: location.pathname === "/" ? true : false,
+    },
+    {
+      name: "Jobs",
+      href: "/job",
+      current: location.pathname === "/job" ? true : false,
+    },
     { name: "Applicants", href: "#", current: false },
     { name: "Company", href: "#", current: false },
   ];
@@ -72,12 +80,21 @@ const Navbar = () => {
               <div className="relative h-16 flex items-center justify-between border-b border-gray-200">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img
-                      onClick={() => navigate("/")}
-                      className="cursor-pointer h-10 w-auto"
-                      src="logo_large.png"
-                      alt="Workflow"
-                    />
+                    {theme === "dark" ? (
+                      <img
+                        onClick={() => navigate("/")}
+                        className="cursor-pointer h-10 w-auto"
+                        src="/logo_large.png"
+                        alt="Workflow"
+                      />
+                    ) : (
+                      <img
+                        onClick={() => navigate("/")}
+                        className="cursor-pointer h-10 w-auto"
+                        src="/logo_large-white.png"
+                        alt="Workflow"
+                      />
+                    )}
                   </div>
 
                   {/* Links section */}
