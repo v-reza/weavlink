@@ -27,7 +27,7 @@ export default function Steps({ step }) {
         <div className="hidden sm:grid grid-cols-3 text-sm font-medium text-gray-500 mt-2">
           <div
             className={classNames(
-              step === 1 ? "text-indigo-600" : "",
+              step === 1 || step === 2 || step == 3? "text-indigo-600" : "",
               "text-left"
             )}
           >
@@ -35,16 +35,20 @@ export default function Steps({ step }) {
           </div>
           <div
             className={classNames(
-              step === 2 ? "text-indigo-600" : "",
+              step === 2 || step === 3 ? "text-indigo-600" : "",
               "text-center"
             )}
           >
             Resume
           </div>
-          <div className={classNames(
+          <div
+            className={classNames(
               step === 3 ? "text-indigo-600" : "",
               "text-right"
-            )}>Preview</div>
+            )}
+          >
+            Preview
+          </div>
         </div>
       </div>
     </div>

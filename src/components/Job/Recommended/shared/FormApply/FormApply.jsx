@@ -15,10 +15,10 @@ export default function FormApply({ open, setOpen }) {
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-hidden"
+        className="fixed z-10 inset-0 overflow-y-hidden"
         onClose={setOpen}
       >
-        <div className="flex xs:block items-end justify-center mt-24 min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="flex xs:block items-end justify-center mt-10 xs:mt-14 min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -60,7 +60,6 @@ export default function FormApply({ open, setOpen }) {
                               <Tab.Panel className="p-0.5 -m-0.5 rounded-lg">
                                 {step === 1 && (
                                   <FormStep1
-                                    setStep={setStep}
                                     form={form}
                                     setForm={setForm}
                                     setIsError={setIsError}
@@ -68,7 +67,6 @@ export default function FormApply({ open, setOpen }) {
                                 )}
                                 {step === 2 && (
                                   <FormStep2
-                                    setStep={setStep}
                                     form={form}
                                     setForm={setForm}
                                     setIsError={setIsError}
