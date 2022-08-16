@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const verifyBearerToken = require("../helper/verifyBearerToken");
 const Job = require("../models/Job");
+const Applicant = require("../models/Applicants");
+const mongoose = require("mongoose");
 
 router.post("/", verifyBearerToken, async (req, res) => {
   try {
@@ -158,6 +160,86 @@ router.get("/listjobs", async (req, res) => {
       },
     ]);
     return res.status(200).json(jobs);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.get("/detailjob/:id", async (req, res) => {
+  try {
+    const jobs = await Job.aggregate([
+      {
+        $addFields: {
+          companyId: { $toObjectId: "$companyId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "companies",
+          localField: "companyId",
+          foreignField: "_id",
+          as: "company",
+        },
+      },
+      {
+        $unwind: "$company",
+      },
+      {
+        $unset: ["company.password"],
+      },
+      {
+        $lookup: {
+          from: "applicants",
+          localField: "jobApplications",
+          foreignField: "_id",
+          as: "applicants",
+        }
+      },
+      // {
+      //   $unwind: {
+      //     path: "$applicants",
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
+      {
+        $match: {
+          isActive: true,
+          _id: mongoose.Types.ObjectId(req.params.id),
+        },
+      },
+    ]);
+    return res.status(200).json(jobs[0]);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.post("/jobApply", verifyBearerToken, async (req, res) => {
+  try {
+    const { jobId } = req.body;
+    const applicant = await Applicant.findOne({
+      jobId: jobId,
+      userId: req.user.id,
+    });
+    if (applicant) {
+      return res.status(400).json({
+        code: 400,
+        message: "You have already applied for this job",
+      });
+    }
+    const newApplicant = await Applicant.create({
+      jobId: jobId,
+      userId: req.user.id,
+      ...req.body,
+    });
+
+    const job = await Job.findById(jobId);
+    await job.updateOne({
+      $push: {
+        jobApplications: newApplicant._id,
+      },
+    });
+    return res.status(200).json("Success Applied");
   } catch (error) {
     return res.status(500).json(error);
   }
