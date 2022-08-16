@@ -16,18 +16,23 @@ export default function JobRecommended() {
   const [listJobs, setListJobs] = useState([]);
   const [open, setOpen] = useState(false);
   const [jobApply, setJobApply] = useState({});
+  const [isApply, setIsApply] = useState(false);
+  const [isJobLoading, setIsJobLoading] = useState(false);
 
   useEffect(() => {
     const getDetailJobs = async () => {
+      setIsJobLoading(true);
       try {
         const res = await axiosGet("/jobs/detailjob/" + id);
+        setIsJobLoading(false);
         setJobs(res.data);
       } catch (error) {
         console.log(error);
       }
     };
     getDetailJobs();
-  }, [id]);
+    setIsApply(false);
+  }, [id, isApply]);
 
   useEffect(() => {
     const getListJobs = async () => {
@@ -50,12 +55,18 @@ export default function JobRecommended() {
             <main className="col-span-8">
               <Suspense fallback={<LinearProgress />}>
                 <JobDetail
+                  isJobLoading={isJobLoading}
                   jobs={jobs}
                   setOpen={setOpen}
                   setJobApply={setJobApply}
                 />
               </Suspense>
-              <FormApply open={open} setOpen={setOpen} jobApply={jobApply}/>
+              <FormApply
+                open={open}
+                setOpen={setOpen}
+                jobApply={jobApply}
+                setIsApply={setIsApply}
+              />
             </main>
           </div>
         </div>

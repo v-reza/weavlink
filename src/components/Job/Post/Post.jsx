@@ -1,7 +1,10 @@
 /* eslint-disable jsx-a11y/no-redundant-roles */
-import { LinearProgress } from "@mui/material";
+import { LinearProgress, Skeleton } from "@mui/material";
 import React, { Suspense } from "react";
 import ListPost from "./shared/ListPost";
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const Post = ({ jobs }) => {
   return (
@@ -18,10 +21,22 @@ const Post = ({ jobs }) => {
                   </h2>
                   <div className="mt-6 flow-root">
                     <ul role="list" className="-my-4 divide-y divide-gray-200">
-                      <div className="bg-white shadow-md dark:shadow-slate-700 overflow-hidden rounded-md dark:bg-slate-700">
+                      <div
+                        className={classNames(
+                          jobs.length > 0
+                            ? "shadow-md dark:bg-slate-700 dark:shadow-slate-700"
+                            : "dark:bg-transparent",
+                          "bg-white  overflow-hidden rounded-md"
+                        )}
+                      >
                         <ul
                           role="list"
-                          className="divide-y divide-gray-300 dark:divide-slate-600"
+                          className={classNames(
+                            jobs.length > 0
+                              ? "divide-y dark:divide-slate-600"
+                              : "",
+                            " divide-gray-300"
+                          )}
                         >
                           <Suspense fallback={<LinearProgress />}>
                             {jobs.length > 0 ? (
@@ -29,10 +44,13 @@ const Post = ({ jobs }) => {
                                 <ListPost jobs={job} key={job._id} />
                               ))
                             ) : (
-                              <span className="dark:text-white">
-                                {" "}
-                                No jobs found more for you
-                              </span>
+                              <>
+                                <Skeleton variant="rounded" height={80} />
+                                <br />
+                                <Skeleton variant="rounded" height={80} />
+                                <br />
+                                <Skeleton variant="rounded" height={80} />
+                              </>
                             )}
                           </Suspense>
                         </ul>

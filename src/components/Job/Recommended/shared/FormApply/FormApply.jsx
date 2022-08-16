@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Tab } from "@headlessui/react";
 import Steps from "./Steps";
@@ -14,7 +14,7 @@ import useNotif from "../../../../../hooks/useNotif";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function FormApply({ open, setOpen, jobApply }) {
+export default function FormApply({ open, setOpen, jobApply, setIsApply }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({});
   const [isError, setIsError] = useState(false);
@@ -54,6 +54,7 @@ export default function FormApply({ open, setOpen, jobApply }) {
 
     await axiosPost("/jobs/jobApply", data, headers).then(() => {
       loading({ type: "FINISHED" });
+      setIsApply(true)
       dispatch({
         type: "NOTIF_SUCCESS",
         title: "Success",
