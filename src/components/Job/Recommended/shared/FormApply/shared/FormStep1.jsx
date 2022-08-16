@@ -12,9 +12,13 @@ function classNames(...classes) {
 export default function FormStep1({ form, setForm, setIsError }) {
   const { user } = useAuth();
   const [userProfile, setUserProfile] = useState({});
-  const [email, setEmail] = useState(user.email);
+  const [email, setEmail] = useState(() => {
+    return !form.email ? user.email : form.email;
+  });
   const [alertEmail, setAlertEmail] = useState(false);
-  const [phone, setPhone] = useState(user.phone);
+  const [phone, setPhone] = useState(() => {
+    return !form.phone ? user.phone : form.phone;
+  });
   const [alertPhone, setAlertPhone] = useState(false);
   useEffect(() => {
     const getUserProfile = async () => {
@@ -39,7 +43,7 @@ export default function FormStep1({ form, setForm, setIsError }) {
 
   const changePhone = useCallback(
     (e) => {
-      if (!/^[0-9]{12}$/.test(e.target.value)) {
+      if (!/^[0-9]{11,12}$/.test(e.target.value)) {
         setIsError(true);
         setAlertPhone(true);
       } else {
@@ -59,6 +63,9 @@ export default function FormStep1({ form, setForm, setIsError }) {
       setIsError(true);
       setAlertPhone(true);
       return;
+    } else if (alertEmail || alertPhone) {
+      setIsError(true);
+      return;
     }
     setIsError(false);
     setForm({
@@ -67,7 +74,7 @@ export default function FormStep1({ form, setForm, setIsError }) {
       phone: phone,
     });
   }, [changeEmail, changePhone]);
-  console.log(phone);
+
   return (
     <div className="bg-transparent py-5">
       <div className="flex space-x-3">
@@ -75,6 +82,7 @@ export default function FormStep1({ form, setForm, setIsError }) {
           <img
             className="h-10 w-10 rounded-full"
             src={user.profilePicture}
+            referrerPolicy="no-referrer"
             alt=""
           />
         </div>
@@ -166,7 +174,7 @@ export default function FormStep1({ form, setForm, setIsError }) {
         </div>
         {alertPhone && (
           <p className="text-left mt-1 text-xs text-red-600" id="phone-error">
-            Enter a valid phone number
+            Enter a valid phone number (11 - 12 digits)
           </p>
         )}
       </div>

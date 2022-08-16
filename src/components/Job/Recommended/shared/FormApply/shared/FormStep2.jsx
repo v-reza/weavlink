@@ -1,12 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* This example requires Tailwind CSS v2.0+ */
 import { useCallback, useEffect, useState } from "react";
-import { ExclamationCircleIcon } from "@heroicons/react/solid";
-import useAuth from "../../../../../../hooks/useAuth";
-import { axiosGet } from "../../../../../../helper/axiosHelper";
-import { MobilePDFReader } from "react-read-pdf";
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { CheckIcon } from "@heroicons/react/outline";
+
 
 export default function FormStep2({ form, setForm, setIsError }) {
   const [fileResume, setFileResume] = useState(form.file);
@@ -38,19 +34,22 @@ export default function FormStep2({ form, setForm, setIsError }) {
       setIsError(false);
       setFileNotAllowed(false);
       setFileResume(e.target.files[0]);
-      console.log(e.target.files[0]);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [fileResume]
   );
 
   useEffect(() => {
+    setIsError(true)
     if (fileResume) {
+      setIsError(false)
       setFileErrorMessage(null);
       setFileNotAllowed(false);
       setForm({ ...form, file: fileResume });
+    } else {
+      setIsError(true);
     }
   }, [changeFileResume]);
-
   return (
     <div className="bg-transparent py-5">
       <label className="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -72,22 +71,10 @@ export default function FormStep2({ form, setForm, setIsError }) {
         File Type PDF, DOCX (Max 5MB)
       </p>
       {fileResume && (
-        <div className="hidden xl:block lg:block md:block sm:block mt-3">
-          <embed
-            src={URL.createObjectURL(fileResume)}
-            width="100%"
-            title="Resume"
-            height={300}
-          />
-
-          {/* <MobilePDFReader url={URL.createObjectURL(fileResume)}/> */}
-          {/* <a href={URL.createObjectURL(fileResume)}> Download</a>           */}
-        </div>
-      )}
-      {fileResume && (
-        <div className="block">
-          <span className="text-green-500 text-sm dark:text-white">
-            Mobile view cannot view the resume
+        <div className="block mt-4 text-left">
+          <span className="flex text-green-500 text-sm dark:text-green-00">
+            <CheckIcon className="h-5 w-5" />
+            Successfully uploaded resume
           </span>
         </div>
       )}

@@ -55,7 +55,7 @@ export default function JobRecommended() {
                   setJobApply={setJobApply}
                 />
               </Suspense>
-              <FormApply open={open} setOpen={setOpen} />
+              <FormApply open={open} setOpen={setOpen} jobApply={jobApply}/>
             </main>
           </div>
         </div>
