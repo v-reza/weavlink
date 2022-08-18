@@ -10,6 +10,8 @@ const INITAL_STATE = {
   error: false,
   isGoogleSetPassword: false,
   googleSetUser: null,
+  isNewCompany: false,
+  dataNewCompany: null
 };
 
 export const UserContext = createContext(INITAL_STATE);

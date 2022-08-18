@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import Layout from "./Theme/Layout";
 import { Navigate } from "react-router-dom";
 import Register from "./pages/Auth/Register";
+import RegisterCompany from "./pages/Auth/Company/Register";
 import Navbar from "./components/Navbar/Navbar";
 import GoogleSetPassword from "./pages/Auth/GoogleSetPassword";
 import Profile from "./pages/Profile/Profile";
@@ -16,17 +17,19 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import Job from "./pages/Job/Job";
 import Loading from "./components/custom/Loading/Loading";
 import JobRecommended from "./pages/Job/JobRecommended";
+import Example from "./Example";
 
 function App() {
-  const { isAuthenticated, isGoogleSetPassword } = useAuth();
+  const { isAuthenticated, isGoogleSetPassword, isNewCompany } = useAuth();
   const [isNotfound, setIsNotfound] = useState(false);
+  console.log(isNewCompany);
 
   return (
     <>
       <Router>
         <Layout>
-          {isAuthenticated && <Navbar />}
-          <Loading/>
+          {isAuthenticated && !isNewCompany && <Navbar />}
+          <Loading />
           <Routes>
             <Route
               path="/"
@@ -55,6 +58,12 @@ function App() {
               }
             />
             <Route
+              path="/is-new-company"
+              element={
+                isNewCompany ? <RegisterCompany /> : <Navigate to="/" replace />
+              }
+            />
+            <Route
               path="/profile/:username"
               element={
                 isAuthenticated ? <Profile /> : <Navigate to="/" replace />
@@ -72,12 +81,19 @@ function App() {
             />
             <Route
               path="/job/collections/recommended/:id"
-              element={isAuthenticated ? <JobRecommended /> : <Navigate to="/" replace />}
+              element={
+                isAuthenticated ? (
+                  <JobRecommended />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
             />
             <Route
               path="/404"
               element={<Notfound setIsNotfound={setIsNotfound} />}
             />
+            <Route path="/comps" element={<Example />} />
             <Route
               path="*"
               element={<Notfound setIsNotfound={setIsNotfound} />}

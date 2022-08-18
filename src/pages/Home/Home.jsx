@@ -9,7 +9,6 @@ import { axiosGet } from "../../helper/axiosHelper";
 
 export default function Home() {
   const [openNewPost, setOpenNewPost] = useState(false);
-  const [isNewPost, setIsNewPost] = useState(false);
   const [postsTimeline, setPostsTimeline] = useState([]);
   const [recent, setRecent] = useState(true);
   const [mostLiked, setMostLiked] = useState(false);
@@ -18,7 +17,9 @@ export default function Home() {
   useEffect(() => {
     document.title = "Velkey";
   }, []);
-
+  
+  const [isNewPost, setIsNewPost] = useState(false);
+  
   /* Get Post Timeline */
   useEffect(() => {
     const getPostTimeline = async () => {

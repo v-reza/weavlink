@@ -80,6 +80,27 @@ const UserReducer = (state, action) => {
           ),
         },
       };
+    case "NEW_COMPANY_START":
+      return {
+        ...state,
+        isNewCompany: true,
+      };
+    case "NEW_COMPANY_PROCESS":
+      return {
+        ...state,
+        isNewCompany: true,
+        dataNewCompany: action.payload,
+      };
+    case "NEW_COMPANY_SUCCESS":
+      return {
+        ...state,
+        user: action.payload,
+        isLoading: false,
+        error: false,
+        token: action.token,
+        isAuthenticated: true,
+        isNewCompany: false,
+      };
     default:
   }
 };

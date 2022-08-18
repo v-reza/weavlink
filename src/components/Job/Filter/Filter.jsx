@@ -4,55 +4,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Filter = ({
-  setOpenNewPost,
-  recent,
-  setRecent,
-  mostLiked,
-  setMostLiked,
-  mostComments,
-  setMostComments,
-}) => {
-  const tabs = [
-    {
-      id: 1,
-      name: "Recent",
-      href: "#",
-      current: recent ? true : false,
-      onClick: () => setRecent(!recent),
-      // onclick: setRecent(!recent),
-    },
-    {
-      id: 2,
-      name: "Most Liked",
-      href: "#",
-      current: mostLiked ? true : false,
-      // onclick: setMostLiked(!mostLiked),
-    },
-    {
-      id: 3,
-      name: "Most Comments",
-      href: "#",
-      current: mostComments ? true : false,
-      // onclick: setMostComments(!mostComments),
-    },
-  ];
-  const tabClick = (tabId) => {
-    // console.log(tabId === "1")
-    if (tabId === 1 || tabId === "1") {
-      setRecent(true);
-      setMostLiked(false);
-      setMostComments(false);
-    } else if (tabId === 2 || tabId === "2") {
-      setMostLiked(true);
-      setRecent(false);
-      setMostComments(false);
-    } else if (tabId === 3 || tabId === "3") {
-      setMostComments(true);
-      setRecent(false);
-      setMostLiked(false);
-    }
-  };
+const Filter = () => {
   return (
     <div className="flex space-x-4">
       <div className="flex-1 min-w-0">

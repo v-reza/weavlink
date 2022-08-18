@@ -10,24 +10,12 @@ import ThemeToggle from "./Theme/ThemeToggle";
 import { AuthContextProvider } from "./redux/context/UserContext";
 import { NotificationContextProvider } from "./redux/context/NotificationContext";
 import { LoadingContextProvider } from "./redux/context/LoadingContext";
+import Main from "./Main";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <NotificationContextProvider>
-        <LoadingContextProvider>
-          <ThemeProvider>
-            <Theme>
-              <div className="absolute right-0 top-0 mr-4 mt-4 md:mr-6 md:mt-6">
-                <ThemeToggle />
-              </div>
-              <App />
-            </Theme>
-          </ThemeProvider>
-        </LoadingContextProvider>
-      </NotificationContextProvider>
-    </AuthContextProvider>
+    <Main />
   </React.StrictMode>
 );
 

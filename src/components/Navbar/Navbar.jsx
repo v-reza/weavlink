@@ -1,13 +1,21 @@
 import React, { useContext, useEffect } from "react";
 import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import {
+  BellIcon,
+  MenuIcon,
+  XIcon,
+  OfficeBuildingIcon,
+  UserGroupIcon,
+} from "@heroicons/react/outline";
 import useAuth from "../../hooks/useAuth";
 import Notification from "../custom/Notifications/Notification";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { ThemeContext } from "../../Theme/ThemeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import SearchModal from "./SearchModal";
+import useHeader from "../../hooks/useHeader";
+import { axiosGet } from "../../helper/axiosHelper";
 
 // const user = {
 //   name: "Whitney Francis",
@@ -21,12 +29,13 @@ function classNames(...classes) {
 }
 
 const Navbar = () => {
-  const { dispatch } = useAuth();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, token, dispatch } = useAuth();
+  const headers = useHeader(token);
   const { theme, setTheme } = useContext(ThemeContext);
+  const [isHaveCompany, setIsHaveCompany] = useState(false);
 
   const username = user.firstname + user.lastname + "-" + user._id;
 
@@ -69,6 +78,19 @@ const Navbar = () => {
   useEffect(() => {
     document.addEventListener("keydown", keydownCtrlK);
   }, [keydownCtrlK]);
+
+  useEffect(() => {
+    const checkIfHaveCompany = async () => {
+      const res = await axiosGet("/company/check/my-company", headers);
+      if (res.data.code === 200) {
+        setIsHaveCompany(true);
+      } else {
+        setIsHaveCompany(false);
+      }
+    };
+    checkIfHaveCompany();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="sticky top-0 z-50">
@@ -249,7 +271,7 @@ const Navbar = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Items className="origin-top-right divide-y divide-gray-100 absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
@@ -265,6 +287,43 @@ const Navbar = () => {
                               )}
                             </Menu.Item>
                           ))}
+                          <div className="px-1 py-1 ">
+                            {isHaveCompany ? (
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <button
+                                    className={`${
+                                      active
+                                        ? "bg-violet-500 text-white"
+                                        : "text-gray-900"
+                                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                  >
+                                    <OfficeBuildingIcon className="mr-2 h-5 w-5" />
+                                    My Company
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            ) : (
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <button
+                                    onClick={() => {
+                                      dispatch({ type: "NEW_COMPANY_START" });
+                                      navigate("/is-new-company");
+                                    }}
+                                    className={`${
+                                      active
+                                        ? "bg-violet-500 text-white"
+                                        : "text-gray-900"
+                                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                  >
+                                    <UserGroupIcon className="mr-2 h-5 w-5" />
+                                    Create Company
+                                  </button>
+                                )}
+                              </Menu.Item>
+                            )}
+                          </div>
                         </Menu.Items>
                       </Transition>
                     </Menu>
@@ -297,7 +356,7 @@ const Navbar = () => {
                   <div className="flex-shrink-0">
                     <img
                       className="rounded-full h-10 w-10"
-                      src={user.profilePicture}
+                      src={user.profilePicture || "/assets/profile-image.jpg"}
                       referrerPolicy="no-referrer"
                       alt=""
                     />
@@ -354,6 +413,12 @@ const Navbar = () => {
                       {item.name}
                     </Disclosure.Button>
                   ))}
+                  {/* <Disclosure.Button
+                    as="a"
+                    className="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white "
+                  >
+                    Divider
+                  </Disclosure.Button> */}
                 </div>
               </div>
             </Disclosure.Panel>
