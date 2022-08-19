@@ -33,6 +33,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-search-autocomplete": "^7.2.2",
+    "react-select": "^5.4.0",
     "timeago.js": "^4.0.2",
     "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.5.4",

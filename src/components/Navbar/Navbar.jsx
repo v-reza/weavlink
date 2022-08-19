@@ -35,7 +35,6 @@ const Navbar = () => {
   const { user, token, dispatch } = useAuth();
   const headers = useHeader(token);
   const { theme, setTheme } = useContext(ThemeContext);
-  const [isHaveCompany, setIsHaveCompany] = useState(false);
 
   const username = user.firstname + user.lastname + "-" + user._id;
 
@@ -55,17 +54,13 @@ const Navbar = () => {
   ];
   const userNavigation = [
     {
-      name: "Your Profile",
+      name: "My Profile",
       href: "#",
       onclick: () =>
         navigate("/profile/" + username.replace(" ", "-").toLowerCase()),
     },
+    { name: "My Company", href: "#", onclick: () => navigate("/") },
     { name: "Settings", href: "#", onclick: () => navigate("/settings") },
-    {
-      name: "Sign out",
-      href: "#",
-      onclick: () => dispatch({ type: "LOGOUT" }),
-    },
   ];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,19 +73,6 @@ const Navbar = () => {
   useEffect(() => {
     document.addEventListener("keydown", keydownCtrlK);
   }, [keydownCtrlK]);
-
-  useEffect(() => {
-    const checkIfHaveCompany = async () => {
-      const res = await axiosGet("/company/check/my-company", headers);
-      if (res.data.code === 200) {
-        setIsHaveCompany(true);
-      } else {
-        setIsHaveCompany(false);
-      }
-    };
-    checkIfHaveCompany();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="sticky top-0 z-50">
@@ -220,7 +202,7 @@ const Navbar = () => {
                   <div className="flex items-center">
                     <button
                       type="button"
-                      className="mr-2 bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500"
+                      className="mr-2 bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                     >
                       <span className="sr-only">Theme Mode</span>
                       {theme === "dark" ? (
@@ -271,15 +253,33 @@ const Navbar = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="origin-top-right divide-y divide-gray-100 absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <span className="block py-2 px-4 text-sm font-medium dark:text-slate-300">
+                            Account
+                          </span>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <div
+                                className={classNames(
+                                  active ? "bg-gray-100 dark:bg-slate-700" : "",
+                                  "cursor-pointer block py-1 px-4 text-sm text-amber-500"
+                                )}
+                              >
+                                Try Premium for free
+                              </div>
+                            )}
+                          </Menu.Item>
+
                           {userNavigation.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
                                 <div
                                   onClick={item.onclick}
                                   className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "cursor-pointer block py-2 px-4 text-sm text-gray-700"
+                                    active
+                                      ? "bg-gray-100 dark:bg-slate-700"
+                                      : "",
+                                    "cursor-pointer block py-1 px-4 text-sm text-gray-700 dark:text-slate-400"
                                   )}
                                 >
                                   {item.name}
@@ -287,43 +287,48 @@ const Navbar = () => {
                               )}
                             </Menu.Item>
                           ))}
-                          <div className="px-1 py-1 ">
-                            {isHaveCompany ? (
-                              <Menu.Item>
-                                {({ active }) => (
-                                  <button
-                                    className={`${
-                                      active
-                                        ? "bg-violet-500 text-white"
-                                        : "text-gray-900"
-                                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                  >
-                                    <OfficeBuildingIcon className="mr-2 h-5 w-5" />
-                                    My Company
-                                  </button>
+
+                          <span className="block py-2 px-4 text-sm font-medium dark:text-slate-300">
+                            Manage
+                          </span>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <div
+                                onClick={() =>
+                                  navigate("/my-items/posted-jobs")
+                                }
+                                className={classNames(
+                                  active ? "bg-gray-100 dark:bg-slate-700" : "",
+                                  "cursor-pointer block py-1 px-4 text-sm text-gray-700 dark:text-slate-400"
                                 )}
-                              </Menu.Item>
-                            ) : (
-                              <Menu.Item>
-                                {({ active }) => (
-                                  <button
-                                    onClick={() => {
-                                      dispatch({ type: "NEW_COMPANY_START" });
-                                      navigate("/is-new-company");
-                                    }}
-                                    className={`${
-                                      active
-                                        ? "bg-violet-500 text-white"
-                                        : "text-gray-900"
-                                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                                  >
-                                    <UserGroupIcon className="mr-2 h-5 w-5" />
-                                    Create Company
-                                  </button>
-                                )}
-                              </Menu.Item>
+                              >
+                                Job Posting Account
+                              </div>
                             )}
+                          </Menu.Item>
+
+                          <div className="mt-2 relative">
+                            <div
+                              className="absolute inset-0 flex items-center"
+                              aria-hidden="true"
+                            >
+                              <div className="w-full border-t border-gray-300 dark:border-slate-600" />
+                            </div>
                           </div>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <div
+                                onClick={() => dispatch({ type: "LOGOUT" })}
+                                className={classNames(
+                                  active ? "bg-gray-100 dark:bg-slate-700" : "",
+                                  "cursor-pointer block py-2 px-4 text-sm text-gray-700 dark:text-slate-400"
+                                )}
+                              >
+                                Logout
+                              </div>
+                            )}
+                          </Menu.Item>
                         </Menu.Items>
                       </Transition>
                     </Menu>
@@ -372,14 +377,14 @@ const Navbar = () => {
 
                   <button
                     type="button"
-                    className="mr-auto bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500"
+                    className="mr-auto bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                   >
                     <span className="sr-only">View notifications</span>
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                   <button
                     type="button"
-                    className="ml-auto bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500"
+                    className="ml-auto bg-gray-50 dark:bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                   >
                     <span className="sr-only">Theme Mode</span>
                     {theme === "dark" ? (
@@ -402,6 +407,12 @@ const Navbar = () => {
                   </button>
                 </div>
                 <div className="mt-3 px-2 space-y-1">
+                  <Disclosure.Button
+                    as="a"
+                    className="block rounded-md py-2 px-3 text-base font-medium text-amber-500 hover:bg-gray-100 "
+                  >
+                    Try Premium for free
+                  </Disclosure.Button>
                   {userNavigation.map((item) => (
                     <Disclosure.Button
                       key={item.name}
@@ -413,6 +424,20 @@ const Navbar = () => {
                       {item.name}
                     </Disclosure.Button>
                   ))}
+                  <Disclosure.Button
+                    onClick={() => navigate("/my-items/posted-jobs")}
+                    as="a"
+                    className="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white "
+                  >
+                    Job Posting Account
+                  </Disclosure.Button>
+                  <Disclosure.Button
+                    onClick={() => dispatch({ type: "LOGOUT" })}
+                    as="a"
+                    className="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white "
+                  >
+                    Logout
+                  </Disclosure.Button>
                   {/* <Disclosure.Button
                     as="a"
                     className="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white "

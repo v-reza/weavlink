@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import "./App.css";
 import useAuth from "./hooks/useAuth";
 import Login from "./pages/Auth/Login";
@@ -18,16 +23,26 @@ import Job from "./pages/Job/Job";
 import Loading from "./components/custom/Loading/Loading";
 import JobRecommended from "./pages/Job/JobRecommended";
 import Example from "./Example";
+import PostedJobs from "./pages/MyItems/PostedJobs/PostedJobs";
+import JobPosting from "./pages/JobPosting/JobPosting";
+import Banners from "./components/Banners/Banners";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword, isNewCompany } = useAuth();
   const [isNotfound, setIsNotfound] = useState(false);
-  console.log(isNewCompany);
+  const [showBanners, setShowBanners] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowBanners(true);
+    }, 500000);
+  }, []);
 
   return (
     <>
       <Router>
         <Layout>
+          {isAuthenticated && showBanners && <Banners />}
           {isAuthenticated && !isNewCompany && <Navbar />}
           <Loading />
           <Routes>
@@ -87,6 +102,18 @@ function App() {
                 ) : (
                   <Navigate to="/" replace />
                 )
+              }
+            />
+            <Route
+              path="/my-items/posted-jobs"
+              element={
+                isAuthenticated ? <PostedJobs /> : <Navigate to="/" replace />
+              }
+            />
+            <Route
+              path="/job-posting"
+              element={
+                isAuthenticated ? <JobPosting /> : <Navigate to="/" replace />
               }
             />
             <Route
