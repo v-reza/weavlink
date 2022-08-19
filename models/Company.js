@@ -36,6 +36,9 @@ const CompanySchema = new mongoose.Schema(
     companyCover: {
         type: String,
     },
+    companyOwner: {
+        type: String
+    },
     companyFollowers: {
         type: Array,
         default: [],

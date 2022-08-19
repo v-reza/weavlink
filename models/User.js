@@ -39,6 +39,10 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+    },
+    isCompany: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
