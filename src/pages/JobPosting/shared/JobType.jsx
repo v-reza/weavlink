@@ -1,24 +1,28 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
-
-const people = [
-  { id: 1, name: "Full-time" },
-  { id: 2, name: "Part-time" },
-  { id: 3, name: "Contract" },
-  { id: 4, name: "Temporary" },
-  { id: 5, name: "Other" },
-  { id: 6, name: "Volunteer" },
-  { id: 7, name: "Internship" },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function JobType() {
-  const [selected, setSelected] = useState(people[3]);
+export default function JobType({ form, setForm }) {
+  const job = [
+    { id: 1, name: "Full-time" },
+    { id: 2, name: "Part-time" },
+    { id: 3, name: "Contract" },
+    { id: 4, name: "Temporary" },
+    { id: 5, name: "Other" },
+    { id: 6, name: "Volunteer" },
+    { id: 7, name: "Internship" },
+  ];
+  const [selected, setSelected] = useState(job[0]);
+
+  useEffect(() => {
+    setForm({ ...form, jobType: selected?.name });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   return (
     <Listbox value={selected} onChange={setSelected}>
@@ -43,16 +47,16 @@ export default function JobType() {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 border border-2 dark:border-slate-500 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                {people.map((person) => (
+                {job.map((jobType) => (
                   <Listbox.Option
-                    key={person.id}
+                    key={jobType.id}
                     className={({ active }) =>
                       classNames(
                         active ? "text-white bg-indigo-600" : "text-gray-900",
                         "cursor-default select-none relative py-2 pl-8 pr-4"
                       )
                     }
-                    value={person}
+                    value={jobType}
                   >
                     {({ selected, active }) => (
                       <>
@@ -62,7 +66,7 @@ export default function JobType() {
                             "block truncate dark:text-slate-300"
                           )}
                         >
-                          {person.name}
+                          {jobType.name}
                         </span>
 
                         {selected ? (

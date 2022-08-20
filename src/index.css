@@ -23,22 +23,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-body {
+* {
   scroll-behavior: smooth;
 }
-body {
+* {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 6px;
   cursor: pointer;
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background-color: rgba(229, 231, 235, var(--bg-opacity));
   cursor: pointer;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   cursor: pointer;
   background-color: #a0aec0;
 }

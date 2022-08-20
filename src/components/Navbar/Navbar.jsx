@@ -59,7 +59,7 @@ const Navbar = () => {
       onclick: () =>
         navigate("/profile/" + username.replace(" ", "-").toLowerCase()),
     },
-    { name: "My Company", href: "#", onclick: () => navigate("/") },
+    { name: "My Company", href: "#", onclick: () => navigate("/my-company") },
     { name: "Settings", href: "#", onclick: () => navigate("/settings") },
   ];
 

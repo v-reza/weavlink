@@ -26,6 +26,8 @@ import Example from "./Example";
 import PostedJobs from "./pages/MyItems/PostedJobs/PostedJobs";
 import JobPosting from "./pages/JobPosting/JobPosting";
 import Banners from "./components/Banners/Banners";
+import MyCompany from "./pages/MyCompany/MyCompany";
+import NestedJob from "./pages/JobPosting/Nested/FormDescription/Job/NestedJob";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword, isNewCompany } = useAuth();
@@ -115,6 +117,20 @@ function App() {
               element={
                 isAuthenticated ? <JobPosting /> : <Navigate to="/" replace />
               }
+            />
+            <Route
+              path="/job-posting/form/description/"
+              element={
+                isAuthenticated ? <NestedJob /> : <Navigate to="/" replace />
+              }
+            />
+
+            <Route
+              path="/my-company"
+              element={
+                isAuthenticated ? <MyCompany /> : <Navigate to="/" replace />
+              }
+              F
             />
             <Route
               path="/404"

@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
@@ -7,14 +7,17 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function WorkplaceType() {
-  const people = [
+export default function WorkplaceType({ form, setForm }) {
+  const workplace = [
     { name: "On Site", desc: "Employees come to work-in person." },
     { name: "Hybird", desc: "Employees work on-site and off-site" },
     { name: "Remote", desc: "Employees work of-site" },
   ];
-  const [selected, setSelected] = useState(people[3]);
-
+  const [selected, setSelected] = useState(workplace[3]);
+  useEffect(() => {
+    setForm({ ...form, workplaceType: selected?.name });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
@@ -40,7 +43,7 @@ export default function WorkplaceType() {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 w-full bg-white dark:bg-slate-800 border border-2 dark:border-slate-500 shadow-lg max-h-60 rounded-lg py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                {people.map((person, index) => (
+                {workplace.map((workplace, index) => (
                   <Listbox.Option
                     key={index}
                     className={({ active }) =>
@@ -49,7 +52,7 @@ export default function WorkplaceType() {
                         "cursor-default select-none relative py-2 pl-3 pr-9"
                       )
                     }
-                    value={person}
+                    value={workplace}
                   >
                     {({ selected, active }) => (
                       <>
@@ -60,7 +63,7 @@ export default function WorkplaceType() {
                               "truncate dark:text-slate-200"
                             )}
                           >
-                            {person.name}
+                            {workplace.name}
                           </span>
                         </div>
                         <span
@@ -69,7 +72,7 @@ export default function WorkplaceType() {
                             "truncate dark:text-slate-400"
                           )}
                         >
-                          {person.desc}
+                          {workplace.desc}
                         </span>
 
                         {selected ? (
