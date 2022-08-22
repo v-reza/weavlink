@@ -1,15 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { ThemeProvider } from "./Theme/ThemeContext";
-import Theme from "./Theme/Theme";
-import ThemeToggle from "./Theme/ThemeToggle";
-import { AuthContextProvider } from "./redux/context/UserContext";
-import { NotificationContextProvider } from "./redux/context/NotificationContext";
-import { LoadingContextProvider } from "./redux/context/LoadingContext";
 import Main from "./Main";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

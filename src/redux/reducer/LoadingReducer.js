@@ -1,16 +1,28 @@
-const LoadingReducer = (state, action) => {
+import { PROCESSING, FINISHED } from "../actions/AllAction";
+
+const initialState = {
+  isLoading: false,
+  finished: false,
+};
+
+const LoadingReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "PROCESSING":
+    case PROCESSING: {
       return {
+        ...state,
         isLoading: true,
-        processing: false,
+        finished: false,
       };
-    case "FINISHED":
+    }
+    case FINISHED: {
       return {
+        ...state,
         isLoading: false,
-        processing: true,
+        finished: true,
       };
+    }
     default:
+      return state;
   }
 };
 

@@ -42,3 +42,19 @@ code {
   cursor: pointer;
   background-color: #a0aec0;
 }
+
+.darkButton__format-icon {
+  fill: rgb(148 163 184)
+}
+
+.darkButton__format-icon:hover{
+  fill: rgb(100 116 139);
+}
+
+.lightButton__format-icon {
+  fill: rgb(75 85 99)
+}
+
+.lightButton__format-icon:hover{
+  fill: rgb(156 163 175);
+}

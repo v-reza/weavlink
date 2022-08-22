@@ -1,6 +1,9 @@
-import { useContext } from "react";
-import { LoadingContext } from "../redux/context/LoadingContext";
+import { useDispatch, useSelector } from "react-redux";
 
-const useLoading = () => useContext(LoadingContext);
+const useLoading = () => {
+  const { isLoading, finished } = useSelector((state) => state.Loading);
+  const dispatch = useDispatch();
 
+  return { isLoading, finished, dispatch };
+};
 export default useLoading;

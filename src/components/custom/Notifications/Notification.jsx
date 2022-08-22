@@ -9,7 +9,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Notification() {
+const Notification = () => {
   const { isNotification, title, isError, message, dispatch } = useNotif();
 
   useEffect(() => {
@@ -84,4 +84,6 @@ export default function Notification() {
       </div>
     </div>
   );
-}
+};
+
+export default Notification;

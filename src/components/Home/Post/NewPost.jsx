@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-redundant-roles */
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Tab } from "@headlessui/react";
 import { AtSymbolIcon, CodeIcon, LinkIcon } from "@heroicons/react/solid";
@@ -19,13 +19,17 @@ export default function NewPost({ open, setOpen, setIsNewPost }) {
   const [desc, setDesc] = useState("");
   const { token } = useAuth();
   const headers = useHeader(token);
-  const { dispatch } = useNotif();
   const [file, setFile] = useState([]);
   const { dispatch: loading } = useLoading();
+  const { dispatch } = useNotif();
 
   const handleNewPost = async (e) => {
     if (!desc && file.length === 0) {
-      dispatch({ type: "NOTIF_ERROR", message: "Please enter a description" });
+      dispatch({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: "Please enter a description",
+      });
       return;
     }
 

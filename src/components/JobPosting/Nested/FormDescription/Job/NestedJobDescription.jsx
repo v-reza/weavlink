@@ -1,6 +1,8 @@
 import React from "react";
 import Alert from "./shared/Alert";
 
+import SlateTextEditor from "./shared/SlateTextEditor";
+
 export default function NestedJobDescription() {
   const JsxCompanyBeforeClick = () => {
     return (
@@ -29,11 +31,22 @@ export default function NestedJobDescription() {
                     </small>
                   </div>
                   <div className="mt-6">
-                    <h2 className="text-lg dark:text-slate-300">
+                    <h2 className="text-lg dark:text-slate-300 font-medium">
                       Description *
                     </h2>
                   </div>
                   <Alert />
+                  <div className="mt-6">
+                    {/* Slate Text Editor */}
+                    <SlateTextEditor />
+                  </div>
+                  <div className="mt-6">
+                    <h2 className="text-lg dark:text-slate-300 font-medium">Skills</h2>
+                    <p className="text-md dark:text-slate-400">
+                      Add skill keywords to make your job more visible to the
+                      right candidates.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
