@@ -7,6 +7,11 @@ const verifyBearerToken = require("../helper/verifyBearerToken");
 /* Get Timeline */
 router.get("/timeline", async (req, res) => {
   try {
+    const lastId = parseInt(req.query.lastId) || 1;
+    const limits = parseInt(req.query.limit) || 5;
+
+    let result = [];
+
     const post = await Post.aggregate([
       {
         $lookup: {
@@ -16,8 +21,21 @@ router.get("/timeline", async (req, res) => {
           as: "comments",
         },
       },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $limit: limits,
+      },
     ]);
-    res.status(200).json(post);
+    result = post;
+    const postLength = await Post.find({}).countDocuments();
+
+    res.status(200).json({
+      result: result,
+      length: postLength,
+      hasMore: result.length === postLength ? false : true,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -26,8 +44,10 @@ router.get("/timeline", async (req, res) => {
 /* New Post */
 router.post("/newpost", verifyBearerToken, async (req, res) => {
   try {
+    const lastId = await Post.findOne({}, {}, { sort: { createdAt: -1 } });
     const post = new Post({
       userId: req.user.id,
+      lastId: lastId.lastId + 1,
       ...req.body,
     });
     await post.save();

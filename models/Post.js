@@ -22,6 +22,10 @@ const PostSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    lastId: {
+      type: Number,
+      default: 1
+    }
   },
   { timestamps: true }
 );
