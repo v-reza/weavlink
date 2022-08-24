@@ -1,6 +1,6 @@
 import axios from "axios";
-// const api = process.env.REACT_APP_API || "http://localhost:1000/api";
-const api = "https://velkeyapi.herokuapp.com/api"
+const api = process.env.REACT_APP_API || "http://localhost:1000/api";
+// const api = "https://velkeyapi.herokuapp.com/api"
 
 export async function axiosGet(url, config = null) {
   return await axios.get(api + url, config);

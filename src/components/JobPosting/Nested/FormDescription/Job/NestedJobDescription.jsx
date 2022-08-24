@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
+import AddSkills from "./shared/AddSkills";
 import Alert from "./shared/Alert";
+import Skills from "./shared/Skills";
 
 import SlateTextEditor from "./shared/SlateTextEditor";
 
 export default function NestedJobDescription() {
   const JsxCompanyBeforeClick = () => {
+    const [open, setOpen] = useState(false);
+
     return (
       <div>
         <ul role="list" className="space-y-4">
@@ -41,11 +45,20 @@ export default function NestedJobDescription() {
                     <SlateTextEditor />
                   </div>
                   <div className="mt-6">
-                    <h2 className="text-lg dark:text-slate-300 font-medium">Skills</h2>
+                    <h2 className="text-lg dark:text-slate-300 font-medium">
+                      Skills
+                    </h2>
                     <p className="text-md dark:text-slate-400">
                       Add skill keywords to make your job more visible to the
                       right candidates.
                     </p>
+                    <div className="mt-4">
+                      <Skills setOpen={setOpen} />
+                      <AddSkills
+                        openModalSkills={open}
+                        setOpenModalSkills={setOpen}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

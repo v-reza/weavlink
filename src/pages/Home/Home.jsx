@@ -13,40 +13,45 @@ export default function Home() {
   const [recent, setRecent] = useState(true);
   const [mostLiked, setMostLiked] = useState(false);
   const [mostComments, setMostComments] = useState(false);
+  const [limit, setLimit] = useState(6);
+  const [hasMore, setHasMore] = useState(true);
+
   /* Set Title */
   useEffect(() => {
     document.title = "Velkey";
   }, []);
-  
+
   const [isNewPost, setIsNewPost] = useState(false);
-  
+
   /* Get Post Timeline */
   useEffect(() => {
     const getPostTimeline = async () => {
-      const res = await axiosGet("/posts/timeline");
+      const res = await axiosGet(`/posts/timeline?limit=${limit}`);
       if (recent) {
-        setPostsTimeline(
-          res.data.sort((p1, p2) => {
-            return new Date(p2.createdAt) - new Date(p1.createdAt);
-          })
-        );
+        // setPostsTimeline(
+        //   res.data.result.sort((p1, p2) => {
+        //     return new Date(p2.createdAt) - new Date(p1.createdAt);
+        //   })
+        // );
+        setPostsTimeline(res.data.result);
       } else if (mostLiked) {
         setPostsTimeline(
-          res.data.sort((p1, p2) => {
+          res.data.result.sort((p1, p2) => {
             return p2.likes.length - p1.likes.length;
           })
         );
       } else if (mostComments) {
         setPostsTimeline(
-          res.data.sort((p1, p2) => {
+          res.data.result.sort((p1, p2) => {
             return p2.comments.length - p1.comments.length;
           })
         );
       }
+      setHasMore(res.data.hasMore);
     };
     getPostTimeline();
     setIsNewPost(false);
-  }, [isNewPost, mostComments, mostLiked, recent]);
+  }, [isNewPost, mostComments, mostLiked, recent, limit]);
   return (
     <>
       <div className="min-h-full">
@@ -75,6 +80,10 @@ export default function Home() {
                 recent={recent}
                 mostLiked={mostLiked}
                 mostComments={mostComments}
+                setPostsTimeline={setPostsTimeline}
+                hasMore={hasMore}
+                limit={limit}
+                setLimit={setLimit}
               />
             </main>
             <aside className="hidden xl:block xl:col-span-4">

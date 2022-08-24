@@ -77,6 +77,7 @@ const ProfileComp = ({
                 <img
                   className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
                   src={user.profilePicture}
+                  referrerPolicy="no-referrer"
                   alt=""
                 />
               </div>
@@ -192,25 +193,33 @@ const ProfileComp = ({
         <div className="mt-6 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500 dark:text-white">Connection</dt>
+              <dt className="text-sm font-medium text-gray-500 dark:text-white">
+                Connection
+              </dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-slate-400">
                 {user.followers?.length + " Connection"}
               </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500 dark:text-white">Phone</dt>
+              <dt className="text-sm font-medium text-gray-500 dark:text-white">
+                Phone
+              </dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-slate-400">
                 {user.phone ? user.phone : "-"}
               </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500 dark:text-white">Email</dt>
+              <dt className="text-sm font-medium text-gray-500 dark:text-white">
+                Email
+              </dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-slate-400">
                 {user.email ? user.email : "-"}
               </dd>
             </div>
             <div className="sm:col-span-1">
-              <dt className="text-sm font-medium text-gray-500 dark:text-white">Address</dt>
+              <dt className="text-sm font-medium text-gray-500 dark:text-white">
+                Address
+              </dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-slate-400">
                 {userProfile.country ? userProfile.country : "-"}
                 {userProfile.city ? ", " + userProfile.city : ""}
@@ -218,7 +227,9 @@ const ProfileComp = ({
             </div>
 
             <div className="sm:col-span-2">
-              <dt className="text-sm font-medium text-gray-500 dark:text-white">About</dt>
+              <dt className="text-sm font-medium text-gray-500 dark:text-white">
+                About
+              </dt>
               <dd
                 className="mt-1 max-w-prose text-sm text-gray-900 space-y-5 dark:text-slate-400"
                 dangerouslySetInnerHTML={{

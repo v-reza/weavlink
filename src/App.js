@@ -33,6 +33,7 @@ function App() {
   const { isAuthenticated, isGoogleSetPassword, isNewCompany } = useAuth();
   const [isNotfound, setIsNotfound] = useState(false);
   const [showBanners, setShowBanners] = useState(false);
+  // console.log(isAuthenticated)
 
   useEffect(() => {
     setTimeout(() => {
