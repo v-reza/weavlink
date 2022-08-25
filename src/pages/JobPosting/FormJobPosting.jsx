@@ -5,6 +5,10 @@ import ListCompany from "./shared/ListCompany";
 import JobType from "./shared/JobType";
 import JobTitle from "./shared/JobTitle";
 import JobLocation from "./shared/JobLocation";
+import useLoading from "../../hooks/useLoading";
+import { axiosPost } from "../../helper/axiosHelper";
+import useAuth from "../../hooks/useAuth";
+import useHeader from "../../hooks/useHeader";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -13,11 +17,16 @@ function classNames(...classes) {
 export default function FormJobPosting() {
   const [form, setForm] = useState({});
   const [disableSubmit, setDisableSubmit] = useState(true);
+  const { dispatch: loading } = useLoading();
+  const { token } = useAuth();
+  const headers = useHeader(token);
+  const navigate = useNavigate();
+  console.log(form);
 
   useEffect(() => {
     if (
       form.jobTitle &&
-      form.companyName &&
+      form.company &&
       form.jobLocation &&
       form.workplaceType &&
       form.jobType
@@ -27,6 +36,25 @@ export default function FormJobPosting() {
       setDisableSubmit(true);
     }
   }, [form]);
+
+  const handleSaveJobPosting = async () => {
+    loading({ type: "PROCESSING" });
+    try {
+      const data = {
+        title: form.jobTitle,
+        companyId: form.company,
+        jobCondition: form.workplaceType,
+        jobType: form.jobType,
+        location: form.jobLocation,
+      };
+      await axiosPost("/jobs", data, headers).then((res) => {
+        loading({ type: "FINISHED" });
+        navigate("/job-posting/form/description?jobId=" + res.data._id);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <form className="mt-6 space-y-6" action="#" method="POST">
@@ -74,6 +102,7 @@ export default function FormJobPosting() {
         <div>
           <button
             disabled={disableSubmit}
+            onClick={handleSaveJobPosting}
             type="button"
             className={classNames(
               disableSubmit

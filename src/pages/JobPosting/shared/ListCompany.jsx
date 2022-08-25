@@ -50,7 +50,7 @@ export default function ListCompany({ form, setForm }) {
             .includes(query.toLowerCase());
         });
   useEffect(() => {
-    setForm({ ...form, companyName: selectedCompany?.companyName });
+    setForm({ ...form, company: selectedCompany?._id });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCompany]);
 

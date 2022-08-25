@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 const Notfound = ({ setIsNotfound }) => {
-  setIsNotfound(true);
+  
   const navigate = useNavigate()
   const back = (e) => {
     e.preventDefault()
-    setIsNotfound(false)
+  
     navigate("/")
   }
   return (

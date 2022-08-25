@@ -28,6 +28,7 @@ import JobPosting from "./pages/JobPosting/JobPosting";
 import Banners from "./components/Banners/Banners";
 import MyCompany from "./pages/MyCompany/MyCompany";
 import NestedJob from "./pages/JobPosting/Nested/FormDescription/Job/NestedJob";
+import HiringJobDetail from "./pages/Hiring/HiringJobDetail";
 
 function App() {
   const { isAuthenticated, isGoogleSetPassword, isNewCompany } = useAuth();
@@ -131,7 +132,16 @@ function App() {
               element={
                 isAuthenticated ? <MyCompany /> : <Navigate to="/" replace />
               }
-              F
+            />
+            <Route
+              path="/hiring/jobs/:id/detail"
+              element={
+                isAuthenticated ? (
+                  <HiringJobDetail />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
             />
             <Route
               path="/404"

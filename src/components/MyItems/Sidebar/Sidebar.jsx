@@ -8,7 +8,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Sidebar = () => {
+const Sidebar = ({ postedJobs }) => {
   return (
     <div className="hidden lg:block h-max lg:col-span-3 xl:col-span-2 bg-white dark:bg-slate-800 rounded-lg shadow sticky top-24">
       <nav aria-label="Sidebar" className="top-4 divide-y divide-gray-300">
@@ -43,6 +43,16 @@ const Sidebar = () => {
               >
                 <div className="w-full border-t border-gray-300 dark:border-slate-600" />
               </div>
+            </div>
+          </div>
+          <div className="mt-0">
+            <div className="border-l-4 border-blue-500 flex items-center justify-between px-4 mt-6 cursor-pointer">
+              <div className="dark:text-blue-300 dark:hover:text-slate-200 cursor-pointer w-full">
+                <span>Posted Jobs</span>
+              </div>
+              <span className="dark:text-slate-200 text-sm">
+                {postedJobs?.length}
+              </span>
             </div>
           </div>
           <div className="mt-0">

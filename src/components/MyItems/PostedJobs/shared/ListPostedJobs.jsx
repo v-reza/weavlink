@@ -1,80 +1,134 @@
-/* eslint-disable jsx-a11y/no-redundant-roles */
 /* This example requires Tailwind CSS v2.0+ */
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
 import {
-    BriefcaseIcon,
-    CalendarIcon,
-    ChevronRightIcon,
-  } from "@heroicons/react/solid";
-  import { useNavigate } from "react-router-dom";
-  
-  
-  export default function ListPostedJobs() {
-    const navigate = useNavigate()
-    return (
-      <>
-        <li>
-          <div className="cursor-pointer block hover:bg-gray-50 dark:highlight-white/5 dark:hover:bg-slate-800">
-            <div className="px-4 py-4 flex items-center sm:px-6">
-              <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                <div className="truncate">
-                  <div className="flex text-sm">
-                    <p className="font-medium text-indigo-600 dark:text-[#70B5F9] truncate">
-                      Title
-                    </p>
-                    <p className="ml-1 flex-shrink-0 font-normal text-gray-500 dark:text-slate-400">
-                      {/* in {jobs?.company?.companyName} */}
-                      asd
-                    </p>
-                  </div>
-                  <div className="mt-2 flex">
-                    <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">
-                      <BriefcaseIcon
-                        className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-slate-400"
-                        aria-hidden="true"
-                      />
-                      <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-500">
-                        assd
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex">
-                    <div className="flex items-center text-sm text-gray-500 dark:text-slate-400">
-                      <CalendarIcon
-                        className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-slate-400"
-                        aria-hidden="true"
-                      />
-                      {/* <p>
-                        Closing on{" "}
-                        <time dateTime={jobs?.closed}>
-                          {jobs?.closed}
-                        </time>
-                      </p> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
-                  <div className="flex overflow-hidden -space-x-1">
-                    {/* {position.applicants.map((applicant) => (
-                      <img
-                        key={applicant.email}
-                        className="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-transparent"
-                        src={applicant.imageUrl}
-                        alt={applicant.name}
-                      />
-                    ))} */}
-                  </div>
-                </div>
-              </div>
-              <div className="ml-5 flex-shrink-0">
-                <ChevronRightIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </div>
-            </div>
+  CodeIcon,
+  DotsVerticalIcon,
+  FlagIcon,
+  StarIcon,
+  BriefcaseIcon,
+  TrashIcon,
+} from "@heroicons/react/solid";
+import useFolder from "../../../../hooks/useFolder";
+import { format } from "timeago.js";
+import { useNavigate } from "react-router-dom";
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function ListPostedJobs({ job }) {
+  const folder = useFolder();
+  const navigate = useNavigate()
+  return (
+    <div className="bg-white py-5 mt-4 dark:bg-transparent">
+      <div className="flex space-x-3">
+        <div className="flex-shrink-0">
+          <img
+            className="h-10 w-10 rounded-full"
+            src={folder + "/noCompany.png"}
+            alt=""
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium text-gray-900" onClick={() => navigate(`/hiring/jobs/${job._id}/detail`)}>
+            <span className="dark:text-white hover:underline hover:cursor-pointer">
+              {job.company.companyName}
+            </span>
+          </p>
+          <p className="text-sm text-gray-500">
+            <span className="dark:text-slate-400">{job.title}</span>
+          </p>
+          <p className="text-sm text-gray-500">
+            <span className="dark:text-slate-400">{job.location}</span>
+          </p>
+          <div className="text-sm text-gray-500">
+            <span className="text-blue-400">
+              {job.isActive ? "Published" : "Draft"}
+            </span>
+            <span className="dark:text-slate-400">
+              {" "}
+              • Created {format(job.createdAt)}
+            </span>
           </div>
-        </li>
-      </>
-    );
-  }
-  
+        </div>
+        <div className="flex-shrink-0 self-center flex">
+          <Menu as="div" className="relative z-30 inline-block text-left">
+            <div>
+              <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                <span className="sr-only">Open options</span>
+                <DotsVerticalIcon className="h-5 w-5" aria-hidden="true" />
+              </Menu.Button>
+            </div>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-slate-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a
+                        href="#"
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300"
+                            : "text-gray-700",
+                          "flex px-4 py-2 text-sm"
+                        )}
+                      >
+                        <BriefcaseIcon
+                          className="mr-3 h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span className="dark:text-slate-400">Manage Job</span>
+                      </a>
+                    )}
+                  </Menu.Item>
+                  {!job.isActive && (
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                          href="#"
+                          className={classNames(
+                            active
+                              ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300"
+                              : "text-gray-700",
+                            "flex px-4 py-2 text-sm"
+                          )}
+                        >
+                          <TrashIcon
+                            className="mr-3 h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <span className="dark:text-slate-400">Delete Draft</span>
+                        </a>
+                      )}
+                    </Menu.Item>
+                  )}
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+        </div>
+      </div>
+      <div className="mt-2">
+        {/* <span className="text-sm font-sm dark:text-slate-300">
+          {jobs?.company?.companyAddress} •{" "}
+          {jobs?.company?.companyMembers?.length} Employees
+        </span> */}
+      </div>
+      <div className="mt-3">
+        {/* <p className="text-base dark:text-slate-200">
+          {jobs?.company?.companyDescription}
+        </p> */}
+      </div>
+    </div>
+  );
+}

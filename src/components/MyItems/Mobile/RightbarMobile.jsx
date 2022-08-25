@@ -3,11 +3,11 @@ import React from "react";
 import { PlusSmIcon } from "@heroicons/react/solid";
 import { useNavigate } from "react-router-dom";
 
-const Rightbar = () => {
+const RightbarMobile = () => {
   const navigate = useNavigate();
   return (
     <section aria-labelledby="who-to-follow-heading">
-      <div className="bg-white rounded-lg shadow dark:bg-slate-800 mb-8">
+      <div className="block lg:hidden xl:hidden bg-white rounded-lg shadow dark:bg-slate-800 mb-8">
         <div className="p-6">
           <div
             onClick={() => navigate("/job-posting")}
@@ -22,4 +22,4 @@ const Rightbar = () => {
   );
 };
 
-export default Rightbar;
+export default RightbarMobile;

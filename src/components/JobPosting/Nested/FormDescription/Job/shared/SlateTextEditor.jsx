@@ -331,10 +331,10 @@ const initialValue = [
     ],
   },
   {
-    type: "Qualifications",
+    type: "paragraph",
     children: [
       {
-        text: "Responsibilities",
+        text: "Qualifications",
         bold: true,
       },
     ],
