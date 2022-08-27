@@ -53,7 +53,7 @@ app.use("/api/company", companyRouter);
 
 /* Check Token */
 app.get("/api/checkToken", verifyBearerToken, (req, res) => {
-  res.status(200).send("Token is valid");
+  res.status(200).json(req.user);
 });
 
 /* Set Port */

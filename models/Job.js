@@ -3,67 +3,64 @@ const mongoose = require("mongoose");
 const JobSchema = new mongoose.Schema(
   {
     companyId: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
     },
     location: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     isActive: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     salary: {
-        type: String,
-        required: true,
+      type: String,
     },
     hiddenSalary: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     jobType: {
-        type: String,
-        required: true,
-        default: "Full Time",
+      type: String,
+      required: true,
+      default: "Full Time",
     },
     jobCondition: {
-        type: String,
-        required: true,
-        default: "Remote",
+      type: String,
+      required: true,
+      default: "Remote",
     },
     requirements: {
-        type: String,
-        required: true,
+      type: String,
     },
     jobApplications: {
-        type: Array,
-        default: [],
+      type: Array,
+      default: [],
     },
     jobViews: {
-        type: Array,
-        default: [],
+      type: Array,
+      default: [],
     },
     jobLikes: {
-        type: Array,
-        default: [],
+      type: Array,
+      default: [],
     },
     jobComments: {
-        type: Array,
-        default: [],
+      type: Array,
+      default: [],
     },
     closed: {
-        type: String,
-        default: "",
-    }
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

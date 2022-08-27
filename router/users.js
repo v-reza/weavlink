@@ -1,11 +1,38 @@
 const router = require("express").Router();
 const verifyBearerToken = require("../helper/verifyBearerToken");
 const User = require("../models/User");
+const Company = require("../models/Company");
 
 router.get("/", async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    const data = [];
+    const users = await User.find().select([
+      "-password",
+      "-__v",
+      "-createdAt",
+      "-updatedAt",
+      "-email",
+    ]);
+    users.map((user) => {
+      data.push(user);
+    });
+    const company = await Company.find().select([
+      "-password",
+      "-__v",
+      "-createdAt",
+      "-updatedAt",
+      "-email",
+    ]);
+    company.map((company) => {
+      data.push({
+        _id: company._id,
+        firstname: company.companyName.split(" ")[0],
+        lastname: company.companyName.split(" ")[1]
+          ? company.companyName.split(" ")[1]
+          : "",
+      });
+    });
+    return res.json(data);
   } catch (error) {
     return res.status(500).json(error);
   }

@@ -64,11 +64,12 @@ router.post("/login", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json("Invalid password");
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
-      expiresIn: "2h",
-    });
 
     const { password: pwd, ...userDocs } = user._doc;
+
+    const token = jwt.sign({ users: userDocs }, process.env.JWT_TOKEN, {
+      expiresIn: "2h",
+    });
 
     return res.status(200).json({
       user: userDocs,
@@ -84,10 +85,11 @@ router.post("/google-login", async (req, res) => {
     const { email } = req.body;
     const oldUser = await User.findOne({ email: req.body.email });
     if (oldUser) {
-      const token = jwt.sign({ id: oldUser._id }, process.env.JWT_TOKEN, {
+      const { password, ...userDocs } = oldUser._doc;
+      
+      const token = jwt.sign({ users: userDocs }, process.env.JWT_TOKEN, {
         expiresIn: "2h",
       });
-      const { password, ...userDocs } = oldUser._doc;
 
       if (!oldUser.password) {
         return res.status(200).json({
@@ -151,10 +153,10 @@ router.put("/google-set-password", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     user.password = hashedPassword;
     await user.updateOne({ password: hashedPassword });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_TOKEN, {
+    const { password, ...userDocs } = user._doc;
+    const token = jwt.sign({ users: userDocs }, process.env.JWT_TOKEN, {
       expiresIn: "2h",
     });
-    const { password, ...userDocs } = user._doc;
     return res.status(200).json({
       user: userDocs,
       token: token,

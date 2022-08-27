@@ -6,14 +6,8 @@ const mongoose = require("mongoose");
 
 router.post("/", verifyBearerToken, async (req, res) => {
   try {
-    if (!req.user.isCompany) {
-      return res.status(401).json({
-        code: 401,
-        message: "You are not authorized to do this action",
-      });
-    }
     const job = await new Job({
-      companyId: req.user.id,
+      companyId: req.body.companyId,
       ...req.body,
     });
     await job.save();
@@ -193,7 +187,7 @@ router.get("/detailjob/:id", async (req, res) => {
           localField: "jobApplications",
           foreignField: "_id",
           as: "applicants",
-        }
+        },
       },
       // {
       //   $unwind: {
@@ -203,8 +197,55 @@ router.get("/detailjob/:id", async (req, res) => {
       // },
       {
         $match: {
-          isActive: true,
           _id: mongoose.Types.ObjectId(req.params.id),
+        },
+      },
+    ]);
+    return res.status(200).json(jobs[0]);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
+router.get("/checkMyJob/:id", async (req, res) => {
+  try {
+    const jobs = await Job.aggregate([
+      {
+        $addFields: {
+          companyId: { $toObjectId: "$companyId" },
+        },
+      },
+      {
+        $lookup: {
+          from: "companies",
+          localField: "companyId",
+          foreignField: "_id",
+          as: "company",
+        },
+      },
+      {
+        $unwind: "$company",
+      },
+      {
+        $unset: ["company.password"],
+      },
+      {
+        $lookup: {
+          from: "applicants",
+          localField: "jobApplications",
+          foreignField: "_id",
+          as: "applicants",
+        },
+      },
+      // {
+      //   $unwind: {
+      //     path: "$applicants",
+      //     preserveNullAndEmptyArrays: true,
+      //   }
+      // },
+      {
+        $match: {
+          companyId: mongoose.Types.ObjectId(req.params.id),
         },
       },
     ]);
