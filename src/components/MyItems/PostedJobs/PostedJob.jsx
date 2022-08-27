@@ -70,7 +70,7 @@ export default function PostedJob({ postedJobs }) {
                           {postedJobs
                             .filter((job) => job.isActive === isFilter)
                             .map((job) => (
-                              <ListPostedJobs job={job} />
+                              <ListPostedJobs job={job} key={job._id}/>
                             ))}
                         </Suspense>
                       </div>

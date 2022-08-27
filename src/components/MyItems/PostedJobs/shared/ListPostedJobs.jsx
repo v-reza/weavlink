@@ -19,7 +19,7 @@ function classNames(...classes) {
 
 export default function ListPostedJobs({ job }) {
   const folder = useFolder();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="bg-white py-5 mt-4 dark:bg-transparent">
       <div className="flex space-x-3">
@@ -31,7 +31,10 @@ export default function ListPostedJobs({ job }) {
           />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-gray-900" onClick={() => navigate(`/hiring/jobs/${job._id}/detail`)}>
+          <p
+            className="text-sm font-medium text-gray-900"
+            onClick={() => navigate(`/hiring/jobs/${job._id}/detail`)}
+          >
             <span className="dark:text-white hover:underline hover:cursor-pointer">
               {job.company.companyName}
             </span>
@@ -74,13 +77,15 @@ export default function ListPostedJobs({ job }) {
                 <div className="py-1">
                   <Menu.Item>
                     {({ active }) => (
-                      <a
-                        href="#"
+                      <div
+                        onClick={() =>
+                          navigate(`/hiring/jobs/${job._id}/detail`)
+                        }
                         className={classNames(
                           active
                             ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-300"
                             : "text-gray-700",
-                          "flex px-4 py-2 text-sm"
+                          "cursor-pointer flex px-4 py-2 text-sm"
                         )}
                       >
                         <BriefcaseIcon
@@ -88,7 +93,7 @@ export default function ListPostedJobs({ job }) {
                           aria-hidden="true"
                         />
                         <span className="dark:text-slate-400">Manage Job</span>
-                      </a>
+                      </div>
                     )}
                   </Menu.Item>
                   {!job.isActive && (
@@ -107,7 +112,9 @@ export default function ListPostedJobs({ job }) {
                             className="mr-3 h-5 w-5 text-gray-400"
                             aria-hidden="true"
                           />
-                          <span className="dark:text-slate-400">Delete Draft</span>
+                          <span className="dark:text-slate-400">
+                            Delete Draft
+                          </span>
                         </a>
                       )}
                     </Menu.Item>

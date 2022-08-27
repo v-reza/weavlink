@@ -33,7 +33,7 @@ const PostedJobs = () => {
       companyId.map(async (id) => {
         await axiosGet("/jobs/checkMyJob/" + id).then((res) => {
           setPostedJobs((prevState) => [
-            ...prevState.filter((company) => company.companyId !== id),
+            ...prevState.filter((company) => company._id !== res.data._id),
             res.data,
           ]);
         });
@@ -41,6 +41,7 @@ const PostedJobs = () => {
     };
     getPostedJobs();
   }, [companyId]);
+  console.log(postedJobs)
   return (
     <>
       <div className="min-h-full">

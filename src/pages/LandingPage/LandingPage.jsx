@@ -37,7 +37,7 @@ export default function LandingPage() {
                               Login as user
                             </button>
                           </div>
-                          <div className="mt-3 sm:mt-0 sm:ml-3">
+                          {/* <div className="mt-3 sm:mt-0 sm:ml-3">
                             <button
                               onClick={() =>
                                 (window.location.href =
@@ -49,7 +49,7 @@ export default function LandingPage() {
                             >
                               Login as company
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </form>
                     </div>
