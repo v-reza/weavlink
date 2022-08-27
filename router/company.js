@@ -16,7 +16,7 @@ router.post("/new", verifyBearerToken, async (req, res) => {
     }
 
     const company = await new Company({
-      companyOwner: req.user.id,
+      companyOwner: req.user.users._id,
       ...req.body,
     });
     await company.save();
@@ -28,8 +28,9 @@ router.post("/new", verifyBearerToken, async (req, res) => {
 
 router.get("/check/my-company", verifyBearerToken, async (req, res) => {
   try {
+    console.log(req.user)
     const company = await Company.find({
-      companyOwner: req.user.id,
+      companyOwner: req.user.users._id,
     });
     return res.status(200).json(company);
   } catch (error) {
@@ -41,7 +42,7 @@ router.delete("/delete/:id", verifyBearerToken, async (req, res) => {
   try {
     const company = await Company.findOne({
       _id: req.params.id,
-      companyOwner: req.user.id,
+      companyOwner: req.user.users._id,
     });
     await company.deleteOne();
     return res.status(200).json("Delete Successful");

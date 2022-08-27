@@ -25,7 +25,7 @@ router.get("/", verifyBearerToken, async (req, res) => {
         message: "You are not authorized to do this action",
       });
     }
-    const jobs = await Job.find({ companyId: req.user.id });
+    const jobs = await Job.find({ companyId: req.user.users._id });
     return res.status(200).json(jobs);
   } catch (error) {
     return res.status(500).json(error);
@@ -47,7 +47,7 @@ router.delete("/:id", verifyBearerToken, async (req, res) => {
         message: "Job not found",
       });
     }
-    if (job.companyId !== req.user.id) {
+    if (job.companyId !== req.user.users._id) {
       return res.status(401).json({
         code: 401,
         message: "You are not authorized to do this action",
@@ -72,7 +72,7 @@ router.put("/:id/publish", verifyBearerToken, async (req, res) => {
         message: "Job not found",
       });
     }
-    if (job.companyId !== req.user.id) {
+    if (job.companyId !== req.user.users._id) {
       return res.status(401).json({
         code: 401,
         message: "You are not authorized to do this action",
@@ -102,7 +102,7 @@ router.put("/:id/draft", verifyBearerToken, async (req, res) => {
         message: "Job not found",
       });
     }
-    if (job.companyId !== req.user.id) {
+    if (job.companyId !== req.user.users._id) {
       return res.status(401).json({
         code: 401,
         message: "You are not authorized to do this action",
@@ -260,7 +260,7 @@ router.post("/jobApply", verifyBearerToken, async (req, res) => {
     const { jobId } = req.body;
     const applicant = await Applicant.findOne({
       jobId: jobId,
-      userId: req.user.id,
+      userId: req.user.users._id,
     });
     if (applicant) {
       return res.status(400).json({
@@ -270,7 +270,7 @@ router.post("/jobApply", verifyBearerToken, async (req, res) => {
     }
     const newApplicant = await Applicant.create({
       jobId: jobId,
-      userId: req.user.id,
+      userId: req.user.users._id,
       ...req.body,
     });
 

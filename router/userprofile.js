@@ -16,7 +16,7 @@ router.get("/:id", async (req, res) => {
 router.put("/", verifyBearerToken, async (req, res) => {
   try {
     const userProfile = await UserProfile.findOne({
-      userId: req.user.id,
+      userId: req.user.users._id,
     });
     await userProfile.updateOne({
       $set: {
@@ -26,7 +26,7 @@ router.put("/", verifyBearerToken, async (req, res) => {
         about: req.body.about,
       },
     });
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.users._id);
     await user.updateOne({
       $set: {
         username: req.body.username,
@@ -37,7 +37,7 @@ router.put("/", verifyBearerToken, async (req, res) => {
       },
     });
 
-    const userUpdated = await User.findById(req.user.id);
+    const userUpdated = await User.findById(req.user.users._id);
     res.status(200).json(userUpdated);
   } catch (error) {
     return res.status(500).json(error);
@@ -46,7 +46,7 @@ router.put("/", verifyBearerToken, async (req, res) => {
 
 router.get("/render/skills", verifyBearerToken, async (req, res) => {
   try {
-    const userSkills = await UserSkills.findOne({ userId: req.user.id });
+    const userSkills = await UserSkills.findOne({ userId: req.user.users._id });
     res.status(200).json(userSkills);
   } catch (error) {
     return res.status(500).json(error);
@@ -56,7 +56,7 @@ router.get("/render/skills", verifyBearerToken, async (req, res) => {
 router.post("/add/skills", verifyBearerToken, async (req, res) => {
   try {
     const userSkills = await UserSkills.findOne({
-      userId: req.user.id,
+      userId: req.user.users._id,
     });
 
     await userSkills.updateOne({
@@ -75,7 +75,7 @@ router.delete(
   verifyBearerToken,
   async (req, res) => {
     try {
-      const userSkills = await UserSkills.findOne({ userId: req.user.id });
+      const userSkills = await UserSkills.findOne({ userId: req.user.users._id });
       await userSkills.updateOne({
         $pull: {
           skills: req.params.skillname,

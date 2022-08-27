@@ -46,7 +46,7 @@ router.post("/newpost", verifyBearerToken, async (req, res) => {
   try {
     const lastId = await Post.findOne({}, {}, { sort: { createdAt: -1 } });
     const post = new Post({
-      userId: req.user.id,
+      userId: req.user.users._id,
       lastId: lastId.lastId + 1,
       ...req.body,
     });
@@ -62,7 +62,7 @@ router.delete("/delete/:id", verifyBearerToken, async (req, res) => {
   try {
     const post = await Post.findOne({
       _id: req.params.id,
-      userId: req.user.id,
+      userId: req.user.users._id,
     });
     post.comments.map(async (comment) => {
       await Comment.deleteOne({ _id: comment });
@@ -79,10 +79,10 @@ router.delete("/delete/:id", verifyBearerToken, async (req, res) => {
 router.put("/:id/like", verifyBearerToken, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (!post.likes.includes(req.user.id)) {
-      await post.updateOne({ $push: { likes: req.user.id } });
+    if (!post.likes.includes(req.user.users._id)) {
+      await post.updateOne({ $push: { likes: req.user.users._id } });
     } else {
-      await post.updateOne({ $pull: { likes: req.user.id } });
+      await post.updateOne({ $pull: { likes: req.user.users._id } });
     }
     res.status(200).json("Success Liked / Unliked");
   } catch (error) {
@@ -94,7 +94,7 @@ router.put("/:id/like", verifyBearerToken, async (req, res) => {
 router.post("/:postId/comment", verifyBearerToken, async (req, res) => {
   try {
     const comment = await new Comment({
-      userId: req.user.id,
+      userId: req.user.users._id,
       text: req.body.text,
     });
     await comment.save();
