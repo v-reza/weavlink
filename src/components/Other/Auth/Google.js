@@ -1,10 +1,10 @@
 import React from "react";
-import { signInWithGoogle } from "@services/firebase";
+import { signInWithGoogle } from "@/services/firebase";
 import { useRouter } from "next/router";
-import useAuth from "@hooks/useAuth";
-import { axiosPost } from "@utils/axiosInstance";
-import LoadingBackdrop from "@uiComponents/Loading/LoadingBackdrop";
-import useLoading from "@hooks/useLoading";
+import useAuth from "@/hooks/useAuth";
+import { axiosPost } from "@/utils/axiosInstance";
+import LoadingBackdrop from "@/uiComponents/Loading/LoadingBackdrop";
+import useLoading from "@/hooks/useLoading";
 
 const Google = () => {
   const { dispatch } = useAuth();

@@ -1,4 +1,4 @@
-import { NOTIF_SUCCESS, NOTIF_ERROR, CLOSE_NOTIF } from "../actions/AllAction";
+import { NOTIF_SUCCESS, NOTIF_ERROR, CLOSE_NOTIF } from "@/redux/actions/AllAction";
 const initalState = {
   isNotification: false,
   title: "",

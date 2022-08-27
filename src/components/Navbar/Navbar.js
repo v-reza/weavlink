@@ -9,12 +9,12 @@ import {
   OfficeBuildingIcon,
   UserGroupIcon,
 } from "@heroicons/react/outline";
-import useAuth from "@hooks/useAuth";
-import Notification from "@uiComponents/Notification";
-import useHeader from "@hooks/useHeader";
-import { axiosGet } from "@utils/axiosInstance";
+import useAuth from "@/hooks/useAuth";
+import Notification from "@/uiComponents/Notification";
+import useHeader from "@/hooks/useHeader";
+import { axiosGet } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
-import useUser from "@hooks/useUser";
+import useUser from "@/hooks/useUser";
 import SearchModal from "./SearchModal";
 
 function classNames(...classes) {

@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import Container from "@uiComponents/Container";
-import Card from "@uiComponents/Card";
+import Container from "@/uiComponents/Container";
+import Card from "@/uiComponents/Card";
 import { useEffect, useState } from "react";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
-import Sidebar from "@uiComponents/Sidebar";
+import Sidebar from "@/uiComponents/Sidebar";
 import {
   BookmarkIcon,
   BellIcon,

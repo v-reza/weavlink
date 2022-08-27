@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import useAuth from "@hooks/useAuth";
-import { axiosPut } from "@utils/axiosInstance";
+import useAuth from "@/hooks/useAuth";
+import { axiosPut } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
-import useNotif from "@hooks/useNotif";
-import useLoading from "@hooks/useLoading";
+import useNotif from "@/hooks/useNotif";
+import useLoading from "@/hooks/useLoading";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }

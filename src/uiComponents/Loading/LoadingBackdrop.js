@@ -1,4 +1,4 @@
-import useLoading from "@hooks/useLoading";
+import useLoading from "@/hooks/useLoading";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import React from "react";

@@ -1,4 +1,4 @@
-import { GLOBAL_STATE } from "../actions/AllAction";
+import { GLOBAL_STATE } from "@/redux/actions/AllAction";
 const initialState = {};
 
 const GlobalReducer = (state = initialState, action) => {

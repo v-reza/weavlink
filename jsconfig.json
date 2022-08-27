@@ -2,14 +2,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@uiComponents/*": ["src/uiComponents/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@utils/*": ["src/utils/*"],
-      "@services/*": ["src/services/*"],
-      "@redux/*": ["src/redux/*"],
-      "@context/*": ["src/context/*"],
-      "@api": ["src/utils/axiosInstance"],
+      "@/components/*": ["src/components/*"],
+      "@/uiComponents/*": ["src/uiComponents/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/services/*": ["src/services/*"],
+      "@/redux/*": ["src/redux/*"],
+      "@/context/*": ["src/context/*"],
+      "@/api": ["src/utils/axiosInstance"],
       "@secureStorage": ["src/middleware/secureStorage"]
     }
   }

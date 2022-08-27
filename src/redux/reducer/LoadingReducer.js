@@ -1,4 +1,4 @@
-import { PROCESSING, FINISHED } from "../actions/AllAction";
+import { PROCESSING, FINISHED } from "@/redux/actions/AllAction";
 
 const initialState = {
   isLoading: false,

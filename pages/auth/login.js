@@ -1,13 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import useAuth from "@hooks/useAuth";
-import { axiosPost } from "@utils/axiosInstance";
+import useAuth from "@/hooks/useAuth";
+import { axiosPost } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
-import useNotif from "@hooks/useNotif";
-import Notification from "@uiComponents/Notification";
-import useLoading from "@hooks/useLoading";
-import LoadingBackdrop from "@uiComponents/Loading/LoadingBackdrop";
-import Google from "@components/Other/Auth/Google";
+import useNotif from "@/hooks/useNotif";
+import Notification from "@/uiComponents/Notification";
+import useLoading from "@/hooks/useLoading";
+import LoadingBackdrop from "@/uiComponents/Loading/LoadingBackdrop";
+import Google from "@/components/Other/Auth/Google";
 import Image from "next/image";
 export default function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState("");

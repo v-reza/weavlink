@@ -3,7 +3,7 @@ import {
   UPDATE_USER,
   FOLLOW,
   UNFOLLOW,
-} from "@redux/actions/AllAction";
+} from "@/redux/actions/AllAction";
 
 const initialState = {
   user: null,

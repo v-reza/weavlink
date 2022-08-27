@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { UsersIcon } from "@heroicons/react/outline";
 import { Combobox, Dialog, Transition } from "@headlessui/react";
-import { axiosGet } from "@utils/axiosInstance";
+import { axiosGet } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
-import useAuth from "@hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

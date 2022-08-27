@@ -1,7 +1,7 @@
 import { createContext, useEffect, useReducer } from "react";
-import { axiosGet } from "@api";
-import AuthReducer from "@context/AuthReducer";
-import useUser from "@hooks/useUser";
+import { axiosGet } from "@/api";
+import AuthReducer from "@/context/AuthReducer";
+import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 
 const INITAL_STATE = {

@@ -3,7 +3,7 @@ import { Fragment, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
-import useNotif from "@hooks/useNotif";
+import useNotif from "@/hooks/useNotif";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
