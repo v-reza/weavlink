@@ -2,7 +2,6 @@ const UserReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN_START":
       return {
-        user: null,
         token: null,
         isLoading: true,
         error: false,
@@ -12,7 +11,6 @@ const UserReducer = (state, action) => {
       };
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload,
         isLoading: false,
         error: false,
         token: action.token,
@@ -22,7 +20,6 @@ const UserReducer = (state, action) => {
       };
     case "LOGIN_FAILURE":
       return {
-        user: null,
         isLoading: false,
         error: true,
         token: null,
@@ -32,7 +29,6 @@ const UserReducer = (state, action) => {
       };
     case "LOGOUT":
       return {
-        user: null,
         isLoading: false,
         error: false,
         token: null,
@@ -42,7 +38,6 @@ const UserReducer = (state, action) => {
       };
     case "GOOGLE_LOGIN":
       return {
-        user: action.payload,
         isLoading: false,
         error: false,
         token: action.token,
@@ -54,53 +49,7 @@ const UserReducer = (state, action) => {
         isGoogleSetPassword: true,
         googleSetUser: action.payload,
       };
-    case "UPDATE_PROFILE_INFORMATION":
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          ...action.payload,
-        },
-      };
-    case "FOLLOW":
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          followings: [...state.user.followings, action.payload],
-        },
-      };
-    case "UNFOLLOW":
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          followings: state.user.followings.filter(
-            (following) => following !== action.payload
-          ),
-        },
-      };
-    case "NEW_COMPANY_START":
-      return {
-        ...state,
-        isNewCompany: true,
-      };
-    case "NEW_COMPANY_PROCESS":
-      return {
-        ...state,
-        isNewCompany: true,
-        dataNewCompany: action.payload,
-      };
-    case "NEW_COMPANY_SUCCESS":
-      return {
-        ...state,
-        user: action.payload,
-        isLoading: false,
-        error: false,
-        token: action.token,
-        isAuthenticated: true,
-        isNewCompany: false,
-      };
+    
     default:
   }
 };
