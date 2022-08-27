@@ -1,25 +1,9 @@
-/*
-  This example requires Tailwind CSS v3.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import { Fragment, useEffect, useState } from "react";
 import { UsersIcon } from "@heroicons/react/outline";
 import { Combobox, Dialog, Transition } from "@headlessui/react";
-import useAuth from "../../hooks/useAuth";
-import { axiosGet } from "../../helper/axiosHelper";
-import { useNavigate } from "react-router-dom";
+import { axiosGet } from "@utils/axiosInstance";
+import { useRouter } from "next/router";
+import useAuth from "@hooks/useAuth";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -33,10 +17,11 @@ export default function SearchModal({ open, setOpen }) {
   useEffect(() => {
     const getListUser = async () => {
       const res = await axiosGet("/users");
-      setUser(res.data.filter((user) => user._id !== currentUser._id));
+      setUser(res.data.filter((user) => user._id !== currentUser?._id));
     };
     getListUser();
-  }, [currentUser._id]);
+  }, [currentUser?._id]);
+
 
   const filteredUser =
     query === ""
@@ -44,10 +29,10 @@ export default function SearchModal({ open, setOpen }) {
       : user.filter((user) => {
           return (
             user.firstname.toLowerCase().includes(query.toLowerCase()) ||
-            user.lastname.toLowerCase().includes(query.toLowerCase())
+            user.lastname.toLowerCase().includes(query.toLowerCase()) 
           );
         });
-  const navigate = useNavigate();
+  const router = useRouter();
   return (
     <Transition.Root show={open} as={Fragment} afterLeave={() => setQuery("")}>
       <Dialog
@@ -80,15 +65,17 @@ export default function SearchModal({ open, setOpen }) {
             as="div"
             className="mx-auto max-w-xl transform rounded-xl bg-white p-2 shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
             onChange={(user) => {
-              navigate(
+              router.push(
                 user.username
                   ? "/profile/" + user.username
                   : "/profile/" +
                       (user.firstname + user.lastname + "-" + user._id)
                         .replace(" ", "-")
-                        .toLowerCase()
+                        .toLowerCase(),
+                null,
+                { shallow: true }
               );
-              setOpen(false)
+              setOpen(false);
             }}
           >
             <Combobox.Input

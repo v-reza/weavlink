@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import useAuth from "@hooks/useAuth";
 import { axiosPost } from "@utils/axiosInstance";
@@ -7,6 +8,7 @@ import Notification from "@uiComponents/Notification";
 import useLoading from "@hooks/useLoading";
 import LoadingBackdrop from "@uiComponents/Loading/LoadingBackdrop";
 import Google from "@components/Other/Auth/Google";
+import Image from "next/image";
 export default function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -73,8 +75,8 @@ export default function Login() {
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
             className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-            alt="Workflow"
+            src="/logo_large.png"
+            alt="Logo"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 text-white">
             Sign in
@@ -123,7 +125,12 @@ export default function Login() {
 
               <div className="flex items-center justify-between">
                 <div className="text-sm">
-                  <div className="cursor-pointer font-medium text-indigo-600 hover:text-indigo-500">
+                  <div
+                    className="cursor-pointer font-medium text-indigo-600 hover:text-indigo-500"
+                    onClick={() =>
+                      router.push("/auth/register", null, { shallow: true })
+                    }
+                  >
                     Dont Have Account?
                   </div>
                 </div>

@@ -10,12 +10,11 @@ import {
 } from "@heroicons/react/outline";
 import useAuth from "@hooks/useAuth";
 import Notification from "@uiComponents/Notification";
-// import { useLocation, userouter.push } from "react-router-dom";
-// import SearchModal from "./SearchModal";
 import useHeader from "@hooks/useHeader";
 import { axiosGet } from "@utils/axiosInstance";
 import { useRouter } from "next/router";
 import useUser from "@hooks/useUser";
+import SearchModal from "./SearchModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -28,7 +27,7 @@ const Navbar = () => {
   const { token, dispatch, isAuthenticated } = useAuth();
   const headers = useHeader(token);
   const { user } = useUser();
-  
+
   const [isSSR, setIsSSR] = useState(false);
 
   useEffect(() => {
@@ -56,14 +55,22 @@ const Navbar = () => {
       name: "My Profile",
       href: "#",
       onclick: () =>
-        router.push("/profile/" + username.replace(" ", "-").toLowerCase()),
+        router.push(
+          "/profile/" + username.replace(" ", "-").toLowerCase(),
+          null,
+          { shallow: true }
+        ),
     },
     {
       name: "My Company",
       href: "#",
-      onclick: () => router.push("/my-company"),
+      onclick: () => router.push("/my-company", null, { shallow: true }),
     },
-    { name: "Settings", href: "#", onclick: () => router.push("/settings") },
+    {
+      name: "Settings",
+      href: "#",
+      onclick: () => router.push("/settings", null, { shallow: true }),
+    },
   ];
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +97,9 @@ const Navbar = () => {
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
                         <img
-                          onClick={() => router.push("/")}
+                          onClick={() =>
+                            router.push("/", null, { shallow: true })
+                          }
                           className="cursor-pointer h-10 w-auto"
                           src="/logo_large.png"
                           alt="Workflow"
@@ -103,7 +112,9 @@ const Navbar = () => {
                           {navigation.map((item) => (
                             <div
                               key={item.name}
-                              onClick={() => router.push(item.href)}
+                              onClick={() =>
+                                router.push(item.href, null, { shallow: true })
+                              }
                               className={classNames(
                                 item.current
                                   ? "bg-slate-500"
@@ -214,7 +225,7 @@ const Navbar = () => {
                               <span className="sr-only">Open user menu</span>
                               <img
                                 className="rounded-full h-8 w-8"
-                                src={user?.profilePicture}
+                                src={user?.profilePicture ? user.profilePicture : "/avatar.png"}
                                 referrerPolicy="no-referrer"
                                 alt=""
                               />
@@ -269,7 +280,11 @@ const Navbar = () => {
                                 {({ active }) => (
                                   <div
                                     onClick={() =>
-                                      router.push("/my-items/posted-jobs")
+                                      router.push(
+                                        "/my-items/posted-jobs",
+                                        null,
+                                        { shallow: true }
+                                      )
                                     }
                                     className={classNames(
                                       active ? "bg-slate-700" : "",
@@ -295,7 +310,9 @@ const Navbar = () => {
                                   <div
                                     onClick={() => {
                                       dispatch({ type: "LOGOUT" });
-                                      router.push("/auth/login");
+                                      router.push("/auth/login", null, {
+                                        shallow: true,
+                                      });
                                     }}
                                     className={classNames(
                                       active ? "bg-slate-700" : "",
@@ -320,7 +337,9 @@ const Navbar = () => {
                       <Disclosure.Button
                         key={item.name}
                         as="a"
-                        href={item.href}
+                        onClick={() =>
+                          router.push(item.href, null, { shallow: true })
+                        }
                         className={classNames(
                           item.current
                             ? "bg-slate-500 text-white"
@@ -381,7 +400,11 @@ const Navbar = () => {
                         </Disclosure.Button>
                       ))}
                       <Disclosure.Button
-                        onClick={() => router.push("/my-items/posted-jobs")}
+                        onClick={() =>
+                          router.push("/my-items/posted-jobs", null, {
+                            shallow: true,
+                          })
+                        }
                         as="a"
                         className="block rounded-md py-2 px-3 text-base font-medium hover:bg-gray-100 text-white "
                       >
@@ -409,7 +432,7 @@ const Navbar = () => {
         </>
       ) : null}
       {/* <Notification /> */}
-      {/* <SearchModal open={open} setOpen={setOpen} /> */}
+      <SearchModal open={open} setOpen={setOpen} />
     </div>
   );
   // };
