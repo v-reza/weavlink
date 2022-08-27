@@ -1,24 +1,36 @@
 import React from "react";
-import {
-  BookmarkIcon,
-  BellIcon,
-  CashIcon,
-  ClipboardCheckIcon
-} from "@heroicons/react/outline";
-const navigation = [
-  { name: "My Jobs", href: "#", icon: BookmarkIcon, current: true },
-  { name: "Job alerts", href: "#", icon: BellIcon, current: false },
-  { name: "Salary", href: "#", icon: CashIcon, current: false },
-  { name: "Skills Test", href: "#", icon: ClipboardCheckIcon, current: false },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Sidebar = () => {
+const Sidebar = ({
+  navigation,
+  hidden = ["xs", "sm", "md"],
+  block = ["lg", "xl"],
+  xs = 0,
+  sm = 0,
+  md = 0,
+  lg = 3,
+  xl = 2,
+  useCustomClassName = false,
+  customClass = null,
+  ...props
+}) => {
   return (
-    <div className="hidden lg:block h-max lg:col-span-3 xl:col-span-2 bg-slate-800 rounded-lg shadow sticky top-24">
+    <div
+      className={`${hidden.map((item) => `${item}:hidden`).join(" ")} ${block
+        .map((item) => `${item}:block`)
+        .join(" ")} ${!hidden.includes("xs") ? `xs:col-span-${xs}` : ""} ${
+        !hidden.includes("sm") ? `sm:col-span-${sm}` : ""
+      } ${!hidden.includes("md") ? `md:col-span-${md}` : ""} ${
+        !hidden.includes("lg") ? `lg:col-span-${lg}` : ""
+      } ${!hidden.includes("xl") ? `xl:col-span-${xl}` : ""} ${
+        useCustomClassName
+          ? customClass
+          : "h-max bg-slate-800 rounded-lg shadow sticky top-24"
+      }`}
+    >
       <nav aria-label="Sidebar" className="top-4 divide-y divide-gray-300">
         <div className="pb-6 space-y-1 mt-4 px-3">
           {navigation.map((item) => (

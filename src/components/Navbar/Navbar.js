@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect } from "react";
 import { Fragment, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
@@ -225,7 +226,11 @@ const Navbar = () => {
                               <span className="sr-only">Open user menu</span>
                               <img
                                 className="rounded-full h-8 w-8"
-                                src={user?.profilePicture ? user.profilePicture : "/avatar.png"}
+                                src={
+                                  user?.profilePicture
+                                    ? user.profilePicture
+                                    : "/avatar.png"
+                                }
                                 referrerPolicy="no-referrer"
                                 alt=""
                               />
@@ -417,12 +422,6 @@ const Navbar = () => {
                       >
                         Logout
                       </Disclosure.Button>
-                      {/* <Disclosure.Button
-                      as="a"
-                      className="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white "
-                    >
-                      Divider
-                    </Disclosure.Button> */}
                     </div>
                   </div>
                 </Disclosure.Panel>
@@ -431,13 +430,9 @@ const Navbar = () => {
           </Disclosure>
         </>
       ) : null}
-      {/* <Notification /> */}
       <SearchModal open={open} setOpen={setOpen} />
     </div>
   );
-  // };
-
-  // return isAuthenticated ? <RenderElement /> : null;
 };
 
 export default Navbar;

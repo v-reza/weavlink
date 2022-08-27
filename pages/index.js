@@ -1,11 +1,23 @@
-import Head from "next/head";
-import Image from "next/image";
+/* eslint-disable react-hooks/exhaustive-deps */
 import Container from "@uiComponents/Container";
-import Sidebar from "@components/Sidebar/Sidebar";
 import Card from "@uiComponents/Card";
 import { useEffect, useState } from "react";
 import useAuth from "@hooks/useAuth";
 import { useRouter } from "next/router";
+import Sidebar from "@uiComponents/Sidebar";
+import {
+  BookmarkIcon,
+  BellIcon,
+  CashIcon,
+  ClipboardCheckIcon,
+} from "@heroicons/react/outline";
+
+const navigation = [
+  { name: "My Jobs", href: "#", icon: BookmarkIcon, current: true },
+  { name: "Job alerts", href: "#", icon: BellIcon, current: false },
+  { name: "Salary", href: "#", icon: CashIcon, current: false },
+  { name: "Skills Test", href: "#", icon: ClipboardCheckIcon, current: false },
+];
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -25,7 +37,7 @@ export default function Home() {
       {isSSR && (
         <Container>
           <Container.Sidebar>
-            <Sidebar />
+            <Sidebar navigation={navigation} />
           </Container.Sidebar>
           <Container.Main>
             <Card>as</Card>
