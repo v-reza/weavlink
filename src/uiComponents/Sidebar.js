@@ -13,7 +13,6 @@ const Sidebar = ({
   md = 0,
   lg = 3,
   xl = 2,
-  useCustomClassName = false,
   customClass = null,
   ...props
 }) => {
@@ -26,7 +25,7 @@ const Sidebar = ({
       } ${!hidden.includes("md") ? `md:col-span-${md}` : ""} ${
         !hidden.includes("lg") ? `lg:col-span-${lg}` : ""
       } ${!hidden.includes("xl") ? `xl:col-span-${xl}` : ""} ${
-        useCustomClassName
+        customClass
           ? customClass
           : "h-max bg-slate-800 rounded-lg shadow sticky top-24"
       }`}
