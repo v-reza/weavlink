@@ -86,8 +86,6 @@ const Timeline = ({ post }) => {
   };
 
   const bind = useDoubleTap(async (event) => {
-    // Your action here
-    console.log("Double tapped => " + post._id);
     try {
       setLikesDoubleTap(true);
       setTimeout(() => {
