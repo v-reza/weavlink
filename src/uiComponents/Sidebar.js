@@ -1,12 +1,6 @@
 import React from "react";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const Sidebar = ({
-  navigation,
-  hidden = ["xs", "sm", "md"],
+  hidden = ["xs"],
   block = ["lg", "xl"],
   xs = 0,
   sm = 0,
@@ -14,6 +8,7 @@ const Sidebar = ({
   lg = 3,
   xl = 2,
   customClass = null,
+  children,
   ...props
 }) => {
   return (
@@ -30,26 +25,10 @@ const Sidebar = ({
           : "h-max bg-slate-800 rounded-lg shadow sticky top-24"
       }`}
     >
+    {/* // <div className="hidden lg:block lg:col-span-3 xl:col-span-2 h-max bg-slate-800"> */}
       <nav aria-label="Sidebar" className="top-4 divide-y divide-gray-300">
         <div className="pb-6 space-y-1 mt-4 px-3">
-          {navigation.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className={classNames(
-                "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white"
-              )}
-              aria-current={item.current ? "page" : undefined}
-            >
-              <item.icon
-                className={classNames(
-                  "flex-shrink-0 -ml-1 mr-3 h-6 w-6 text-white"
-                )}
-                aria-hidden="true"
-              />
-              <span className="truncate">{item.name}</span>
-            </a>
-          ))}
+          {children}
         </div>
       </nav>
     </div>

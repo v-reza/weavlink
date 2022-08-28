@@ -1,8 +1,8 @@
 import React from "react";
 
-const Card = ({ children }) => {
+const Card = ({ children, ...props }) => {
   return (
-    <div>
+    <div {...props}>
       <ul role="list" className="space-y-4">
         <div className="overflow-hidden sm:rounded-md shadow-slate-800">
           <div className="rounded-lg shadow bg-slate-800">
