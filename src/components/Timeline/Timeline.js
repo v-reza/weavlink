@@ -31,17 +31,24 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useDoubleTap } from "use-double-tap";
 
 const Timeline = ({ post }) => {
+  /* Hooks */
   const { dispatch: dispatchNotif } = useNotif();
   const { token } = useAuth();
-  const headers = useHeader(token);
-  const [user, setUser] = useState({});
   const { user: currentUser } = useUser();
+  const headers = useHeader(token);
   const folder = useFolder();
+  /* End Hooks */
+
+  /* State */
+  const [user, setUser] = useState({});
   const [likes, setLikes] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
   const [loadingSSR, setLoadingSSR] = useState(true);
   const [likesDoubleTap, setLikesDoubleTap] = useState(false);
+  /* End State */
+
+  /* useEffect */
   useEffect(() => {
     const getPostUser = async () => {
       try {
@@ -60,6 +67,9 @@ const Timeline = ({ post }) => {
     setIsLiked(post.likes.includes(currentUser?._id));
   }, [post.userId, currentUser?._id, post.likes]);
 
+  /* End useEffect */
+
+  /* Action */
   const handleLike = async (e, postId) => {
     e.preventDefault();
     try {
@@ -94,6 +104,8 @@ const Timeline = ({ post }) => {
       });
     }
   });
+
+  /* End Action */
 
   const username = user.username
     ? user.username

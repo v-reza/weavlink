@@ -42,11 +42,13 @@ const Navbar = () => {
       name: "Home",
       href: "/",
       current: router.pathname === "/" ? true : false,
+      notif: true,
     },
     {
       name: "Jobs",
       href: "/job",
       current: router.pathname === "/job" ? true : false,
+      notif: true
     },
     { name: "Applicants", href: "#", current: false },
     { name: "Company", href: "#", current: false },
@@ -120,11 +122,17 @@ const Navbar = () => {
                                 item.current
                                   ? "bg-slate-500"
                                   : "hover:text-slate-300",
-                                "cursor-pointer px-3 py-2 rounded-md text-sm font-medium text-white"
+                                "cursor-pointer px-3 py-2 rounded-md text-sm font-medium text-white inline-flex relative"
                               )}
                               aria-current={item.current ? "page" : undefined}
                             >
                               {item.name}
+                              {item.notif && (
+                                <>
+                                <span className="absolute inline-flex top-0 right-0 rounded-full h-3 w-3 bg-rose-500"></span>
+                                <span className="animate-ping absolute top-0 right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>
