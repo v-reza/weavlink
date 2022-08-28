@@ -7,8 +7,9 @@ import {
   DotsVerticalIcon,
   ShareIcon,
   ThumbUpIcon,
+  ThumbDownIcon,
   TrashIcon,
-} from "@heroicons/react/outline";
+} from "@heroicons/react/solid";
 import React, { useEffect, useState, Fragment } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
@@ -27,6 +28,7 @@ import {
 } from "@/uiComponents/Skeleton";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useDoubleTap } from "use-double-tap";
 
 const Timeline = ({ post }) => {
   const { dispatch: dispatchNotif } = useNotif();
@@ -39,6 +41,7 @@ const Timeline = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const router = useRouter();
   const [loadingSSR, setLoadingSSR] = useState(true);
+  const [likesDoubleTap, setLikesDoubleTap] = useState(false);
   useEffect(() => {
     const getPostUser = async () => {
       try {
@@ -71,6 +74,26 @@ const Timeline = ({ post }) => {
       });
     }
   };
+
+  const bind = useDoubleTap(async (event) => {
+    // Your action here
+    console.log("Double tapped => " + post._id);
+    try {
+      setLikesDoubleTap(true);
+      setTimeout(() => {
+        setLikesDoubleTap(false);
+      }, 500);
+      await axiosPut(`/posts/${post._id}/like`, null, headers);
+      setLikes(isLiked ? likes - 1 : likes + 1);
+      setIsLiked(!isLiked);
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      });
+    }
+  });
 
   const username = user.username
     ? user.username
@@ -176,14 +199,31 @@ const Timeline = ({ post }) => {
           </div>
           {/* Carousel */}
           {post.images?.length > 0 && (
-            <div className="flex flex-col justify-center items-center mt-4">
+            <div className="flex flex-col justify-center items-center mt-4 gallery-carousel">
               <ReactCarousel
                 showThumbs={false}
                 showStatus={false}
                 dynamicHeight={true}
               >
                 {post.images?.map((img, index) => (
-                  <div key={index}>
+                  <div key={index} {...bind} className="relative select-none">
+                    <div
+                      className={`${
+                        likesDoubleTap ? "opacity-100" : "opacity-0"
+                      } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
+                    >
+                      {isLiked ? (
+                        <ThumbUpIcon
+                          className="h-14 w-14 text-indigo-500"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ThumbDownIcon
+                          className="h-14 w-14 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
                     <LazyLoadImage
                       alt="Images"
                       effect="blur"
@@ -208,7 +248,7 @@ const Timeline = ({ post }) => {
                 >
                   <ThumbUpIcon
                     className={classNames(
-                      isLiked ? "text-red-500" : "text-gray-400",
+                      isLiked ? "text-indigo-500" : "text-gray-400",
                       "h-5 w-5"
                     )}
                     aria-hidden="true"
@@ -234,7 +274,7 @@ const Timeline = ({ post }) => {
                       post.comments.some(
                         (comment) => comment.userId === currentUser._id
                       )
-                        ? "text-red-500"
+                        ? "text-indigo-500"
                         : "text-gray-400",
                       "h-5 w-5"
                     )}

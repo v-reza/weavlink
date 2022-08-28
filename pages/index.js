@@ -13,12 +13,8 @@ import { axiosGet } from "@/utils/axiosInstance";
 import Timeline from "@/components/Timeline/Timeline";
 import useGlobal from "@/hooks/useGlobal";
 import useNotif from "@/hooks/useNotif";
-import {
-  SkeletonDescription,
-  SkeletonImage,
-  SkeletonProfile,
-  SkeletonText,
-} from "@/uiComponents/Skeleton";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LinearProgress } from "@mui/material";
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },
   { name: "Popular", href: "#", icon: FireIcon, current: false },
@@ -30,7 +26,7 @@ export default function Home() {
   const [isSSR, setIsSSR] = useState(false);
   const [open, setOpen] = useState(false);
   const [timeline, setTimeline] = useState([]);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(6);
 
   /* Hooks */
   const { isAuthenticated } = useAuth();
@@ -134,12 +130,23 @@ export default function Home() {
               setMostLiked={setMostLiked}
               setMostComments={setMostComments}
             />
-
-            {timeline.map((post) => (
-              <Card key={post._id} className="mb-4">
-                <Timeline post={post} />
-              </Card>
-            ))}
+            <InfiniteScroll
+              dataLength={timeline.length}
+              next={() => setLimit((prev) => prev + 6)}
+              hasMore={hasMoreTimeline}
+              endMessage={
+                <h1 className="text-md font-medium text-white">
+                  Oops!. you has reached the last post
+                </h1>
+              }
+              loader={<LinearProgress />}
+            >
+              {timeline.map((post) => (
+                <Card key={post._id} className="mb-4">
+                  <Timeline post={post} />
+                </Card>
+              ))}
+            </InfiniteScroll>
           </Container.Main>
           <Container.Rightbar>Ini Rightbar</Container.Rightbar>
         </Container>
