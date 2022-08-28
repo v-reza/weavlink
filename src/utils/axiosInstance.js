@@ -1,5 +1,5 @@
 import axios from "axios";
-const api = process.env.REACT_APP_API || "http://localhost:1000/api";
+const api = process.env.NEXT_APP_API || "http://localhost:1000/api";
 
 export function axiosGet(url, config = null) {
   return new Promise((resolve, reject) => {
