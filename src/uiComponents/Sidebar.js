@@ -1,6 +1,6 @@
 import React from "react";
 const Sidebar = ({
-  hidden = ["xs"],
+  hidden = ["sm"],
   block = ["lg", "xl"],
   xs = 0,
   sm = 0,
@@ -13,7 +13,7 @@ const Sidebar = ({
 }) => {
   return (
     <div
-      className={`${hidden.map((item) => `${item}:hidden`).join(" ")} ${block
+      className={`hidden ${hidden.map((item) => `${item}:hidden`).join(" ")} ${block
         .map((item) => `${item}:block`)
         .join(" ")} ${!hidden.includes("xs") ? `xs:col-span-${xs}` : ""} ${
         !hidden.includes("sm") ? `sm:col-span-${sm}` : ""
