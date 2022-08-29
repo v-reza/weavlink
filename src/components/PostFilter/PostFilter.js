@@ -48,7 +48,7 @@ const PostFilter = ({
     }
   };
   return (
-    <div className="px-4 sm:px-0 xs:px-0 mb-4">
+    <div className="px-4 sm:px-0 xs:px-0 mb-4 mt-4">
       <div className="sm:hidden">
         <label htmlFor="question-tabs" className="sr-only">
           Select a tab

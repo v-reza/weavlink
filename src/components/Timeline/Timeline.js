@@ -38,7 +38,6 @@ const Timeline = ({ post }) => {
   const headers = useHeader(token);
   const folder = useFolder();
   /* End Hooks */
-
   /* State */
   const [user, setUser] = useState({});
   const [likes, setLikes] = useState(post.likes.length);
@@ -46,6 +45,7 @@ const Timeline = ({ post }) => {
   const router = useRouter();
   const [loadingSSR, setLoadingSSR] = useState(true);
   const [likesDoubleTap, setLikesDoubleTap] = useState(false);
+  const [isLikes, setIsLikes] = useState(false);
   /* End State */
 
   /* useEffect */
@@ -91,9 +91,10 @@ const Timeline = ({ post }) => {
       setTimeout(() => {
         setLikesDoubleTap(false);
       }, 500);
-      await axiosPut(`/posts/${post._id}/like`, null, headers);
+      const res = await axiosPut(`/posts/${post._id}/like`, null, headers);
       setLikes(isLiked ? likes - 1 : likes + 1);
       setIsLiked(!isLiked);
+      setIsLikes(res.data.message === "liked" ? false : true)  
     } catch (error) {
       dispatchNotif({
         type: "NOTIF_ERROR",
@@ -222,7 +223,7 @@ const Timeline = ({ post }) => {
                         likesDoubleTap ? "opacity-100" : "opacity-0"
                       } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
                     >
-                      {isLiked ? (
+                      {!isLikes ? (
                         <ThumbUpIcon
                           className="h-14 w-14 text-indigo-500"
                           aria-hidden="true"

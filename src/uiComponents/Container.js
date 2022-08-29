@@ -17,8 +17,8 @@ Container.Main = ({ children }) => (
   <main className="lg:col-span-9 xl:col-span-6">{children}</main>
 );
 
-Container.Rightbar = ({ children, ...props }) => (
-  <aside className="hidden xl:block xl:col-span-4 lg:block lg:col-span-3">
+Container.Rightbar = ({ children, sm, md, lg= "2", xl = "2", ...props }) => (
+  <aside className={`hidden xl:block xl:col-span-${xl} lg:block lg:col-span-${lg}`}>
     <div className="top-4 space-y-4">{children}</div>
   </aside>
 );

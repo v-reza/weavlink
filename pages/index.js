@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Container from "@/uiComponents/Container";
 import Card from "@/uiComponents/Card";
@@ -5,7 +6,15 @@ import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import Sidebar from "@/uiComponents/Sidebar";
-import { HomeIcon, TrendingUpIcon, FireIcon } from "@heroicons/react/outline";
+import {
+  HomeIcon,
+  TrendingUpIcon,
+  FireIcon,
+  PhotographIcon,
+  PlayIcon,
+  CalendarIcon,
+  ClipboardListIcon,
+} from "@heroicons/react/outline";
 import Button from "@/uiComponents/Button";
 import classNames from "@/utils/classNames";
 import PostFilter from "@/components/PostFilter/PostFilter";
@@ -15,6 +24,11 @@ import useGlobal from "@/hooks/useGlobal";
 import useNotif from "@/hooks/useNotif";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LinearProgress } from "@mui/material";
+import Modal from "@/uiComponents/Modal";
+import useUser from "@/hooks/useUser";
+import { coverPicture } from "@/utils/constants";
+import Divider from "@/uiComponents/Divider";
+import HomeSidebar from "@/components/Other/Sidebar/HomeSidebar";
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },
   { name: "Popular", href: "#", icon: FireIcon, current: false },
@@ -32,12 +46,13 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const { dispatch: dispatchNotif } = useNotif();
-
+  const { user } = useUser();
   /* Filter Post */
   const [recent, setRecent] = useState(true);
   const [mostLiked, setMostLiked] = useState(false);
   const [mostComments, setMostComments] = useState(false);
   const [hasMoreTimeline, setHasMoreTimeline] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -85,43 +100,97 @@ export default function Home() {
     });
   }, [recent, mostLiked, mostComments, limit, selector?.refreshTimeline]);
 
+  useEffect(() => {
+    const getUserProfile = async () => {
+      const res = await axiosGet(`/userProfile/${user?._id}`);
+      setUserProfile(res.data);
+    };
+    getUserProfile();
+  }, [user?._id]);
+
   return (
     <>
       {isSSR && (
         <Container>
           <Container.Sidebar>
-            <Sidebar>
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-slate-700"
-                      : "text-white hover:bg-slate-700",
-                    "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  <item.icon
+            <Sidebar lg={3} xl={3}>
+              <HomeSidebar user={user} userProfile={userProfile} />
+              <Card className="mt-4">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
                     className={classNames(
-                      "flex-shrink-0 -ml-1 mr-3 h-6 w-6 text-white"
+                      item.current
+                        ? "bg-slate-700"
+                        : "text-white hover:bg-slate-700",
+                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white"
                     )}
-                    aria-hidden="true"
-                  />
-                  <span className="truncate">{item.name}</span>
-                </a>
-              ))}
+                    aria-current={item.current ? "page" : undefined}
+                  >
+                    <item.icon
+                      className={classNames(
+                        "flex-shrink-0 -ml-1 mr-3 h-6 w-6 text-white"
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{item.name}</span>
+                  </a>
+                ))}
+              </Card>
             </Sidebar>
           </Container.Sidebar>
           <Container.Main>
-            <Button
-              bg="indigo-500"
-              hoverBg="indigo-600"
-              onClick={() => setOpen(true)}
-            >
-              <span className="text-white">New Post</span>
-            </Button>
+            <Card>
+              <div className="flex items-center space-x-4">
+                <img
+                  src={
+                    user?.profilePicture ? user.profilePicture : "/avatar.png"
+                  }
+                  className="w-10 h-10 rounded-full object-cover"
+                  alt=""
+                />
+                <Button
+                  bg="transparent"
+                  border="true"
+                  borderColor="slate-500"
+                  mb="0"
+                  py="2"
+                  hoverBg="slate-700"
+                  justify="start"
+                  rounded="full"
+                >
+                  <span className="text-white text-base">Start a post</span>
+                </Button>
+              </div>
+              <div className="flex items-center justify-between space-x-4 mt-6">
+                <div className="flex items-center cursor-pointer">
+                  <PhotographIcon className="h-6 w-6 text-blue-500" />
+                  <span className="text-white ml-2 text-sm font-medium">
+                    Photo
+                  </span>
+                </div>
+                <div className="flex items-center cursor-pointer">
+                  <PlayIcon className="h-6 w-6 text-green-500" />
+                  <span className="text-white ml-2 text-sm font-medium">
+                    Video
+                  </span>
+                </div>
+                <div className="flex items-center cursor-pointer">
+                  <CalendarIcon className="h-6 w-6 text-amber-500" />
+                  <span className="text-white ml-2 text-sm font-medium">
+                    Event
+                  </span>
+                </div>
+                <div className="flex items-center cursor-pointer">
+                  <ClipboardListIcon className="h-6 w-6 text-pink-500" />
+                  <span className="text-white ml-2 text-sm font-medium">
+                    Write article
+                  </span>
+                </div>
+              </div>
+            </Card>
+            <Modal open={open} setOpen={setOpen} />
             <PostFilter
               recent={recent}
               mostLiked={mostLiked}

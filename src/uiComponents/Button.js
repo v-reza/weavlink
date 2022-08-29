@@ -7,6 +7,16 @@ const Button = ({
   bg,
   hoverBg,
   setOpen,
+  mb = "3",
+  px = "4",
+  py = "3",
+  borderWidth = "1",
+  borderColor = "rose-500",
+  textAlign = "center",
+  textSize = "sm",
+  fontWeight = "medium",
+  justify = "center",
+  rounded = "md",
   ...props
 }) => (
   <div
@@ -14,7 +24,9 @@ const Button = ({
     className={`${
       customClass
         ? customClass
-        : `cursor-pointer mb-3 ${width} inline-flex text-center justify-center items-center px-4 py-2 border border-transparent text-sm font-medium text-end rounded-md shadow-sm text-white bg-${bg} hover:bg-${hoverBg}`
+        : `cursor-pointer mb-${mb} ${width} inline-flex justify-start items-center px-${px} py-${py} 
+        border border-${borderColor}
+            text-${textSize} font-${fontWeight} text-${textAlign} rounded-${rounded} shadow-sm text-white bg-${bg} hover:bg-${hoverBg}`
     }`}
   >
     {children}
