@@ -255,7 +255,7 @@ export default function Home() {
               loader={<LinearProgress />}
             >
               {timeline.map((post) => (
-                <Card key={post._id} className="mb-4">
+                <Card key={post._id} className="mb-4" overFlow="">
                   <Timeline post={post} />
                 </Card>
               ))}

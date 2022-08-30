@@ -42,8 +42,10 @@ import {
   PhotographIcon,
 } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
-import Button from "@/uiComponents/Button";
-
+// import Picker from "emoji-picker-react";
+const Picker = dynamic(() => import("emoji-picker-react"), {
+  ssr: false,
+});
 const TimelineComment = dynamic(() => import("./TimelineComment"), {
   suspense: true,
 });
@@ -116,6 +118,9 @@ const Timeline = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [loadMoreComments, setLoadMoreComments] = useState(commentLimit);
   const [selected, setSelected] = useState(moods[5]);
+  const [openEmoji, setOpenEmoji] = useState(false);
+  const [choosenEmoji, setChoosenEmoji] = useState([]);
+  const [commentsEmoji, setCommentsEmoji] = useState([])
   // End Timeline Comments
 
   /* End State */
@@ -177,6 +182,18 @@ const Timeline = ({ post }) => {
     }
   });
 
+  const onEmojiClick = (event, emojiObject) => {
+    // setChoosenEmoji([...choosenEmoji, emojiObject]);
+    let data = []
+    setChoosenEmoji([...choosenEmoji, emojiObject]);
+    setCommentsEmoji([...commentsEmoji, emojiObject.emoji]);
+    // setChoosenEmoji(emojiObject);
+  };
+  
+  console.log(commentsEmoji)
+  // console.log(choosenEmoji)
+  // console.log(commentsEmoji)
+
   /* End Action */
 
   const username = user.username
@@ -187,7 +204,10 @@ const Timeline = ({ post }) => {
     <>
       {!loadingSSR ? (
         <>
-          <article aria-labelledby={"question-title-" + post._id}>
+          <article
+            aria-labelledby={"question-title-" + post._id}
+            onClick={() => setOpenEmoji(false)}
+          >
             <div>
               <div className="flex space-x-3">
                 <div className="flex-shrink-0">
@@ -408,24 +428,50 @@ const Timeline = ({ post }) => {
                     <div className="relative rounded-md shadow-sm w-full">
                       <input
                         type="text"
-                        name="account-number"
-                        id="account-number"
-                        className="bg-transparent text-slate-300 block w-full pr-10 sm:text-sm border-2 border-slate-600 rounded-full focus:outline-0 focus:border-slate-500 focus:ring-0"
+                        value={commentsEmoji ? commentsEmoji.join("") : ""}
+                        className="bg-transparent text-slate-300 block w-full text-xs pr-10 sm:text-sm border-2 border-slate-600 rounded-full focus:outline-0 focus:border-slate-500 focus:ring-0"
                         placeholder="Add a comment..."
                       />
+
                       <div className="absolute inset-y-0 right-0 pr-4 space-x-4 flex items-center cursor-pointer">
                         <EmojiHappyIcon
-                          className="h-6 w-6 text-slate-300"
+                          onClick={() => setOpenEmoji(!openEmoji)}
+                          className="h-6 w-6 text-slate-300 hidden sm:block"
                           aria-hidden="true"
                         />
                         <PhotographIcon
-                          className="h-6 w-6 text-slate-300"
+                          className="h-6 w-6 text-slate-300 hidden sm:block"
                           aria-hidden="true"
                         />
                       </div>
                     </div>
                   </div>
+                  <div className="flex items-center justify-start mt-2 space-x-2">
+                    <EmojiHappyIcon
+                      onClick={() => setOpenEmoji(!openEmoji)}
+                      className="h-6 w-6 text-slate-300 block sm:hidden"
+                      aria-hidden="true"
+                    />
+                    <PhotographIcon
+                      className="h-6 w-6 text-slate-300 block sm:hidden"
+                      aria-hidden="true"
+                    />
+                  </div>
                 </div>
+                {openEmoji && (
+                  <div className="mt-4 right-4 sm:right-4 md:right-20 lg:right-80 absolute">
+                    <Picker
+                      disableAutoFocus={true}
+                      pickerStyle={{
+                        background: "rgb(55 65 81)",
+                        border: "none",
+                        boxShadow: "0 0 0 0",
+                      }}
+                      disableSearchBar={true}
+                      onEmojiClick={onEmojiClick}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )}
