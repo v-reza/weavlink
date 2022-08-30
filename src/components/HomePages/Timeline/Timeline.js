@@ -65,6 +65,7 @@ const Timeline = ({ post }) => {
     };
     getPostUser();
     setIsLiked(post.likes.includes(currentUser?._id));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.userId, currentUser?._id, post.likes]);
 
   /* End useEffect */

@@ -14,21 +14,24 @@ import {
   PlayIcon,
   CalendarIcon,
   ClipboardListIcon,
+  PlusIcon,
 } from "@heroicons/react/outline";
 import Button from "@/uiComponents/Button";
 import classNames from "@/utils/classNames";
-import PostFilter from "@/components/PostFilter/PostFilter";
+import PostFilter from "@/components/HomePages/PostFilter";
 import { axiosGet } from "@/utils/axiosInstance";
-import Timeline from "@/components/Timeline/Timeline";
+import Timeline from "@/components/HomePages/Timeline/Timeline";
 import useGlobal from "@/hooks/useGlobal";
 import useNotif from "@/hooks/useNotif";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LinearProgress } from "@mui/material";
 import Modal from "@/uiComponents/Modal";
 import useUser from "@/hooks/useUser";
-import { coverPicture } from "@/utils/constants";
 import Divider from "@/uiComponents/Divider";
-import HomeSidebar from "@/components/Other/Sidebar/HomeSidebar";
+import HomeSidebar from "@/components/HomePages/HomeSidebar";
+import useHeader from "@/hooks/useHeader";
+import HomeRightbar from "@/components/HomePages/HomeRightbar";
+import { SkeletonProfile, SkeletonText } from "@/uiComponents/Skeleton";
 const navigation = [
   { name: "Home", href: "#", icon: HomeIcon, current: true },
   { name: "Popular", href: "#", icon: FireIcon, current: false },
@@ -41,12 +44,16 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [timeline, setTimeline] = useState([]);
   const [limit, setLimit] = useState(6);
+  const [listFeeds, setListFeeds] = useState([]);
+  const [showMoreMobile, setShowMoreMobile] = useState(false);
 
   /* Hooks */
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, token } = useAuth();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const { dispatch: dispatchNotif } = useNotif();
   const { user } = useUser();
+  const headers = useHeader(token);
+
   /* Filter Post */
   const [recent, setRecent] = useState(true);
   const [mostLiked, setMostLiked] = useState(false);
@@ -108,6 +115,20 @@ export default function Home() {
     getUserProfile();
   }, [user?._id]);
 
+  useEffect(() => {
+    let onMounted = false;
+    const getListFeeds = async () => {
+      if (!onMounted) {
+        const res = await axiosGet(`/users/listFriends/notFollow`, headers);
+        setListFeeds(res.data);
+      }
+    };
+    getListFeeds();
+    return () => {
+      onMounted = true;
+    };
+  }, [user?._id]);
+
   return (
     <>
       {isSSR && (
@@ -115,33 +136,46 @@ export default function Home() {
           <Container.Sidebar>
             <Sidebar lg={3} xl={3}>
               <HomeSidebar user={user} userProfile={userProfile} />
-              <Card className="mt-4">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-slate-700"
-                        : "text-white hover:bg-slate-700",
-                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md text-white"
-                    )}
-                    aria-current={item.current ? "page" : undefined}
-                  >
-                    <item.icon
-                      className={classNames(
-                        "flex-shrink-0 -ml-1 mr-3 h-6 w-6 text-white"
-                      )}
-                      aria-hidden="true"
-                    />
-                    <span className="truncate">{item.name}</span>
-                  </a>
-                ))}
+              <Card className="mt-4" usePx0={true}>
+                <div className="px-4 py-2">
+                  <div className="py-1">
+                    <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+                      Groups
+                    </span>
+                  </div>
+                  <div className="py-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+                        Events
+                      </span>
+                      <PlusIcon className="w-4 h-4 text-slate-300 text-xs cursor-pointer" />
+                    </div>
+                  </div>
+                  <div className="py-1">
+                    <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+                      Followed Hashtags
+                    </span>
+                  </div>
+                </div>
+                <Divider mt={"mt-4"} />
+                <div className="py-2 w-full cursor-pointer hover:bg-slate-500/30">
+                  <div className="flex items-center justify-center">
+                    <span className="text-white text-sm font-medium cursor-pointer">
+                      Discover more
+                    </span>
+                  </div>
+                </div>
               </Card>
             </Sidebar>
           </Container.Sidebar>
           <Container.Main>
-            <Card padding={"p-4"}>
+            <HomeSidebar.Mobile
+              user={user}
+              userProfile={userProfile}
+              setShowMore={setShowMoreMobile}
+              showMore={showMoreMobile}
+            />
+            <Card padding={"4"}>
               <div className="flex items-center space-x-4">
                 <img
                   src={
@@ -165,11 +199,11 @@ export default function Home() {
                   </span>
                 </Button>
               </div>
-              <div className="flex items-center justify-between space-x-4 mt-6">
+              <div className="flex items-center justify-between mt-6">
                 <div className="cursor-pointer hover:bg-slate-500/30 px-4 py-1.5 rounded-lg">
                   <div className="flex items-center cursor-pointer">
                     <PhotographIcon className="h-6 w-6 text-blue-500" />
-                    <span className="text-white ml-2 text-sm font-medium">
+                    <span className="hidden sm:block text-white ml-2 text-sm font-medium">
                       Photo
                     </span>
                   </div>
@@ -177,7 +211,7 @@ export default function Home() {
                 <div className="cursor-pointer hover:bg-slate-500/30 px-4 py-1 rounded-lg">
                   <div className="flex items-center cursor-pointer">
                     <PlayIcon className="h-6 w-6 text-green-500" />
-                    <span className="text-white ml-2 text-sm font-medium">
+                    <span className="hidden sm:block text-white ml-2 text-sm font-medium">
                       Video
                     </span>
                   </div>
@@ -185,7 +219,7 @@ export default function Home() {
                 <div className="cursor-pointer hover:bg-slate-500/30 px-4 py-1 rounded-lg">
                   <div className="flex items-center cursor-pointer">
                     <CalendarIcon className="h-6 w-6 text-amber-500" />
-                    <span className="text-white ml-2 text-sm font-medium">
+                    <span className="hidden sm:block text-white ml-2 text-sm font-medium">
                       Event
                     </span>
                   </div>
@@ -193,7 +227,7 @@ export default function Home() {
                 <div className="cursor-pointer hover:bg-slate-500/30 px-4 py-1 rounded-lg">
                   <div className="flex items-center cursor-pointer">
                     <ClipboardListIcon className="h-6 w-6 text-pink-500" />
-                    <span className="text-white ml-2 text-sm font-medium">
+                    <span className="hidden sm:block text-white ml-2 text-sm font-medium">
                       Write article
                     </span>
                   </div>
@@ -227,7 +261,21 @@ export default function Home() {
               ))}
             </InfiniteScroll>
           </Container.Main>
-          <Container.Rightbar>Ini Rightbar</Container.Rightbar>
+          <Container.Rightbar lg={3} xl={3}>
+            <Card padding={4}>
+              {listFeeds.length > 0 ? (
+                <HomeRightbar listFeeds={listFeeds} />
+              ) : (
+                <div className="flex items-center">
+                  <SkeletonProfile />
+                  <div className="mt-4">
+                    <SkeletonText />
+                    <SkeletonText />
+                  </div>
+                </div>
+              )}
+            </Card>
+          </Container.Rightbar>
         </Container>
       )}
     </>

@@ -55,7 +55,7 @@ const PostFilter = ({
         </label>
         <select
           id="question-tabs"
-          className="block w-full rounded-md border-gray-300 text-base font-medium text-gray-900 shadow-sm focus:border-rose-500 focus:ring-rose-500"
+          className="block w-full bg-slate-800 rounded-md border-slate-700 text-slate-300 text-base font-medium  shadow-sm"
           // defaultValue={tabs.find((tab) => tab.current).name}
           onChange={(e) => tabClick(e.target.value)}
         >

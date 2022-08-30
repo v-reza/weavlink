@@ -6,7 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { AuthContextProvider as AuthGuard } from "@/context/AuthContext";
 import useAuth from "@/hooks/useAuth";
-import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import LoadingBackdrop from "@/uiComponents/Loading/LoadingBackdrop";
 import Notification from "@/uiComponents/Notification";
