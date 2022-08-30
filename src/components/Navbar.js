@@ -388,7 +388,7 @@ const Navbar = () => {
 
                       <button
                         type="button"
-                        className="mr-auto bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
+                        className="ml-auto bg-slate-900  flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                       >
                         <span className="sr-only">View notifications</span>
                         <BellIcon className="h-6 w-6" aria-hidden="true" />

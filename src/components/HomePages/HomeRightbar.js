@@ -23,7 +23,7 @@ const HomeRightbar = ({ listFeeds }) => {
       </div>
       <div className="mt-2">
         {listFeeds?.map((usr) => (
-          <d key={usr._id}>
+          <div key={usr._id}>
             <div className="py-2">
               <div className="flex space-x-3 cursor-pointer">
                 <div className="flex-shrink-0">
@@ -64,7 +64,7 @@ const HomeRightbar = ({ listFeeds }) => {
                 </div>
               </div>
             </div>
-          </d>
+          </div>
         ))}
         <div className="mt-2">
           <span className="flex items-center text-sm text-slate-300 font-medium cursor-pointer hover:bg-slate-500/50 px-2 py-2 rounded-lg">
