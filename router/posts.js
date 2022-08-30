@@ -81,10 +81,17 @@ router.put("/:id/like", verifyBearerToken, async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (!post.likes.includes(req.user.users._id)) {
       await post.updateOne({ $push: { likes: req.user.users._id } });
+      return res.status(200).json({
+        status: 200,
+        message: "liked"
+      });
     } else {
       await post.updateOne({ $pull: { likes: req.user.users._id } });
+      return res.status(200).json({
+        status: 200,
+        message: "unliked",
+      });
     }
-    res.status(200).json("Success Liked / Unliked");
   } catch (error) {
     return res.status(500).json(error);
   }

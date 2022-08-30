@@ -2,6 +2,8 @@ const router = require("express").Router();
 const verifyBearerToken = require("../helper/verifyBearerToken");
 const User = require("../models/User");
 const Company = require("../models/Company");
+const mongoose = require("mongoose");
+const UserProfile = require("../models/UserProfile");
 
 router.get("/", async (req, res) => {
   try {
@@ -90,6 +92,58 @@ router.put("/:id/unfollow", verifyBearerToken, async (req, res) => {
     }
   } else {
     res.status(403).json("You cant unfollow yourself");
+  }
+});
+
+router.get("/listFriends/notFollow", verifyBearerToken, async (req, res) => {
+  try {
+    // const user = await User.find({
+    //   _id: { $ne: req.user.users._id },
+    //   followers: { $ne: req.user.users._id },
+    // }).select(["-password", "-__v", "-createdAt", "-updatedAt", "-email"]);
+    const userProfile = await UserProfile.aggregate([
+      // {
+      //   $match: {
+      //     _id: { $ne: req.user.users._id },
+      //     followers: { $ne: req.user.users._id },
+      //   },
+      // },
+      {
+        $match: {
+          userId: { $ne: req.user.users._id },
+        },
+      },
+      {
+        $addFields: {
+          userId: {
+            $toObjectId: "$userId",
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $match: {
+          "user.followers": { $ne: req.user.users._id },
+        },
+      },
+      {
+        $limit: 3,
+      },
+      {
+        $unwind: "$user",
+      }
+    ]);
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    res.status(403).json(error);
   }
 });
 
