@@ -105,6 +105,39 @@ const HomeSidebar = ({ user, userProfile }) => (
   </div>
 );
 
+HomeSidebar.Group = ({ children, ...props }) => (
+  <>
+    <div className="px-4 py-2">
+      <div className="py-1">
+        <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+          Groups
+        </span>
+      </div>
+      <div className="py-1">
+        <div className="flex items-center justify-between">
+          <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+            Events
+          </span>
+          <PlusIcon className="w-4 h-4 text-slate-300 text-xs cursor-pointer" />
+        </div>
+      </div>
+      <div className="py-1">
+        <span className="text-blue-400 text-xs hover:underline cursor-pointer">
+          Followed Hashtags
+        </span>
+      </div>
+    </div>
+    <Divider mt={"mt-4"} />
+    <div className="py-2 w-full cursor-pointer hover:bg-slate-500/30">
+      <div className="flex items-center justify-center">
+        <span className="text-white text-sm font-medium cursor-pointer">
+          Discover more
+        </span>
+      </div>
+    </div>
+  </>
+);
+
 HomeSidebar.Mobile = ({
   user,
   userProfile,

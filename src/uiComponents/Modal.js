@@ -1,14 +1,8 @@
 import { Dialog, Tab, Transition } from "@headlessui/react";
-import {
-  AtSymbolIcon,
-  CodeIcon,
-  LinkIcon,
-  XIcon,
-} from "@heroicons/react/outline";
+import { XIcon } from "@heroicons/react/outline";
 import React, { Fragment } from "react";
-import classNames from "@/utils/classNames";
 
-const Modal = ({ open, setOpen, title, children, ...props }) => {
+const Modal = ({ open, setOpen, title, children, footer, ...props }) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed z-10 inset-0" onClose={setOpen}>
@@ -22,7 +16,7 @@ const Modal = ({ open, setOpen, title, children, ...props }) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-gray-700 bg-opacity-75 transition-opacity" />
+            <Dialog.Overlay className="fixed inset-0 bg-slate-800 bg-opacity-75 transition-opacity" />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}
@@ -77,18 +71,8 @@ const Modal = ({ open, setOpen, title, children, ...props }) => {
                   </div>
                 </div>
               </div>
+              {footer}
               {/* <div className="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"> */}
-              <div className="w-full">
-                <div className="flex items-center justify-end space-x-2">
-                  <button
-                    // onClick={handleSubmit}
-                    type="button"
-                    className="w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
-                  >
-                    Post
-                  </button>
-                </div>
-              </div>
             </div>
           </Transition.Child>
         </div>
