@@ -41,6 +41,7 @@ export default function Home() {
   const [limit, setLimit] = useState(6);
   const [listFeeds, setListFeeds] = useState([]);
   const [showMoreMobile, setShowMoreMobile] = useState(false);
+  const [form, setForm] = useState({});
 
   /* Hooks */
   const { isAuthenticated, token } = useAuth();
@@ -93,13 +94,15 @@ export default function Home() {
       }
     };
     getTimeline();
-    dispatchGlobal({
-      type: "GLOBAL_STATE",
-      payload: {
-        ...selector,
-        refreshTimeline: false,
-      },
-    });
+    if (selector.refreshTimeline === true) {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          refreshTimeline: false,
+        },
+      });
+    }
   }, [recent, mostLiked, mostComments, limit, selector?.refreshTimeline]);
 
   useEffect(() => {
@@ -124,6 +127,8 @@ export default function Home() {
     };
   }, [user?._id]);
 
+  console.log(selector);
+
   return (
     <>
       {isSSR && (
@@ -144,7 +149,7 @@ export default function Home() {
               showMore={showMoreMobile}
             />
             <Card padding={"4"}>
-              <HomeMainBox user={user} setOpen={setOpen}/>
+              <HomeMainBox user={user} setOpen={setOpen} />
             </Card>
             <Modal
               open={open}

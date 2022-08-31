@@ -61,6 +61,14 @@ code {
 section.emoji-scroll-wrapper > ul.emoji-group::before{
   background: transparent
 }
+
+button[data-testid = "carousel-right-control"] > span, button[data-testid = "carousel-left-control"] > span {
+  background: rgb(156 163 175);
+}
+
+button[data-testid = "carousel-right-control"] > span > svg, button[data-testid = "carousel-left-control"] > span > svg {
+  color: rgb(226 232 240)
+}
 /* aside.emoji-picker-react {
   background: #374151;
   display: flex;
