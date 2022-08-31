@@ -262,19 +262,21 @@ export default function Home() {
             </InfiniteScroll>
           </Container.Main>
           <Container.Rightbar lg={3} xl={3}>
-            <Card padding={4}>
-              {listFeeds.length > 0 ? (
-                <HomeRightbar listFeeds={listFeeds} />
-              ) : (
-                <div className="flex items-center">
-                  <SkeletonProfile />
-                  <div className="mt-4">
-                    <SkeletonText />
-                    <SkeletonText />
+            <div className="hidden xl:block">
+              <Card padding={4}>
+                {listFeeds.length > 0 ? (
+                  <HomeRightbar listFeeds={listFeeds} />
+                ) : (
+                  <div className="flex items-center">
+                    <SkeletonProfile />
+                    <div className="mt-4">
+                      <SkeletonText />
+                      <SkeletonText />
+                    </div>
                   </div>
-                </div>
-              )}
-            </Card>
+                )}
+              </Card>
+            </div>
           </Container.Rightbar>
         </Container>
       )}

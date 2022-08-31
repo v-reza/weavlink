@@ -10,7 +10,7 @@ import {
   ThumbDownIcon,
   TrashIcon,
 } from "@heroicons/react/solid";
-import React, { useEffect, useState, Fragment, Suspense } from "react";
+import React, { useEffect, useState, Fragment, Suspense, useCallback, useRef } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
 import { format } from "date-fns";
@@ -42,6 +42,7 @@ import {
   PhotographIcon,
 } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
+import { Button, Tooltip } from "flowbite-react";
 // import Picker from "emoji-picker-react";
 const Picker = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
@@ -119,8 +120,8 @@ const Timeline = ({ post }) => {
   const [loadMoreComments, setLoadMoreComments] = useState(commentLimit);
   const [selected, setSelected] = useState(moods[5]);
   const [openEmoji, setOpenEmoji] = useState(false);
-  const [choosenEmoji, setChoosenEmoji] = useState([]);
-  const [commentsEmoji, setCommentsEmoji] = useState([])
+  const commentRef = useRef()
+  const [messageComments, setMessageComments] = useState("");
   // End Timeline Comments
 
   /* End State */
@@ -183,17 +184,10 @@ const Timeline = ({ post }) => {
   });
 
   const onEmojiClick = (event, emojiObject) => {
-    // setChoosenEmoji([...choosenEmoji, emojiObject]);
-    let data = []
-    setChoosenEmoji([...choosenEmoji, emojiObject]);
-    setCommentsEmoji([...commentsEmoji, emojiObject.emoji]);
-    // setChoosenEmoji(emojiObject);
+    const cursor = commentRef.current.selectionStart;
+    const text = messageComments.slice(0, cursor) + emojiObject.emoji + messageComments.slice(cursor);
+    setMessageComments(text);
   };
-  
-  console.log(commentsEmoji)
-  // console.log(choosenEmoji)
-  // console.log(commentsEmoji)
-
   /* End Action */
 
   const username = user.username
@@ -428,7 +422,9 @@ const Timeline = ({ post }) => {
                     <div className="relative rounded-md shadow-sm w-full">
                       <input
                         type="text"
-                        value={commentsEmoji ? commentsEmoji.join("") : ""}
+                        ref={commentRef}
+                        value={messageComments}
+                        onChange={(e) => setMessageComments(e.target.value)}
                         className="bg-transparent text-slate-300 block w-full text-xs pr-10 sm:text-sm border-2 border-slate-600 rounded-full focus:outline-0 focus:border-slate-500 focus:ring-0"
                         placeholder="Add a comment..."
                       />
