@@ -3,8 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   env: {
-    // NEXT_APP_API: "https://velkeyapi.herokuapp.com/api",
-    // NEXT_APP_API_IMAGES : "https://velkeyapi.herokuapp.com/images/"
+    NEXT_APP_API: "https://velkeyapi.herokuapp.com/api",
+    NEXT_APP_API_IMAGES : "https://velkeyapi.herokuapp.com/images/"
   }
 };
 
