@@ -16,7 +16,7 @@ import useLoading from "@/hooks/useLoading";
 import useAuth from "@/hooks/useAuth";
 import useHeader from "@/hooks/useHeader";
 
-const NewPost = ({ setOpen, ...props }) => {
+const FooterNewPost = ({ setOpen, ...props }) => {
   /* State */
   const [file, setFile] = useState([]);
   /* End State */
@@ -192,11 +192,11 @@ const NewPost = ({ setOpen, ...props }) => {
           <button
             onClick={() => savePost()}
             disabled={
-              selector.form?.file || selector.form?.description ? false : true
+              selector.form?.file?.length > 0 || selector.form?.description ? false : true
             }
             type="button"
             className={classNames(
-              selector.form?.file || selector.form?.description
+              selector.form?.file?.length > 0 || selector.form?.description
                 ? "bg-indigo-600 hover:bg-indigo-700"
                 : "bg-slate-500/50 cursor-not-allowed",
               "w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
@@ -210,4 +210,4 @@ const NewPost = ({ setOpen, ...props }) => {
   );
 };
 
-export default NewPost;
+export default FooterNewPost;

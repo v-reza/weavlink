@@ -30,8 +30,10 @@ import useHeader from "@/hooks/useHeader";
 import HomeRightbar from "@/components/HomePages/HomeRightbar";
 import { SkeletonProfile, SkeletonText } from "@/uiComponents/Skeleton";
 import FormNewPost from "@/components/HomePages/Post/FormNewPost";
-import NewPost from "@/components/HomePages/Post/NewPosts";
+import FooterNewPost from "@/components/HomePages/Post/FooterNewPost";
 import HomeMainBox from "@/components/HomePages/HomeMainBox";
+import EditPhoto from "@/components/HomePages/Post/Edit/EditPhoto";
+import FooterEditPhoto from "@/components/HomePages/Post/Edit/FooterEditPhoto";
 
 export default function Home() {
   const router = useRouter();
@@ -155,9 +157,19 @@ export default function Home() {
               open={open}
               setOpen={setOpen}
               title={"Create a Post"}
-              footer={<NewPost setOpen={setOpen} />}
+              footer={
+                selector.form?.editPhoto ? (
+                  <FooterEditPhoto />
+                ) : (
+                  <FooterNewPost setOpen={setOpen} />
+                )
+              }
             >
-              <FormNewPost user={user} />
+              {selector.form?.editPhoto ? (
+                <EditPhoto />
+              ) : (
+                <FormNewPost user={user} />
+              )}
             </Modal>
             <PostFilter
               recent={recent}

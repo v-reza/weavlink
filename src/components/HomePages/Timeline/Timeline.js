@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useNotif from "@/hooks/useNotif";
-import { axiosDelete, axiosGet, axiosPut } from "@/utils/axiosInstance";
+import { axiosDelete, axiosGet, axiosPost, axiosPut } from "@/utils/axiosInstance";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import {
   ChatAltIcon,
@@ -113,7 +113,7 @@ const Timeline = ({ post }) => {
   const headers = useHeader(token);
   const folder = useFolder();
   const { dispatch: dispatchLoading } = useLoading();
-  const { dispatch: dispatchGlobal } = useGlobal();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
   /* End Hooks */
   /* State */
   const [user, setUser] = useState({});
@@ -228,6 +228,44 @@ const Timeline = ({ post }) => {
       });
     }
   };
+
+  const handleComment = async (e, id) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!messageComments) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: "Please enter a comment",
+        });
+        return;
+      }
+
+      try {
+        dispatchLoading({ type: "PROCESSING " });
+        await axiosPost(`/posts/${id}/comment`, { text: messageComments }, headers).then(() => {
+          dispatchLoading({ type: "FINISHED" });
+          dispatchGlobal({
+            type: "GLOBAL_STATE",
+            payload: {
+              ...selector,
+              refreshTimeline: true,
+            }
+          })
+          setMessageComments("");
+          setOpenEmoji(false);
+          commentRef.current.focus();
+          
+        });
+      } catch (error) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
+      }
+    }
+  }
   /* End Action */
 
   const username = user.username
@@ -465,6 +503,7 @@ const Timeline = ({ post }) => {
                         ref={commentRef}
                         value={messageComments}
                         onChange={(e) => setMessageComments(e.target.value)}
+                        onKeyPress={(e) => handleComment(e, post._id)}
                         className="bg-transparent text-slate-300 block w-full text-xs pr-10 sm:text-sm border-2 border-slate-600 rounded-full focus:outline-0 focus:border-slate-500 focus:ring-0"
                         placeholder="Add a comment..."
                       />
@@ -521,7 +560,7 @@ const Timeline = ({ post }) => {
                     .slice(0, loadMoreComments)
                     .map((comment) => (
                       <Suspense fallback={<SkeletonText />} key={comment._id}>
-                        <TimelineComment comment={comment} />
+                        <TimelineComment comment={comment} post={post} />
                       </Suspense>
                     ))
                 : ""}

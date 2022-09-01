@@ -12,10 +12,10 @@ import React, { useEffect, useState } from "react";
 
 const FormNewPost = ({ user }) => {
   const [description, setDescription] = useState("");
-  const { selector, dispatch } = useGlobal();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
   const handleDescription = (e) => {
     setDescription(e.target.value);
-    dispatch({
+    dispatchGlobal({
       type: "GLOBAL_STATE",
       payload: {
         form: {
@@ -73,7 +73,7 @@ const FormNewPost = ({ user }) => {
               placeholder="What do you want to talk about?"
             />
           </div>
-          {selector.form?.file && (
+          {selector.form?.file?.length > 0 && (
             <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 relative">
               <div className="flex items-center justify-end">
                 <Tooltip content="Edit" placement="top">
@@ -83,6 +83,17 @@ const FormNewPost = ({ user }) => {
                     mb="2"
                     borderColor="transparent"
                     hoverBg={"slate-500/50"}
+                    onClick={() => {
+                      dispatchGlobal({
+                        type: "GLOBAL_STATE",
+                        payload: {
+                          form: {
+                            ...selector.form,
+                            editPhoto: true
+                          }
+                        }
+                      })
+                    }}
                   >
                     <PencilIcon className="w-5 h-5" />
                   </Button>
