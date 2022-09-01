@@ -48,7 +48,7 @@ const Navbar = () => {
       name: "Jobs",
       href: "/job",
       current: router.pathname === "/job" ? true : false,
-      notif: true
+      notif: true,
     },
     { name: "Applicants", href: "#", current: false },
     { name: "Company", href: "#", current: false },
@@ -85,6 +85,10 @@ const Navbar = () => {
 
   useEffect(() => {
     document.addEventListener("keydown", keydownCtrlK);
+
+    return () => {
+      document.removeEventListener("keydown", keydownCtrlK);
+    };
   }, [keydownCtrlK]);
 
   // const RenderElement = () => {
@@ -129,8 +133,8 @@ const Navbar = () => {
                               {item.name}
                               {item.notif && (
                                 <>
-                                <span className="absolute inline-flex top-0 right-0 rounded-full h-3 w-3 bg-rose-500"></span>
-                                <span className="animate-ping absolute top-0 right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
+                                  <span className="absolute inline-flex top-0 right-0 rounded-full h-3 w-3 bg-rose-500"></span>
+                                  <span className="animate-ping absolute top-0 right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
                                 </>
                               )}
                             </div>

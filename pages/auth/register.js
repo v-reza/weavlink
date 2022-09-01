@@ -35,7 +35,6 @@ export default function Register() {
     }
   }, [isAuthenticated, router]);
 
-
   const handleRegister = async (e) => {
     e.preventDefault();
     if (password !== passwordKonfirmasi) {
@@ -99,12 +98,12 @@ export default function Register() {
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-1">
+          <div className="bg-slate-800/50 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-700">
             <form className="space-y-6" action="#" method="POST">
               <div>
                 <label
                   htmlFor="firstname"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Firstname
                 </label>
@@ -114,14 +113,14 @@ export default function Register() {
                     onChange={(e) => setFirstname(e.target.value)}
                     type="text"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
               <div>
                 <label
                   htmlFor="lastname"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Lastname
                 </label>
@@ -131,14 +130,14 @@ export default function Register() {
                     onChange={(e) => setLastname(e.target.value)}
                     type="text"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Email
                 </label>
@@ -148,14 +147,14 @@ export default function Register() {
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
               <div>
                 <label
                   htmlFor="nomorponsel"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Phone Number
                 </label>
@@ -165,7 +164,7 @@ export default function Register() {
                     onChange={(e) => setPhone(e.target.value)}
                     type="number"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -173,7 +172,7 @@ export default function Register() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Password
                 </label>
@@ -186,7 +185,7 @@ export default function Register() {
                     />
                     <label
                       onClick={() => setVisiblePassword(!visiblePassword)}
-                      className="bg-white rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
+                      className="bg-transparent text-slate-300 rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
                       htmlFor="toggle"
                     >
                       {visiblePassword ? (
@@ -201,7 +200,7 @@ export default function Register() {
                     onChange={(e) => setPassword(e.target.value)}
                     type={visiblePassword ? "text" : "password"}
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -209,7 +208,7 @@ export default function Register() {
               <div>
                 <label
                   htmlFor="passwordkonfirmasi"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Password Konfirmasi
                 </label>
@@ -223,7 +222,7 @@ export default function Register() {
                       onClick={() =>
                         setVisiblePasswordKonfirmasi(!visiblePasswordKonfirmasi)
                       }
-                      className="bg-white rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
+                      className="bg-transparent text-slate-300 rounded px-2 py-1 text-sm text-gray-600 font-mono cursor-pointer js-password-label"
                       htmlFor="toggle"
                     >
                       {visiblePasswordKonfirmasi ? (
@@ -238,7 +237,7 @@ export default function Register() {
                     onChange={(e) => setPasswordKonfirmasi(e.target.value)}
                     type={visiblePasswordKonfirmasi ? "text" : "password"}
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>

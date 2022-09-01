@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
@@ -67,6 +68,21 @@ export default function Login() {
       setMessage("Email atau password salah");
     }
   }, [err]);
+
+  const keydownEnter = (e) => {
+    if (e.keyCode === 13) {
+      handleLogin(e);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", keydownEnter);
+
+    return () => {
+      document.removeEventListener("keydown", keydownEnter);
+    };
+  }, [keydownEnter]);
+
   return (
     <>
       <Notification />
@@ -78,18 +94,18 @@ export default function Login() {
             src="/logo_large.png"
             alt="Logo"
           />
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 text-white">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-200">
             Sign in
           </h2>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-1">
+          <div className="bg-slate-800/50 py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-700">
             <form className="space-y-6" action="#" method="POST">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Email or phone number
                 </label>
@@ -99,7 +115,7 @@ export default function Login() {
                     onChange={(e) => setEmailOrPhone(e.target.value)}
                     type="text"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -107,7 +123,7 @@ export default function Login() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
                   Password
                 </label>
@@ -118,7 +134,7 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="bg-slate-700/20 appearance-none block w-full px-3 py-2 border border-slate-600 rounded-md shadow-sm placeholder-transparent text-slate-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
               </div>

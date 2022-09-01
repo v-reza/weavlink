@@ -58,6 +58,7 @@ const Picker = dynamic(() => import("emoji-picker-react"), {
 });
 const TimelineComment = dynamic(() => import("./TimelineComment"), {
   suspense: true,
+  ssr: true,
 });
 
 const moods = [
@@ -511,26 +512,11 @@ const Timeline = ({ post }) => {
                       <div className="absolute inset-y-0 right-0 pr-4 space-x-4 flex items-center cursor-pointer">
                         <EmojiHappyIcon
                           onClick={() => setOpenEmoji(!openEmoji)}
-                          className="h-6 w-6 text-slate-300 hidden sm:block"
-                          aria-hidden="true"
-                        />
-                        <PhotographIcon
-                          className="h-6 w-6 text-slate-300 hidden sm:block"
+                          className="h-6 w-6 text-slate-300 "
                           aria-hidden="true"
                         />
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-start mt-2 space-x-2">
-                    <EmojiHappyIcon
-                      onClick={() => setOpenEmoji(!openEmoji)}
-                      className="h-6 w-6 text-slate-300 block sm:hidden"
-                      aria-hidden="true"
-                    />
-                    <PhotographIcon
-                      className="h-6 w-6 text-slate-300 block sm:hidden"
-                      aria-hidden="true"
-                    />
                   </div>
                 </div>
                 {openEmoji && (

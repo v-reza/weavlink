@@ -5,11 +5,13 @@ import useAuth from "@/hooks/useAuth";
 import { axiosPost } from "@/utils/axiosInstance";
 import LoadingBackdrop from "@/uiComponents/Loading/LoadingBackdrop";
 import useLoading from "@/hooks/useLoading";
+import useNotif from "@/hooks/useNotif";
 
 const Google = () => {
   const { dispatch } = useAuth();
   const router = useRouter();
   const { dispatch: dispatchLoading } = useLoading();
+  const { dispatch: dispatchNotif } = useNotif();
   const handleGoogleLogin = async () => {
     try {
       const res = await signInWithGoogle();
@@ -32,18 +34,19 @@ const Google = () => {
       }
       dispatchLoading({ type: "FINISHED" });
     } catch (error) {
-      console.log(error);
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message
+      })
     }
   };
   return (
     <div>
       <div className="mt-6">
         <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
+            <span className="px-2 bg-transparent rounded-md text-slate-300">
               Or sign in with google
             </span>
           </div>
@@ -54,12 +57,12 @@ const Google = () => {
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a
               onClick={handleGoogleLogin}
-              className="cursor-pointer w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              className="cursor-pointer bg-slate-700/20 w-full inline-flex items-center justify-center py-2 px-4 border border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-300 hover:bg-slate-800"
             >
               <span className="sr-only">Sign in with Google</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 !important"
+                className="w-5 h-5"
                 //   width={20}
                 //   height={20}
                 fill="currentColor"

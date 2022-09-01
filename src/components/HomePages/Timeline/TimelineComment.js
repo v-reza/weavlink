@@ -1,14 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import { format as formatTime } from "timeago.js";
 import { useRouter } from "next/router";
 import { axiosDelete, axiosGet } from "@/utils/axiosInstance";
-import { SkeletonProfile } from "@/uiComponents/Skeleton";
+import { SkeletonProfile, SkeletonText } from "@/uiComponents/Skeleton";
 import {
   DotsHorizontalIcon,
   LinkIcon,
   TrashIcon,
   FlagIcon,
+  PlusSmIcon,
 } from "@heroicons/react/outline";
 import { HeartIcon, ThumbUpIcon, EmojiHappyIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
@@ -19,10 +20,24 @@ import useAuth from "@/hooks/useAuth";
 import useLoading from "@/hooks/useLoading";
 import useHeader from "@/hooks/useHeader";
 import useGlobal from "@/hooks/useGlobal";
+import Button from "@/uiComponents/Button";
+import AddReplyComment from "./AddReplyComment";
+import dynamic from "next/dynamic";
+// import ReplyComment from "./ReplyComment";
+const ReplyComment = dynamic(() => import("./ReplyComment"), {
+  suspense: true,
+  ssr: true,
+});
 const TimelineComment = ({ post, comment }) => {
   /* State */
   const [user, setUser] = useState(null);
   const [openLike, setOpenLike] = useState(false);
+
+  //reply comment
+  const replyLimit = 2;
+  const [loadMoreReply, setLoadMoreReply] = useState(replyLimit);
+  const [openReplyButton, setOpenReplyButton] = useState(false);
+  const [listReply, setListReply] = useState(null);
   /* End State */
 
   /* Hooks */
@@ -42,11 +57,41 @@ const TimelineComment = ({ post, comment }) => {
         const res = await axiosGet(`/users/${comment?.userId}`);
         setUser(res.data);
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
       }
     };
     getUserComments();
   }, [comment?.userId]);
+
+  useEffect(() => {
+    const getCommentsReply = async () => {
+      try {
+        const res = await axiosGet(`/comments/${comment?._id}/reply`);
+        setListReply(res.data[0]);
+      } catch (error) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
+      }
+    };
+    if (selector.refreshTimeline === true) {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          refreshTimeline: false,
+        },
+      });
+    }
+    getCommentsReply();
+  }, [comment?._id, selector?.refreshTimeline]);
+
   /* End useEffect */
 
   /* Action */
@@ -219,7 +264,7 @@ const TimelineComment = ({ post, comment }) => {
           onMouseOver={() => setOpenLike(true)}
           className={classNames(
             openLike ? "block" : "hidden",
-            "-mt-10 bg-slate-800 border border-slate-600 px-4 py-2 w-max rounded-md absolute"
+            "-mt-10 bg-slate-800 border border-slate-600 px-4 py-1 w-max rounded-md absolute"
           )}
         >
           <div className="flex items-center justify-between space-x-4">
@@ -237,15 +282,50 @@ const TimelineComment = ({ post, comment }) => {
             />
           </div>
         </div>
-        <div
-          className="hover:bg-slate-700 px-2 mt-2 w-max rounded-md"
-          onMouseOver={() => setOpenLike(true)}
-          onMouseLeave={() => setOpenLike(false)}
-        >
-          <span className="text-xs cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
-            Like
-          </span>
+        <div className="flex items-center space-x-1">
+          <div
+            className="hover:bg-slate-700 px-2 mt-1 w-max rounded-md"
+            onMouseOver={() => setOpenLike(true)}
+            onMouseLeave={() => setOpenLike(false)}
+          >
+            <span className="text-xs cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
+              Like
+            </span>
+          </div>
+          <div className="text-slate-400 text-md py-1">|</div>
+          <div
+            className="hover:bg-slate-700 px-2 mt-1 w-max rounded-md"
+            onClick={() => setOpenReplyButton(!openReplyButton)}
+          >
+            <span className="text-xs cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
+              Reply
+            </span>
+          </div>
+          <div className="text-slate-400 text-xs font-medium py-1 mt-2">
+            • {listReply?.reply?.length} Reply
+          </div>
         </div>
+        {listReply?.reply?.length > 0 &&
+          listReply?.reply
+            ?.sort((c1, c2) => {
+              return new Date(c2.createdAt) - new Date(c1.createdAt);
+            })
+            .slice(0, loadMoreReply)
+            .map((reply, index) => (
+              <Suspense key={reply._id} fallback={<SkeletonText />}>
+                <ReplyComment reply={reply} />
+              </Suspense>
+            ))}
+        {loadMoreReply < listReply?.reply?.length && (
+          <div className="flex items-center space-x-1">
+            <div className="hover:bg-slate-700 px-2 py-1 w-max rounded-md" onClick={() => setLoadMoreReply(loadMoreReply + replyLimit)}>
+              <span className="text-xs text-blue-300 cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
+                Load more reply
+              </span>
+            </div>
+          </div>
+        )}
+        {openReplyButton && <AddReplyComment comment={comment} />}
       </li>
     </>
   );

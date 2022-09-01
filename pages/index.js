@@ -129,8 +129,6 @@ export default function Home() {
     };
   }, [user?._id]);
 
-  console.log(selector);
-
   return (
     <>
       {isSSR && (
