@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useNotif from "@/hooks/useNotif";
-import { axiosGet, axiosPut } from "@/utils/axiosInstance";
+import { axiosDelete, axiosGet, axiosPut } from "@/utils/axiosInstance";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import {
   ChatAltIcon,
@@ -10,7 +10,14 @@ import {
   ThumbDownIcon,
   TrashIcon,
 } from "@heroicons/react/solid";
-import React, { useEffect, useState, Fragment, Suspense, useCallback, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  Fragment,
+  Suspense,
+  useCallback,
+  useRef,
+} from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel as ReactCarousel } from "react-responsive-carousel";
 import { format } from "date-fns";
@@ -43,6 +50,8 @@ import {
 } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 import { Button, Tooltip } from "flowbite-react";
+import useLoading from "@/hooks/useLoading";
+import useGlobal from "@/hooks/useGlobal";
 // import Picker from "emoji-picker-react";
 const Picker = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
@@ -103,6 +112,8 @@ const Timeline = ({ post }) => {
   const { user: currentUser } = useUser();
   const headers = useHeader(token);
   const folder = useFolder();
+  const { dispatch: dispatchLoading } = useLoading();
+  const { dispatch: dispatchGlobal } = useGlobal();
   /* End Hooks */
   /* State */
   const [user, setUser] = useState({});
@@ -120,7 +131,7 @@ const Timeline = ({ post }) => {
   const [loadMoreComments, setLoadMoreComments] = useState(commentLimit);
   const [selected, setSelected] = useState(moods[5]);
   const [openEmoji, setOpenEmoji] = useState(false);
-  const commentRef = useRef()
+  const commentRef = useRef();
   const [messageComments, setMessageComments] = useState("");
   // End Timeline Comments
 
@@ -185,8 +196,37 @@ const Timeline = ({ post }) => {
 
   const onEmojiClick = (event, emojiObject) => {
     const cursor = commentRef.current.selectionStart;
-    const text = messageComments.slice(0, cursor) + emojiObject.emoji + messageComments.slice(cursor);
+    const text =
+      messageComments.slice(0, cursor) +
+      emojiObject.emoji +
+      messageComments.slice(cursor);
     setMessageComments(text);
+  };
+
+  const handleDeletePost = async (id) => {
+    try {
+      dispatchLoading({ type: "PROCESSING " });
+      await axiosDelete(`/posts/delete/${id}`, headers).then(() => {
+        dispatchLoading({ type: "FINISHED" });
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            refreshTimeline: true,
+          },
+        });
+        dispatchNotif({
+          type: "NOTIF_SUCCESS",
+          title: "Success",
+          message: "Post deleted successfully",
+        });
+      });
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      });
+    }
   };
   /* End Action */
 

@@ -155,7 +155,7 @@ export default function Home() {
               open={open}
               setOpen={setOpen}
               title={"Create a Post"}
-              footer={<NewPost />}
+              footer={<NewPost setOpen={setOpen} />}
             >
               <FormNewPost user={user} />
             </Modal>

@@ -36,7 +36,7 @@ const Modal = ({ open, setOpen, title, children, footer, ...props }) => {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className="inline-block bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg xs:w-full xs:h-max sm:w-full sm:p-6">
-              <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4 mt-2">
+              <div className="sm:block absolute top-0 right-0 pt-4 pr-4 mt-2">
                 <button
                   type="button"
                   className="bg-transparent rounded-md text-gray-400 hover:text-gray-500"

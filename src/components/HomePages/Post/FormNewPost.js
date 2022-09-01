@@ -1,8 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import useGlobal from "@/hooks/useGlobal";
 import Button from "@/uiComponents/Button";
-import { ChevronDownIcon, GlobeIcon } from "@heroicons/react/outline";
-import { Carousel } from "flowbite-react";
+import {
+  ChevronDownIcon,
+  GlobeIcon,
+  PencilIcon,
+  XIcon,
+} from "@heroicons/react/outline";
+import { Carousel, Tooltip } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 
 const FormNewPost = ({ user }) => {
@@ -69,12 +74,25 @@ const FormNewPost = ({ user }) => {
             />
           </div>
           {selector.form?.file && (
-            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 relative">
+              <div className="flex items-center justify-end">
+                <Tooltip content="Edit" placement="top">
+                  <Button
+                    width="max"
+                    py="1"
+                    mb="2"
+                    borderColor="transparent"
+                    hoverBg={"slate-500/50"}
+                  >
+                    <PencilIcon className="w-5 h-5" />
+                  </Button>
+                </Tooltip>
+              </div>
               <Carousel slideInterval={5000}>
                 {(selector.form?.file || []).map((file, index) => (
                   <img
                     key={index}
-                    className="w-full h-auto object-cover"
+                    className="select-none w-full h-auto"
                     src={URL.createObjectURL(file)}
                     alt=""
                   />
