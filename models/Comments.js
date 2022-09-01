@@ -9,6 +9,10 @@ const CommentSchema = new mongoose.Schema(
     text: {
       type: String,
     },
+    reply: {
+      type: Array,
+      default: [],
+    }
   },
   { timestamps: true }
 );

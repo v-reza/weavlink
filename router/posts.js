@@ -114,4 +114,15 @@ router.post("/:postId/comment", verifyBearerToken, async (req, res) => {
   }
 });
 
+router.delete("/:postId/deleteComment/:commentId", verifyBearerToken, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    await post.updateOne({ $pull: { comments: req.params.commentId } });
+    await Comment.deleteOne({ _id: req.params.commentId, userId: req.user.users._id });
+    res.status(200).json("Success Delete Comment");
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
+
 module.exports = router;

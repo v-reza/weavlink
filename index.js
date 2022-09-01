@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const multer = require("multer");
 const dotenv = require("dotenv");
 const path = require("path");
+const request = require("request");
 
 /* Load Router  */
 const authRouter = require("./router/auth");
@@ -40,7 +41,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "public/assets")));
 
-
 /* Use Router */
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
@@ -50,6 +50,25 @@ app.use("/api/images", imagesRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/company", companyRouter);
 
+const options = {
+  method: "POST",
+  url: "https://auth.emsicloud.com/connect/token",
+  headers: { "content-type": "application/x-www-form-urlencoded" },
+  form: {
+    client_id: "980nnwk4cnlxk6u4",
+    client_secret: "imo3ndvA",
+    grant_type: "client_credentials",
+    scope: "emsi_open",
+  },
+};
+app.get("/checkEmsiToken", (req, res) => {
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    response.body = JSON.parse(body);
+    res.send(response.body);
+  });
+});
 
 /* Check Token */
 app.get("/api/checkToken", verifyBearerToken, (req, res) => {
