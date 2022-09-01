@@ -10,6 +10,7 @@ import {
   TrashIcon,
   FlagIcon,
 } from "@heroicons/react/outline";
+import { HeartIcon, ThumbUpIcon, EmojiHappyIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "@/utils/classNames";
 import useUser from "@/hooks/useUser";
@@ -21,6 +22,7 @@ import useGlobal from "@/hooks/useGlobal";
 const TimelineComment = ({ post, comment }) => {
   /* State */
   const [user, setUser] = useState(null);
+  const [openLike, setOpenLike] = useState(false);
   /* End State */
 
   /* Hooks */
@@ -82,12 +84,15 @@ const TimelineComment = ({ post, comment }) => {
   return (
     <>
       <li key={comment._id} className="py-4">
-        <div className="flex space-x-3">
+        <div
+          className="flex space-x-3 bg-slate-700/50 rounded-md p-2"
+          onMouseOver={() => setOpenLike(false)}
+        >
           {!user?.profilePicture ? (
             <SkeletonProfile />
           ) : (
             <img
-              className="cursor-pointer h-6 w-6 rounded-full mt-2"
+              className="cursor-pointer h-6 w-6 rounded-full mt-2 "
               src={user?.profilePicture}
               onClick={() =>
                 router.push(
@@ -202,12 +207,44 @@ const TimelineComment = ({ post, comment }) => {
             <p className="text-sm text-slate-400/80 break-all">
               {comment.text}
             </p>
+
             <div className="mt-4">
               <span className="text-xs font-medium text-slate-400 mt-4">
                 {formatTime(comment.createdAt)}
               </span>
             </div>
           </div>
+        </div>
+        <div
+          onMouseOver={() => setOpenLike(true)}
+          className={classNames(
+            openLike ? "block" : "hidden",
+            "-mt-10 bg-slate-800 border border-slate-600 px-4 py-2 w-max rounded-md absolute"
+          )}
+        >
+          <div className="flex items-center justify-between space-x-4">
+            <ThumbUpIcon
+              className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-blue-500"
+              aria-hidden="true"
+            />
+            <HeartIcon
+              className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-rose-500"
+              aria-hidden="true"
+            />
+            <EmojiHappyIcon
+              className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-sky-300"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+        <div
+          className="hover:bg-slate-700 px-2 mt-2 w-max rounded-md"
+          onMouseOver={() => setOpenLike(true)}
+          onMouseLeave={() => setOpenLike(false)}
+        >
+          <span className="text-xs cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
+            Like
+          </span>
         </div>
       </li>
     </>
