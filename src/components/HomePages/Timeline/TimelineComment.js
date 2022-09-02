@@ -264,7 +264,7 @@ const TimelineComment = ({ post, comment }) => {
           onMouseOver={() => setOpenLike(true)}
           className={classNames(
             openLike ? "block" : "hidden",
-            "-mt-10 bg-slate-800 border border-slate-600 px-4 py-1 w-max rounded-md absolute"
+            "-mt-10 bg-slate-800 border border-slate-600 px-4 py-1.5 w-max rounded-md absolute"
           )}
         >
           <div className="flex items-center justify-between space-x-4">
@@ -282,7 +282,7 @@ const TimelineComment = ({ post, comment }) => {
             />
           </div>
         </div>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1 w-max">
           <div
             className="hover:bg-slate-700 px-2 mt-1 w-max rounded-md"
             onMouseOver={() => setOpenLike(true)}
@@ -313,17 +313,36 @@ const TimelineComment = ({ post, comment }) => {
             .slice(0, loadMoreReply)
             .map((reply, index) => (
               <Suspense key={reply._id} fallback={<SkeletonText />}>
-                <ReplyComment reply={reply} />
+                <ReplyComment reply={reply} comment={comment} />
               </Suspense>
             ))}
-        {loadMoreReply < listReply?.reply?.length && (
+        {loadMoreReply < listReply?.reply?.length ? (
           <div className="flex items-center space-x-1">
-            <div className="hover:bg-slate-700 px-2 py-1 w-max rounded-md" onClick={() => setLoadMoreReply(loadMoreReply + replyLimit)}>
+            <div
+              className="hover:bg-slate-700 px-2 py-1 w-max rounded-md"
+              onClick={() => setLoadMoreReply(loadMoreReply + replyLimit)}
+            >
               <span className="text-xs text-blue-300 cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
-                Load more reply
+                Show more reply
               </span>
             </div>
           </div>
+        ) : (
+          listReply?.reply?.length !== 0 &&
+          loadMoreReply === listReply?.reply?.length && (
+            <div className="flex items-center space-x-1">
+              <div
+                className="hover:bg-slate-700 px-2 py-1 w-max rounded-md"
+                onClick={() =>
+                  setLoadMoreReply((prevState) => prevState - 4)
+                }
+              >
+                <span className="text-xs text-blue-300 cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
+                  Show less reply
+                </span>
+              </div>
+            </div>
+          )
         )}
         {openReplyButton && <AddReplyComment comment={comment} />}
       </li>

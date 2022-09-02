@@ -1,17 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
 import { Menu, Transition } from "@headlessui/react";
-import { DotsHorizontalIcon, TrashIcon } from "@heroicons/react/outline";
+import {
+  DotsHorizontalIcon,
+  FlagIcon,
+  LinkIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
 import React, { Fragment, useEffect, useState } from "react";
 import { HeartIcon, ThumbUpIcon, EmojiHappyIcon } from "@heroicons/react/solid";
 import classNames from "@/utils/classNames";
-import { axiosGet } from "@/utils/axiosInstance";
+import { axiosDelete, axiosGet } from "@/utils/axiosInstance";
 import { format } from "timeago.js";
+import useUser from "@/hooks/useUser";
+import useAuth from "@/hooks/useAuth";
+import useHeader from "@/hooks/useHeader";
+import useLoading from "@/hooks/useLoading";
+import useGlobal from "@/hooks/useGlobal";
+import useNotif from "@/hooks/useNotif";
 
-const ReplyComment = ({ reply }) => {
+const ReplyComment = ({ reply, comment }) => {
   /* State */
   const [openLike, setOpenLike] = useState(false);
   const [userReply, setUserReply] = useState(null);
   /* End State */
+
+  /* Hooks */
+  const { user } = useUser();
+  const { token } = useAuth();
+  const headers = useHeader(token);
+  const { dispatch: dispatchLoading } = useLoading();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { dispatch: dispatchNotif } = useNotif();
+  /* End Hooks */
 
   /* useEffect */
   useEffect(() => {
@@ -23,6 +43,31 @@ const ReplyComment = ({ reply }) => {
   }, [reply?.userId]);
 
   /* End useEffect */
+
+  const handleDeleteReply = async () => {
+    try {
+      dispatchLoading({ type: "PROCESSING" });
+      await axiosDelete(
+        `/comments/${comment?._id}/reply/${reply?._id}`,
+        headers
+      ).then(() => {
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            ...selector,
+            refreshTimeline: true,
+          },
+        });
+        dispatchLoading({ type: "FINISHED" });
+      });
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      })
+    }
+  };
   return (
     <div className="py-1">
       <div
@@ -67,7 +112,67 @@ const ReplyComment = ({ reply }) => {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items className="z-10 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-slate-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1"></div>
+                    <div className="py-1">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-transparent text-slate-400"
+                                : "text-slate-300",
+                              "block px-4 py-2 text-xs font-medium flex items-center"
+                            )}
+                          >
+                            <LinkIcon
+                              className="h-5 w-5 mr-4"
+                              aria-hidden="true"
+                            />
+                            Copy link to comment
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active
+                                ? "bg-transparent text-slate-400"
+                                : "text-slate-300",
+                              "block px-4 py-2 text-xs font-medium flex items-center"
+                            )}
+                          >
+                            <FlagIcon
+                              className="h-5 w-5 mr-4"
+                              aria-hidden="true"
+                            />
+                            Report
+                          </a>
+                        )}
+                      </Menu.Item>
+                      {reply?.userId === user?._id && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <div
+                              onClick={() => handleDeleteReply()}
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "cursor-pointer block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <TrashIcon
+                                className="h-5 w-5 mr-4"
+                                aria-hidden="true"
+                              />
+                              Delete
+                            </div>
+                          )}
+                        </Menu.Item>
+                      )}
+                    </div>
                   </Menu.Items>
                 </Transition>
               </Menu>
@@ -85,7 +190,7 @@ const ReplyComment = ({ reply }) => {
         onMouseOver={() => setOpenLike(true)}
         className={classNames(
           openLike ? "block" : "hidden",
-          "-mt-10 ml-6 bg-slate-800 border border-slate-600 px-4 py-1 w-max rounded-md absolute"
+          "-mt-10 ml-6 bg-slate-800 border border-slate-600 px-4 py-1.5 w-max rounded-md absolute"
         )}
       >
         <div className="flex items-center justify-between space-x-4">
