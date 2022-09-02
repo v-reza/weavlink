@@ -40,6 +40,53 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/listUsersMentions", async (req, res) => {
+  try {
+    const data = [];
+    const users = await User.find().select([
+      "-password",
+      "-__v",
+      "-createdAt",
+      "-updatedAt",
+      "-email",
+    ]);
+    users.map((user) => {
+      data.push({
+        id: user._id,
+        display: user.firstname + " " + user.lastname,
+        link: "https://weavlink.com/" + user.username ? user.username : "",
+        avatar: user.profilePicture ? user.profilePicture : "/avatar.png",
+      });
+    });
+    const company = await Company.find().select([
+      "-password",
+      "-__v",
+      "-createdAt",
+      "-updatedAt",
+      "-email",
+    ]);
+    company.map((company) => {
+      data.push({
+        id: company._id,
+        display:
+          company.companyName.split(" ").length > 1
+            ? company.companyName.split(" ")[0] +
+              " " +
+              company.companyName.split(" ")[1]
+            : company.companyName,
+        link:
+          "https://weavlink.com/" + company.companyName
+            ? company.companyName
+            : "",
+        avatar: company.companyLogo ? company.companyLogo : "/avatar.png",
+      });
+    });
+    return res.json(data);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -138,7 +185,7 @@ router.get("/listFriends/notFollow", verifyBearerToken, async (req, res) => {
       },
       {
         $unwind: "$user",
-      }
+      },
     ]);
 
     res.status(200).json(userProfile);
