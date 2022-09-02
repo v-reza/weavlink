@@ -1,0 +1,13 @@
+diff --git a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
+index fae418d..3e58002 100644
+--- a/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
++++ b/node_modules/draft-js-mention-plugin/lib/MentionSuggestions/index.js
+@@ -225,7 +225,7 @@ var MentionSuggestions = exports.MentionSuggestions = function (_Component) {
+     }, _this.onEscape = function (keyboardEvent) {
+       keyboardEvent.preventDefault();
+ 
+-      var activeOffsetKey = _this.lastSelectionIsInsideWord.filter(function (value) {
++      var activeOffsetKey = _this.lastSelectionIsInsideWord?.filter(function (value) {
+         return value === true;
+       }).keySeq().first();
+       _this.props.store.escapeSearch(activeOffsetKey);

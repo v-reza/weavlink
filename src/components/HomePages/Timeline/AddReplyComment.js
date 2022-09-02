@@ -9,13 +9,32 @@ import {
   EmojiHappyIcon,
   PhotographIcon,
 } from "@heroicons/react/outline";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classNames from "@/utils/classNames";
 import useUser from "@/hooks/useUser";
+import { EditorState } from "draft-js";
+import Editor from "@draft-js-plugins/editor";
+import createMentionPlugin, {
+  defaultSuggestionsFilter,
+} from "@draft-js-plugins/mention";
+import { convertToRaw } from "draft-js";
+import { Mention, MentionsInput } from "react-mentions";
+// import defaultStyle from "./style/defaultStyle";
+import classes from "./style/mentionsData.module.css";
+// const mentionPlugin = createMentionPlugin();
+// const { MentionSuggestions } = mentionPlugin;
+// const plugins = [mentionPlugin];
 
 const AddReplyComment = ({ comment }) => {
   /* Hooks */
   const replyRef = useRef();
+  const messageRef = useRef();
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchLoading } = useLoading();
@@ -25,11 +44,9 @@ const AddReplyComment = ({ comment }) => {
 
   /* State */
   const [messageReply, setMessageReply] = useState("");
-  const [openMentionsPeople, setOpenMentionsPeople] = useState(false);
-  const [listUser, setListUser] = useState([]);
   const [mentionsPeople, setMentionsPeople] = useState("");
-  const [listMentionsPeople, setListMentionsPeople] = useState([]);
-  console.log(listMentionsPeople);
+  const [suggestions, setSuggestions] = useState([]);
+
   /* End State */
 
   /* Action */
@@ -54,6 +71,7 @@ const AddReplyComment = ({ comment }) => {
         headers
       ).then(() => {
         setMessageReply("");
+        setMentionsPeople("");
         dispatchGlobal({
           type: "GLOBAL_STATE",
           payload: {
@@ -66,161 +84,120 @@ const AddReplyComment = ({ comment }) => {
     }
   };
 
-  const filteredListUser =
-    mentionsPeople === ""
-      ? []
-      : listUser.filter((user) => {
-          return (
-            user.firstname
-              .toLowerCase()
-              .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase()) ||
-            user.lastname
-              .toLowerCase()
-              .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase())
-          );
-        });
+  const onChangeMentions = (event, newValue, newPlainTextValue, mentions) => {
+    setMentionsPeople(event.target.value);
+    setMessageReply(newPlainTextValue)
+    // console.log("newValue", newValue);
+    // console.log("newPlainTextValue", newPlainTextValue);
+    // console.log("mentions", mentions);
+  };
+
+  // const filteredListUser =
+  //   mentionsPeople === ""
+  //     ? []
+  //     : listUser.filter((user) => {
+  //         return (
+  //           user.firstname
+  //             .toLowerCase()
+  //             .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase()) ||
+  //           user.lastname
+  //             .toLowerCase()
+  //             .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase())
+  //         );
+  //       });
   /* End Action */
 
   /* useEffect */
 
-  // useEffect(() => {
-  //   // if (/[@]/u.test(messageReply)) {
-  //     // setMentionsPeople(messageReply.replaceAll(messageReply, ""));
-  //   // }
-  // }, [messageReply]);
-
   useEffect(() => {
     const getListUser = async () => {
-      const res = await axiosGet("/users");
-      setListUser(res.data.filter((listUser) => listUser._id !== user?._id));
+      const res = await axiosGet("/users/listUsersMentions");
+      setSuggestions(res.data.filter((item) => item.id !== user?._id));
+      // let rawSuggestions = [];
+      // await res.data
+      //   .filter((listUser) => listUser._id !== user?._id)
+      //   .map((item) => {
+      //     rawSuggestions.push({
+      //       name: item.firstname + " " + item.lastname,
+      //       link: `https://weavlink.com/${item.firstname}`,
+      //       avatar: item.profilePicture ? item.profilePicture : "/avatar.png",
+      //     });
+      //   });
+      // setSuggestions(rawSuggestions);
     };
     getListUser();
   }, [user?._id]);
 
+  // console.log(suggestions);
   /* End useEffect */
   return (
-    <div className="ml-4 p-2">
+    <div className="ml-6 p-2">
       <label htmlFor="reply" className="sr-only">
         Add your reply
       </label>
       <div className="flex">
-        <div
+        <img
+          src={user?.profilePicture ? user?.profilePicture : "/avatar.png"}
+          className="w-6 h-6 rounded-full flex items-center justify-center mr-2 mt-1"
+          alt=""
+        />
+        {/* <div
           onClick={() => {
             setOpenMentionsPeople(!openMentionsPeople);
           }}
           className="flex items-center justify-center text-md font-medium text-slate-400 cursor-pointer px-2 py-1 hover:bg-slate-700/50 mr-2  rounded-md"
         >
           @
-        </div>
-        <div className="relative rounded-md shadow-sm w-full">
-          <input
-            ref={replyRef}
-            value={messageReply}
-            onChange={(e) => {
-              setMessageReply(e.target.value);
-              // if (messageReply.length > 0) {
-              // setMessageReply(messageReply.replace(/[@]/u, ""));
-              // setMentionsPeople(
-              //   messageReply.replaceAll(
-              //     messageReply,
-              //     e.target.value.replaceAll(
-              //       messageReply,
-              //       mentionsPeople.replace(messageReply, "")
-              //     )
-              //   )
-              // );
-              // } else {
-              //   setMentionsPeople(
-              //     messageReply.replace(messageReply, e.target.value)
-              //   );
-              // }
-              // if (/[@]/u.test(messageReply)) {
-              // } else {
-              //   setMentionsPeople(messageReply.replaceAll("@", ""));
-              // }
-            }}
+        </div> */}
+        <div className="focus:border-0 focus:ring-0 w-full text-xs text-slate-300">
+          <MentionsInput
+            value={mentionsPeople}
+            onChange={onChangeMentions}
+            markup="{{__display__}}"
             onKeyPress={(e) => handleNewReply(e)}
-            type="text"
-            className="bg-transparent text-slate-300 block w-full text-xs pr-10 sm:text-sm border-2 border-slate-600 rounded-full focus:outline-0 focus:border-slate-500 focus:ring-0"
+            className="mentions"
+            classNames={classes}
+            inputRef={messageRef}
+            // style={defaultStyle}
             placeholder="Add a reply..."
-          />
-          <div className="absolute inset-y-0 right-0 pr-4 space-x-2 flex items-center cursor-pointer">
-            <EmojiHappyIcon
-              className="h-5 w-5 text-slate-300"
-              aria-hidden="true"
-            />
-          </div>
-        </div>
-      </div>
-      {openMentionsPeople && (
-        <div
-          className={classNames(
-            openMentionsPeople ? "block" : "hidden",
-            "px-4 mt-1 relative"
-          )}
-        >
-          <div className="z-20 absolute w-full rounded-md bg-slate-700 border border-slate-600 overflow-y-scroll h-56 ...">
-            <div className="px-4 py-2">
-              <input
-                type="text"
-                value={mentionsPeople}
-                onChange={(e) => setMentionsPeople(e.target.value)}
-                className="mb-4 bg-slate-800 text-slate-300 block w-full text-xs pr-10 sm:text-sm border-2 border-slate-700 rounded-full focus:outline-0 focus:border-slate-600 focus:ring-0"
-                placeholder="Search..."
-              />
-              {filteredListUser.length > 0 ? (
-                filteredListUser.map((user) => (
-                  <div
-                    className="flex space-x-3 mb-4 cursor-pointer"
-                    key={user._id}
-                    onClick={() => {
-                      setMentionsPeople("");
-                      const cursor = replyRef.current.selectionStart;
-                      const text =
-                        messageReply.slice(0, cursor) +
-                        `@${user.firstname} ${user.lastname} ` +
-                        messageReply.slice(cursor);
-                      setMessageReply(messageReply.replace(messageReply, text));
-                      setListMentionsPeople([
-                        ...listMentionsPeople,
-                        user.firstname + " " + user.lastname,
-                      ]);
-                      setOpenMentionsPeople(false);
-                    }}
-                  >
-                    <div className="flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={
-                          user?.profilePicture
-                            ? user?.profilePicture
-                            : "/avatar.png"
-                        }
-                        referrerPolicy="no-referrer"
-                        alt=""
-                      />
+            allowSuggestionsAboveCursor={true}
+            allowSpaceInQuery={true}
+            singleLine={true}
+            displayTransform={(display) => `<<<${display}>>>`}
+          >
+            <Mention
+              trigger={"@"}
+              data={suggestions}
+              className={classes.mentions__mention}
+              renderSuggestion={(suggestion, search, highlightedDisplay) => (
+                <div className="flex ">
+                  <div className="flex-shrink-0">
+                    <img
+
+                      src={suggestion.avatar}
+                      className="w-6 h-6 rounded-full flex items-center justify-center mr-2 mt-1"
+                      alt=""
+                    />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <div>
+                      {highlightedDisplay}
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-slate-300">
-                        <p className="truncate">
-                          {user?.firstname} {user?.lastname}
-                        </p>
-                      </div>
-                      <div className="text-sm text-slate-500">
-                        <p>Headline</p>
-                      </div>
+                    <div>
+                      {suggestion.name}
                     </div>
                   </div>
-                ))
-              ) : (
-                <span className="text-slate-300 font-medium flex items-center justify-center">
-                  No result...
-                </span>
+                </div>
               )}
-            </div>
-          </div>
+              displayTransform={(display) =>
+                `@${
+                  suggestions.filter((item) => item.id === display)[0]?.display
+                }`
+              }
+            />
+          </MentionsInput>
         </div>
-      )}
+      </div>
     </div>
   );
 };

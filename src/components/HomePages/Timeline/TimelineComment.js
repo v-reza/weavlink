@@ -329,7 +329,7 @@ const TimelineComment = ({ post, comment }) => {
           </div>
         ) : (
           listReply?.reply?.length !== 0 &&
-          loadMoreReply === listReply?.reply?.length && (
+          loadMoreReply <= listReply?.reply?.length && (
             <div className="flex items-center space-x-1">
               <div
                 className="hover:bg-slate-700 px-2 py-1 w-max rounded-md"
