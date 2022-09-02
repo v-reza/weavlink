@@ -25,6 +25,10 @@ const PostSchema = new mongoose.Schema(
     lastId: {
       type: Number,
       default: 1
+    },
+    commentsTotal: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }

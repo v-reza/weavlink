@@ -47,7 +47,12 @@ router.post(
 
       const comment = await Comment.findById(req.params.commentId);
       await comment.updateOne({ $push: { reply: replyComments._id } });
-      res.status(201).json("Success Reply Comment");
+      const post = await Post.findOne({
+        comments: { $all: [mongoose.Types.ObjectId(req.params.commentId)] },
+      });
+      console.log(post)
+      await post.updateOne({ $inc: { commentsTotal: 1 } });
+      return res.status(201).json("Success Reply Comment");
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -66,6 +71,10 @@ router.delete(
         _id: req.params.replyId,
         userId: req.user.users._id,
       });
+      const post = await Post.findOne({
+        comments: { $all: [mongoose.Types.ObjectId(req.params.commentId)] },
+      });
+      await post.updateOne({ $inc: { commentsTotal: 1 } });
       res.status(200).json("Success Delete Reply Comment");
     } catch (error) {
       return res.status(500).json(error);

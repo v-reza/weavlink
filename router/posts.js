@@ -106,8 +106,10 @@ router.post("/:postId/comment", verifyBearerToken, async (req, res) => {
     });
     await comment.save();
 
+    // const lastComments = await Post.findOne({}, {}, { sort: { createdAt: -1 } });
     const post = await Post.findById(req.params.postId);
     await post.updateOne({ $push: { comments: comment._id } });
+    await post.updateOne({ $inc: { commentsTotal: 1 } });
     res.status(201).json("Success Comment");
   } catch (error) {
     return res.status(500).json(error);
@@ -122,14 +124,15 @@ router.delete(
     try {
       const post = await Post.findById(req.params.postId);
       await post.updateOne({ $pull: { comments: req.params.commentId } });
+      await post.updateOne({ $inc: { commentsTotal: -1 } });
       const comment = await Comment.findOne({
         _id: req.params.commentId,
         userId: req.user.users._id,
-      })
+      });
       comment.reply.map(async (reply) => {
         await ReplyComments.deleteOne({ _id: reply });
-      })
-      await comment.deleteOne()
+      });
+      await comment.deleteOne();
       // await Comment.deleteOne({
       //   _id: req.params.commentId,
       //   userId: req.user.users._id,
