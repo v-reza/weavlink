@@ -3,6 +3,7 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comments");
 const mongoose = require("mongoose");
 const verifyBearerToken = require("../helper/verifyBearerToken");
+const ReplyComments = require("../models/ReplyComments");
 
 /* Get Timeline */
 router.get("/timeline", async (req, res) => {
@@ -121,10 +122,18 @@ router.delete(
     try {
       const post = await Post.findById(req.params.postId);
       await post.updateOne({ $pull: { comments: req.params.commentId } });
-      await Comment.deleteOne({
+      const comment = await Comment.findOne({
         _id: req.params.commentId,
         userId: req.user.users._id,
-      });
+      })
+      comment.reply.map(async (reply) => {
+        await ReplyComments.deleteOne({ _id: reply });
+      })
+      await comment.deleteOne()
+      // await Comment.deleteOne({
+      //   _id: req.params.commentId,
+      //   userId: req.user.users._id,
+      // });
       res.status(200).json("Success Delete Comment");
     } catch (error) {
       return res.status(500).json(error);

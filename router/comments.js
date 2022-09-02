@@ -54,4 +54,23 @@ router.post(
   }
 );
 
+/* Delete Reply Comments */
+router.delete(
+  "/:commentId/reply/:replyId",
+  verifyBearerToken,
+  async (req, res) => {
+    try {
+      const comment = await Comment.findById(req.params.commentId);
+      await comment.updateOne({ $pull: { reply: req.params.replyId } });
+      await ReplyComment.deleteOne({
+        _id: req.params.replyId,
+        userId: req.user.users._id,
+      });
+      res.status(200).json("Success Delete Reply Comment");
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+);
+
 module.exports = router;
