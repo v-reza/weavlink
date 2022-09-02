@@ -18,18 +18,9 @@ import React, {
 } from "react";
 import classNames from "@/utils/classNames";
 import useUser from "@/hooks/useUser";
-import { EditorState } from "draft-js";
-import Editor from "@draft-js-plugins/editor";
-import createMentionPlugin, {
-  defaultSuggestionsFilter,
-} from "@draft-js-plugins/mention";
-import { convertToRaw } from "draft-js";
 import { Mention, MentionsInput } from "react-mentions";
 // import defaultStyle from "./style/defaultStyle";
 import classes from "./style/mentionsData.module.css";
-// const mentionPlugin = createMentionPlugin();
-// const { MentionSuggestions } = mentionPlugin;
-// const plugins = [mentionPlugin];
 
 const AddReplyComment = ({ comment }) => {
   /* Hooks */
@@ -86,49 +77,24 @@ const AddReplyComment = ({ comment }) => {
 
   const onChangeMentions = (event, newValue, newPlainTextValue, mentions) => {
     setMentionsPeople(event.target.value);
-    setMessageReply(newPlainTextValue)
+    setMessageReply(newPlainTextValue);
     // console.log("newValue", newValue);
     // console.log("newPlainTextValue", newPlainTextValue);
     // console.log("mentions", mentions);
   };
 
-  // const filteredListUser =
-  //   mentionsPeople === ""
-  //     ? []
-  //     : listUser.filter((user) => {
-  //         return (
-  //           user.firstname
-  //             .toLowerCase()
-  //             .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase()) ||
-  //           user.lastname
-  //             .toLowerCase()
-  //             .includes(mentionsPeople.replace(/[@]/u, "").toLowerCase())
-  //         );
-  //       });
   /* End Action */
 
   /* useEffect */
-
   useEffect(() => {
     const getListUser = async () => {
       const res = await axiosGet("/users/listUsersMentions");
       setSuggestions(res.data.filter((item) => item.id !== user?._id));
-      // let rawSuggestions = [];
-      // await res.data
-      //   .filter((listUser) => listUser._id !== user?._id)
-      //   .map((item) => {
-      //     rawSuggestions.push({
-      //       name: item.firstname + " " + item.lastname,
-      //       link: `https://weavlink.com/${item.firstname}`,
-      //       avatar: item.profilePicture ? item.profilePicture : "/avatar.png",
-      //     });
-      //   });
-      // setSuggestions(rawSuggestions);
+      
     };
     getListUser();
   }, [user?._id]);
 
-  // console.log(suggestions);
   /* End useEffect */
   return (
     <div className="ml-6 p-2">
@@ -163,7 +129,7 @@ const AddReplyComment = ({ comment }) => {
             allowSuggestionsAboveCursor={true}
             allowSpaceInQuery={true}
             singleLine={true}
-            displayTransform={(display) => `<<<${display}>>>`}
+            displayTransform={(display) => `@${display}`}
           >
             <Mention
               trigger={"@"}
@@ -173,19 +139,14 @@ const AddReplyComment = ({ comment }) => {
                 <div className="flex ">
                   <div className="flex-shrink-0">
                     <img
-
                       src={suggestion.avatar}
                       className="w-6 h-6 rounded-full flex items-center justify-center mr-2 mt-1"
                       alt=""
                     />
                   </div>
                   <div className="flex items-center justify-center">
-                    <div>
-                      {highlightedDisplay}
-                    </div>
-                    <div>
-                      {suggestion.name}
-                    </div>
+                    <div>{highlightedDisplay}</div>
+                    <div>{suggestion.name}</div>
                   </div>
                 </div>
               )}

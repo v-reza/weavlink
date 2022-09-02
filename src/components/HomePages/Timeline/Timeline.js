@@ -1,6 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import useNotif from "@/hooks/useNotif";
-import { axiosDelete, axiosGet, axiosPost, axiosPut } from "@/utils/axiosInstance";
+import {
+  axiosDelete,
+  axiosGet,
+  axiosPost,
+  axiosPut,
+} from "@/utils/axiosInstance";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import {
   ChatAltIcon,
@@ -9,6 +14,10 @@ import {
   ThumbUpIcon,
   ThumbDownIcon,
   TrashIcon,
+  EmojiHappyIcon,
+  FireIcon,
+  HeartIcon,
+  EmojiSadIcon,
 } from "@heroicons/react/solid";
 import React, {
   useEffect,
@@ -40,19 +49,13 @@ import Card from "@/uiComponents/Card";
 import {
   PaperClipIcon,
   PlusSmIcon,
-  EmojiHappyIcon,
-  FireIcon,
-  HeartIcon,
-  EmojiSadIcon,
   XIcon,
   QuestionMarkCircleIcon,
   PhotographIcon,
 } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
-import { Button, Tooltip } from "flowbite-react";
 import useLoading from "@/hooks/useLoading";
 import useGlobal from "@/hooks/useGlobal";
-// import Picker from "emoji-picker-react";
 const Picker = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
 });
@@ -124,16 +127,15 @@ const Timeline = ({ post }) => {
   const [loadingSSR, setLoadingSSR] = useState(true);
   const [likesDoubleTap, setLikesDoubleTap] = useState(false);
   const [isLikes, setIsLikes] = useState(false);
-  const [emoticon, setEmoticon] = useState(false);
 
   // Timeline Comments
   const commentLimit = 5;
   const [comments, setComments] = useState([]);
   const [loadMoreComments, setLoadMoreComments] = useState(commentLimit);
-  const [selected, setSelected] = useState(moods[5]);
   const [openEmoji, setOpenEmoji] = useState(false);
   const commentRef = useRef();
   const [messageComments, setMessageComments] = useState("");
+  const [openLike, setOpenLike] = useState(false);
   // End Timeline Comments
 
   /* End State */
@@ -244,19 +246,22 @@ const Timeline = ({ post }) => {
 
       try {
         dispatchLoading({ type: "PROCESSING " });
-        await axiosPost(`/posts/${id}/comment`, { text: messageComments }, headers).then(() => {
+        await axiosPost(
+          `/posts/${id}/comment`,
+          { text: messageComments },
+          headers
+        ).then(() => {
           dispatchLoading({ type: "FINISHED" });
           dispatchGlobal({
             type: "GLOBAL_STATE",
             payload: {
               ...selector,
               refreshTimeline: true,
-            }
-          })
+            },
+          });
           setMessageComments("");
           setOpenEmoji(false);
           commentRef.current.focus();
-          
         });
       } catch (error) {
         dispatchNotif({
@@ -266,7 +271,7 @@ const Timeline = ({ post }) => {
         });
       }
     }
-  }
+  };
   /* End Action */
 
   const username = user.username
@@ -416,9 +421,38 @@ const Timeline = ({ post }) => {
               className="mt-4 text-sm text-base space-y-4 text-slate-400"
               dangerouslySetInnerHTML={{ __html: `<p>${post.desc}</p>` }}
             />
+            <div
+              onMouseOver={() => setOpenLike(true)}
+              onMouseLeave={() => setOpenLike(false)}
+              className={classNames(
+                openLike ? "block" : "hidden",
+                "block -mt-5 bg-slate-800 border border-slate-600 px-4 py-1.5 w-max rounded-md absolute"
+              )}
+              // )}
+            >
+              <div className="flex items-center justify-between space-x-4">
+                <ThumbUpIcon
+                  className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-blue-500"
+                  aria-hidden="true"
+                />
+                <HeartIcon
+                  className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-rose-500"
+                  aria-hidden="true"
+                />
+                <EmojiHappyIcon
+                  className="animate-bounce-short cursor-pointer hover:animate-none transition ease-in-out delay-300 hover:-translate-y-2  hover:scale-110 duration-300 h-8 w-8 text-sky-300"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+
             <div className=" mt-6 flex items-center justify-between space-x-8">
               <div className="flex space-x-6">
-                <div className="hover:bg-slate-500/50 rounded-lg px-1">
+                <div
+                  className="hover:bg-slate-500/50 rounded-lg px-1"
+                  onMouseOver={() => setOpenLike(true)}
+                  onMouseLeave={() => setOpenLike(false)}
+                >
                   <span className="inline-flex items-start mt-1 justify-start text-sm">
                     <button
                       onClick={(e) => handleLike(e, post._id)}
@@ -519,7 +553,7 @@ const Timeline = ({ post }) => {
                   </div>
                 </div>
                 {openEmoji && (
-                  <div className="mt-4 right-4 sm:right-4 md:right-20 lg:right-80 absolute">
+                  <div className="z-20 mt-4 right-4 sm:right-4 md:right-20 lg:right-80 absolute">
                     <Picker
                       disableAutoFocus={true}
                       pickerStyle={{

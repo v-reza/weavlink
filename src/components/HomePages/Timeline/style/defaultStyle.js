@@ -46,7 +46,6 @@ export default {
         boxShadow: "none",
         outline: "none",
       },
-      // width: 130
     },
 
     highlighter: {
@@ -69,7 +68,6 @@ export default {
         boxShadow: "none",
         outline: "none"
       },
-      // border: "2px inset"
     },
   },
 
