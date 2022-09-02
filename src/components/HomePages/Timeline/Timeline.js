@@ -272,7 +272,6 @@ const Timeline = ({ post }) => {
   const username = user.username
     ? user.username
     : user.firstname + user.lastname + "-" + user._id;
-
   return (
     <>
       {!loadingSSR ? (
@@ -464,7 +463,7 @@ const Timeline = ({ post }) => {
                       aria-hidden="true"
                     />
                     <span className="font-medium text-slate-400">
-                      {post.comments.length}
+                      {post.commentsTotal}
                     </span>
                     <span className="sr-only">replies</span>
                   </button>
