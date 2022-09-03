@@ -56,6 +56,7 @@ import {
 import dynamic from "next/dynamic";
 import useLoading from "@/hooks/useLoading";
 import useGlobal from "@/hooks/useGlobal";
+import DotsLoader from "@/uiComponents/DotsLoader";
 const Picker = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
 });
@@ -578,7 +579,12 @@ const Timeline = ({ post }) => {
                     })
                     .slice(0, loadMoreComments)
                     .map((comment) => (
-                      <Suspense fallback={<SkeletonText />} key={comment._id}>
+                      <Suspense
+                        fallback={
+                          <DotsLoader className="overflow-hidden flex items-center justify-center" color="grey" />
+                        }
+                        key={comment._id}
+                      >
                         <TimelineComment comment={comment} post={post} />
                       </Suspense>
                     ))

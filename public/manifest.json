@@ -1,15 +1,16 @@
 {
-  "name": "Velkey PWA",
-  "short_name": "Velkey PWA",
+  "name": "WeavLink",
+  "short_name": "WeavLink Apps",
+  "description": "Find the job or internship for you",
   "icons": [
     {
-      "src": "logo_small.png",
+      "src": "weavlink-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
 
     {
-      "src": "logo_small.png",
+      "src": "weavlink-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }

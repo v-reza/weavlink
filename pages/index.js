@@ -34,6 +34,7 @@ import FooterNewPost from "@/components/HomePages/Post/FooterNewPost";
 import HomeMainBox from "@/components/HomePages/HomeMainBox";
 import EditPhoto from "@/components/HomePages/Post/Edit/EditPhoto";
 import FooterEditPhoto from "@/components/HomePages/Post/Edit/FooterEditPhoto";
+import DotsLoader from "@/uiComponents/DotsLoader";
 
 export default function Home() {
   const router = useRouter();
@@ -186,7 +187,9 @@ export default function Home() {
                   Oops!. you has reached the last post
                 </h1>
               }
-              loader={<LinearProgress />}
+              loader={
+                <DotsLoader className="overflow-hidden flex items-center justify-center" color="grey" />
+              }
             >
               {timeline.map((post) => (
                 <Card key={post._id} className="mb-4" overFlow="">

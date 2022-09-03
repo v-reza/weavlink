@@ -23,6 +23,7 @@ import useGlobal from "@/hooks/useGlobal";
 import Button from "@/uiComponents/Button";
 import AddReplyComment from "./AddReplyComment";
 import dynamic from "next/dynamic";
+import DotsLoader from "@/uiComponents/DotsLoader";
 // import ReplyComment from "./ReplyComment";
 const ReplyComment = dynamic(() => import("./ReplyComment"), {
   suspense: true,
@@ -315,7 +316,15 @@ const TimelineComment = ({ post, comment }) => {
             })
             .slice(0, loadMoreReply)
             .map((reply, index) => (
-              <Suspense key={reply._id} fallback={<SkeletonText />}>
+              <Suspense
+                key={reply._id}
+                fallback={
+                  <DotsLoader
+                    className="overflow-hidden flex items-center justify-center"
+                    color="grey"
+                  />
+                }
+              >
                 <ReplyComment
                   reply={reply}
                   comment={comment}
