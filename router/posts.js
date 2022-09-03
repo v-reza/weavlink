@@ -44,10 +44,10 @@ router.get("/timeline", async (req, res) => {
 /* New Post */
 router.post("/newpost", verifyBearerToken, async (req, res) => {
   try {
-    const lastId = await Post.findOne({}, {}, { sort: { createdAt: -1 } });
+    // const lastId = await Post.findOne({}, {}, { sort: { createdAt: -1 } });
     const post = new Post({
       userId: req.user.users._id,
-      lastId: lastId.lastId + 1,
+      // lastId: lastId.lastId + 1,
       ...req.body,
     });
     await post.save();
