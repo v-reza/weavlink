@@ -81,7 +81,7 @@ app.get("/api/checkToken", verifyBearerToken, (req, res) => {
 const port = process.env.PORT || 1000;
 
 app.get("/", (req, res) => {
-  res.send("WeavLink API Running 👋");
+  res.send("👋 WeavLink API Running 👋 to https://weavlink.works");
 });
 
 /* Listen Application */
