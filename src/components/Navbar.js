@@ -107,8 +107,8 @@ const Navbar = () => {
                           onClick={() =>
                             router.push("/", null, { shallow: true })
                           }
-                          className="cursor-pointer h-10 w-auto"
-                          src="/logo_large.png"
+                          className="rounded-lg bg-amber-400 hover:bg-amber-500 cursor-pointer h-10 w-auto"
+                          src="/weavlink-logo.png"
                           alt="Workflow"
                         />
                       </div>

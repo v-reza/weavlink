@@ -78,8 +78,8 @@ export default function GoogleSetPassword() {
       <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
-            className="mx-auto h-12 w-auto"
-            src="/logo_large.png"
+            className="bg-amber-400 rounded-md mx-auto h-12 w-auto"
+            src="/weavlink-logo.png"
             alt="Logo"
           />
           <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
