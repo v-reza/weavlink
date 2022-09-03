@@ -2,10 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // env: {
-  //   NEXT_APP_API: "https://velkeyapi.herokuapp.com/api",
-  //   NEXT_APP_API_IMAGES : "https://velkeyapi.herokuapp.com/images/"
-  // }
+  env: {
+    NEXT_APP_API: "https://api.weavlink.works/api",
+    NEXT_APP_API_IMAGES : "https://api.weavlink.works/images/"
+  }
 };
 
 const withPWA = require("next-pwa")({
