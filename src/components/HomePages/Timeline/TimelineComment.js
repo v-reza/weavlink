@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { Fragment, Suspense, useEffect, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useRef, useState } from "react";
 import { format as formatTime } from "timeago.js";
 import { useRouter } from "next/router";
 import { axiosDelete, axiosGet } from "@/utils/axiosInstance";
@@ -38,6 +38,9 @@ const TimelineComment = ({ post, comment }) => {
   const [loadMoreReply, setLoadMoreReply] = useState(replyLimit);
   const [openReplyButton, setOpenReplyButton] = useState(false);
   const [listReply, setListReply] = useState(null);
+
+  //reply
+  const messageRef = useRef();
   /* End State */
 
   /* Hooks */
@@ -313,7 +316,12 @@ const TimelineComment = ({ post, comment }) => {
             .slice(0, loadMoreReply)
             .map((reply, index) => (
               <Suspense key={reply._id} fallback={<SkeletonText />}>
-                <ReplyComment reply={reply} comment={comment} />
+                <ReplyComment
+                  reply={reply}
+                  comment={comment}
+                  messageRef={messageRef}
+                  setOpenReplyButton={setOpenReplyButton}
+                />
               </Suspense>
             ))}
         {loadMoreReply < listReply?.reply?.length ? (
@@ -329,13 +337,11 @@ const TimelineComment = ({ post, comment }) => {
           </div>
         ) : (
           listReply?.reply?.length !== 0 &&
-          loadMoreReply <= listReply?.reply?.length && (
+          loadMoreReply === listReply?.reply?.length && (
             <div className="flex items-center space-x-1">
               <div
                 className="hover:bg-slate-700 px-2 py-1 w-max rounded-md"
-                onClick={() =>
-                  setLoadMoreReply((prevState) => prevState - 4)
-                }
+                onClick={() => setLoadMoreReply((prevState) => prevState - 4)}
               >
                 <span className="text-xs text-blue-300 cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
                   Show less reply
@@ -344,7 +350,9 @@ const TimelineComment = ({ post, comment }) => {
             </div>
           )
         )}
-        {openReplyButton && <AddReplyComment comment={comment} />}
+        {openReplyButton && (
+          <AddReplyComment comment={comment} messageRef={messageRef} />
+        )}
       </li>
     </>
   );

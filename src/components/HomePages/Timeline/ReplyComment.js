@@ -18,7 +18,7 @@ import useLoading from "@/hooks/useLoading";
 import useGlobal from "@/hooks/useGlobal";
 import useNotif from "@/hooks/useNotif";
 
-const ReplyComment = ({ reply, comment }) => {
+const ReplyComment = ({ reply, comment, messageRef, setOpenReplyButton }) => {
   /* State */
   const [openLike, setOpenLike] = useState(false);
   const [userReply, setUserReply] = useState(null);
@@ -65,7 +65,7 @@ const ReplyComment = ({ reply, comment }) => {
         type: "NOTIF_ERROR",
         title: "Error",
         message: error.message,
-      })
+      });
     }
   };
   return (
@@ -219,7 +219,10 @@ const ReplyComment = ({ reply, comment }) => {
           </span>
         </div>
         <div className="text-slate-400 text-md py-1">|</div>
-        <div className="hover:bg-slate-700 px-2 w-max rounded-md">
+        <div
+          className="hover:bg-slate-700 px-2 w-max rounded-md"
+          onClick={() => setOpenReplyButton((prevState) => !prevState)}
+        >
           <span className="text-xs cursor-pointer pl-2 pr-2 text-left font-medium text-slate-300">
             Reply
           </span>

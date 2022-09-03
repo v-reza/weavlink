@@ -225,7 +225,7 @@ const Navbar = () => {
                       <div className="flex items-center">
                         <button
                           type="button"
-                          className="bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500"
+                          className="bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                         >
                           <span className="sr-only">View notifications</span>
                           <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -234,7 +234,7 @@ const Navbar = () => {
                         {/* Profile dropdown */}
                         <Menu as="div" className="ml-3 relative flex-shrink-0">
                           <div>
-                            <Menu.Button className="bg-slate-900 rounded-full flex text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-rose-500">
+                            <Menu.Button className="bg-slate-900 rounded-full flex text-sm text-white">
                               <span className="sr-only">Open user menu</span>
                               <img
                                 className="rounded-full h-8 w-8"

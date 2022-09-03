@@ -22,10 +22,11 @@ import { Mention, MentionsInput } from "react-mentions";
 // import defaultStyle from "./style/defaultStyle";
 import classes from "./style/mentionsData.module.css";
 
-const AddReplyComment = ({ comment }) => {
+const AddReplyComment = ({ comment, messageRef }) => {
   /* Hooks */
   const replyRef = useRef();
-  const messageRef = useRef();
+  // const messageRef = useRef();
+  console.log(messageRef);
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchLoading } = useLoading();
@@ -90,7 +91,6 @@ const AddReplyComment = ({ comment }) => {
     const getListUser = async () => {
       const res = await axiosGet("/users/listUsersMentions");
       setSuggestions(res.data.filter((item) => item.id !== user?._id));
-      
     };
     getListUser();
   }, [user?._id]);
@@ -118,6 +118,7 @@ const AddReplyComment = ({ comment }) => {
         <div className="focus:border-0 focus:ring-0 w-full text-xs text-slate-300">
           <MentionsInput
             value={mentionsPeople}
+            // value={"@M Zulfi Fahreza" + mentionsPeople}
             onChange={onChangeMentions}
             markup="{{__display__}}"
             onKeyPress={(e) => handleNewReply(e)}

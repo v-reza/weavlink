@@ -210,7 +210,7 @@ export default function Register() {
                   htmlFor="passwordkonfirmasi"
                   className="block text-sm font-medium text-slate-300"
                 >
-                  Password Konfirmasi
+                  Confirm Password
                 </label>
                 <div className="relative mt-1">
                   <div className="absolute inset-y-0 right-0 flex items-center px-2">
@@ -272,7 +272,7 @@ export default function Register() {
                     "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   )}
                 >
-                  Daftar
+                  Sign up
                 </button>
               </div>
             </form>
