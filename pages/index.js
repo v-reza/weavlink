@@ -61,7 +61,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push("/auth/login");
+      router.push("/home");
     }
     setIsSSR(isAuthenticated);
   }),
