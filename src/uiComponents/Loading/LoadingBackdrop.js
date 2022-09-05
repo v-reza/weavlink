@@ -13,7 +13,7 @@ const LoadingBackdrop = () => {
         open={isLoading}
       >
         {progressBar ? (
-          <Progress progress={progressBar.progressBar} label="Upload Video.." labelPosition="outside" labelProgress={true}/>
+          <Progress progress={progressBar.progressBar} label="Uploading.." labelPosition="outside" labelProgress={true}/>
         ) : (
           <>
             <CircularProgress color="inherit" />
