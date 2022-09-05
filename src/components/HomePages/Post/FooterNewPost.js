@@ -42,7 +42,6 @@ const FooterNewPost = ({ setOpen, ...props }) => {
     [file]
   );
 
-
   const savePost = async () => {
     try {
       const data = {
@@ -66,6 +65,7 @@ const FooterNewPost = ({ setOpen, ...props }) => {
           );
         }
         /* Upload file & update new data */
+        dispatchLoading({ type: "PROCESSING" });
         await axiosPost("/images/upload", formData);
         data.images = fileNameList;
       }
@@ -94,7 +94,7 @@ const FooterNewPost = ({ setOpen, ...props }) => {
             form: null,
           },
         });
-        setOpen(false)
+        setOpen(false);
       });
     } catch (error) {
       dispatchNotif({
@@ -149,7 +149,7 @@ const FooterNewPost = ({ setOpen, ...props }) => {
             </label>
           </Tooltip>
           <Tooltip content="Add a video" placement="top">
-          <label
+            <label
               htmlFor="inputVideo"
               className="cursor-pointer w-max inline-flex justify-center rounded-md border border-transparent px-4 py-2  text-base font-medium text-white hover:bg-slate-500/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
             >
@@ -204,7 +204,9 @@ const FooterNewPost = ({ setOpen, ...props }) => {
           <button
             onClick={() => savePost()}
             disabled={
-              selector.form?.file?.length > 0 || selector.form?.description ? false : true
+              selector.form?.file?.length > 0 || selector.form?.description
+                ? false
+                : true
             }
             type="button"
             className={classNames(
