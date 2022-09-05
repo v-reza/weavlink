@@ -7,8 +7,8 @@ import {
   PencilIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import { Carousel, Tooltip } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import { Tooltip } from "flowbite-react";
+import React, { useState } from "react";
 
 const FormNewPost = ({ user }) => {
   const [description, setDescription] = useState("");

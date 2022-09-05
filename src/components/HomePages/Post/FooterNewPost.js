@@ -8,7 +8,7 @@ import {
   DotsHorizontalIcon,
 } from "@heroicons/react/outline";
 import useGlobal from "@/hooks/useGlobal";
-import { Tooltip } from "flowbite-react";
+import { Progress, Tooltip } from "flowbite-react";
 import classNames from "@/utils/classNames";
 import useNotif from "@/hooks/useNotif";
 import { axiosPost } from "@/utils/axiosInstance";
@@ -19,6 +19,7 @@ import useHeader from "@/hooks/useHeader";
 const FooterNewPost = ({ setOpen, ...props }) => {
   /* State */
   const [file, setFile] = useState([]);
+  const [progressBar, setProgressBar] = useState(0);
   // const [fileVideo , setFileVideo] = useState(null)
   /* End State */
 
@@ -65,8 +66,19 @@ const FooterNewPost = ({ setOpen, ...props }) => {
           );
         }
         /* Upload file & update new data */
-        dispatchLoading({ type: "PROCESSING" });
-        await axiosPost("/images/upload", formData);
+        await axiosPost("/images/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: (data) => {
+            dispatchLoading({
+              type: "WITHPROGRESSBAR",
+              payload: {
+                progressBar: Math.round((100 * data.loaded) / data.total),
+              },
+            })
+          }
+        });
         data.images = fileNameList;
       }
 
@@ -129,6 +141,7 @@ const FooterNewPost = ({ setOpen, ...props }) => {
     <div className="w-full  border-t border-slate-600">
       <div className="mt-2 flex space-x-2">
         <div className="flex w-max ">
+        
           <Tooltip content="Add a photo" placement="top">
             <label
               htmlFor="inputFile"
