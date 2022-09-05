@@ -80,6 +80,27 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/login-remember", async (req, res) => {
+  try {
+    const user = await User.findById(req.body.userId);
+    if (!user) {
+      return res.status(400).json("User does not exist");
+    }
+
+    const { password: pwd, ...userDocs } = user._doc;
+
+    const token = jwt.sign({ users: userDocs }, process.env.JWT_TOKEN, {
+      expiresIn: "2h",
+    });
+    return res.status(200).json({
+      user: userDocs,
+      token: token,
+    });
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
+
 router.post("/google-login", async (req, res) => {
   try {
     const { email } = req.body;
@@ -166,14 +187,6 @@ router.put("/google-set-password", async (req, res) => {
   }
 });
 
-router.post("/deleteall", async (req, res) => {
-  try {
-    await User.deleteMany({});
-    return res.status(200).json("All users deleted");
-  } catch (error) {
-    return res.status(500).json(error);
-  }
-});
 
 /* Auth Company */
 router.post("/register-company", async (req, res) => {
