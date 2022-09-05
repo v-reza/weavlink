@@ -35,14 +35,7 @@ mongoose
 /* App use module */
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:1000",
-      "https://weavlink.works",
-      "https://api.weavlink.works",
-      "https://velkey.vercel.app",
-      "https://vekey.tech",
-    ],
+    origin: "*"
   })
 );
 app.use(morgan("dev"));
