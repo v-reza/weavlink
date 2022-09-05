@@ -237,8 +237,10 @@ export default function Login() {
                                           if (
                                             cookies?.remembertoken?.length === 1
                                           ) {
+                                            console.log("cookie length 1");
                                             removeCookie("remembertoken");
                                           } else {
+                                            console.log("cookie length > 1");
                                             setCookie(
                                               "remembertoken",
                                               cookies.remembertoken.filter(
