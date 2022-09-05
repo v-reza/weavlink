@@ -24,6 +24,7 @@ export const AuthContextProvider = ({ children }) => {
   const { user, dispatch: dispatchUser } = useUser();
   const router = useRouter();
 
+  /* JWT AUTH Token */
   useEffect(() => {
     const saveState = async () => {
       if (!state.isGoogleSetPassword) {
@@ -39,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
             );
           })
           .catch((err) => reject(err));
-          
+
         if (state.isAuthenticated && state.token !== "null") {
           try {
             await axiosGet("/checkToken", {

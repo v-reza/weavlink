@@ -49,7 +49,17 @@ const UserReducer = (state, action) => {
         isGoogleSetPassword: true,
         googleSetUser: action.payload,
       };
-    
+    case "SET_REMEMBER_TOKEN":
+      return {
+        ...state,
+        rememberToken: action.payload,
+      }
+    case "DELETE_REMEMBER_TOKEN": {
+      return {
+        ...state,
+        rememberToken: null,
+      }
+    }
     default:
   }
 };

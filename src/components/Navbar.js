@@ -16,23 +16,59 @@ import { axiosGet } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
 import useUser from "@/hooks/useUser";
 import SearchModal from "./SearchModal";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import RememberLogout from "./RememberLogout";
+import useNotif from "@/hooks/useNotif";
+import axios from "axios";
+import useGlobal from "@/hooks/useGlobal";
+import classNames from "@/utils/classNames";
+import { useCookies } from "react-cookie";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const [openLogout, setOpenLogout] = useState(false);
+  const [isSSR, setIsSSR] = useState(false);
+  const [cookie, setCookie, removeCookie] = useCookies();
 
+  /* Hooks */
+  const router = useRouter();
   const { token, dispatch, isAuthenticated } = useAuth();
   const headers = useHeader(token);
   const { user } = useUser();
+  const { dispatch: dispatchNotif } = useNotif();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
 
-  const [isSSR, setIsSSR] = useState(false);
+  /* End Hooks */
 
   useEffect(() => {
     setIsSSR(isAuthenticated);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    let onMounted = false;
+    if (isAuthenticated && !onMounted) {
+      try {
+        const getIpAddress = async () => {
+          const res = await axios.get("https://geolocation-db.com/json/");
+          dispatchGlobal({
+            type: "GLOBAL_STATE",
+            payload: {
+              ...selector,
+              ipAddress: res.data.IPv4,
+            },
+          });
+        };
+        getIpAddress();
+      } catch (error) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
+      }
+    }
+    return () => {
+      onMounted = true;
+    };
   }, [isAuthenticated]);
 
   const username = user?.firstname + user?.lastname + "-" + user?._id;
@@ -326,10 +362,17 @@ const Navbar = () => {
                                 {({ active }) => (
                                   <div
                                     onClick={() => {
-                                      dispatch({ type: "LOGOUT" });
-                                      router.push("/auth/login", null, {
-                                        shallow: true,
-                                      });
+                                      // dispatch({ type: "LOGOUT" });
+                                      // router.push("/auth/login", null, {
+                                      //   shallow: true,
+                                      // });
+                                      cookie?.remembertoken?.filter(
+                                        (item) =>
+                                          item.id === user?._id &&
+                                          item.ipAddress === selector?.ipAddress
+                                      ).length > 0
+                                        ? dispatch({ type: "LOGOUT" })
+                                        : setOpenLogout(true);
                                     }}
                                     className={classNames(
                                       active ? "bg-slate-700" : "",
@@ -428,7 +471,7 @@ const Navbar = () => {
                         Job Posting Account
                       </Disclosure.Button>
                       <Disclosure.Button
-                        onClick={() => dispatch({ type: "LOGOUT" })}
+                        onClick={() => setOpenLogout(true)}
                         as="a"
                         className="block rounded-md py-2 px-3 text-base font-medium hover:bg-gray-100 text-white "
                       >
@@ -443,6 +486,7 @@ const Navbar = () => {
         </>
       ) : null}
       <SearchModal open={open} setOpen={setOpen} />
+      <RememberLogout open={openLogout} setOpen={setOpenLogout} />
     </div>
   );
 };
