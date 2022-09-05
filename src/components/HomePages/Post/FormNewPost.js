@@ -73,6 +73,7 @@ const FormNewPost = ({ user }) => {
               placeholder="What do you want to talk about?"
             />
           </div>
+
           {selector.form?.file?.length > 0 && (
             <div className="h-56 sm:h-64 xl:h-80 2xl:h-96 relative">
               <div className="flex items-center justify-end">
@@ -89,26 +90,39 @@ const FormNewPost = ({ user }) => {
                         payload: {
                           form: {
                             ...selector.form,
-                            editPhoto: true
-                          }
-                        }
-                      })
+                            editPhoto: true,
+                          },
+                        },
+                      });
                     }}
                   >
                     <PencilIcon className="w-5 h-5" />
                   </Button>
                 </Tooltip>
               </div>
-              <Carousel slideInterval={5000}>
-                {(selector.form?.file || []).map((file, index) => (
-                  <img
-                    key={index}
-                    className="select-none w-full h-auto"
-                    src={URL.createObjectURL(file)}
-                    alt=""
-                  />
-                ))}
-              </Carousel>
+              {/* <Carousel> */}
+                {(selector.form?.file || []).map((file, index) => {
+                  if (file?.type?.includes("image")) {
+                    return (
+                      <img
+                        key={index}
+                        className="mb-2 select-none w-full h-auto"
+                        src={URL.createObjectURL(file)}
+                        alt=""
+                      />
+                    );
+                  } else if (file?.type?.includes("video")) {
+                    return (
+                      <video
+                        key={index}
+                        className="mb-2 select-none w-full h-auto"
+                        src={URL.createObjectURL(file)}
+                        controls
+                      />
+                    );
+                  }
+                })}
+              {/* </Carousel> */}
             </div>
           )}
         </div>

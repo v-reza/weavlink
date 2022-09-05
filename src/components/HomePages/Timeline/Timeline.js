@@ -389,32 +389,52 @@ const Timeline = ({ post }) => {
                   showStatus={false}
                   dynamicHeight={true}
                 >
-                  {post.images?.map((img, index) => (
-                    <div key={index} {...bind} className="relative select-none">
-                      <div
-                        className={`${
-                          likesDoubleTap ? "opacity-100" : "opacity-0"
-                        } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
-                      >
-                        {!isLikes ? (
-                          <ThumbUpIcon
-                            className="h-14 w-14 text-indigo-500"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <ThumbDownIcon
-                            className="h-14 w-14 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        )}
+                {post.images?.map((img, index) => {
+                  if (img.split(".").pop() === "mp4") {
+                    return (
+                      <div key={index} className="relative select-none">
+                        <video
+                          key={index}
+                          className="mb-2 select-none w-full h-auto"
+                          src={folder + img}
+                          controls
+                        />
                       </div>
-                      <LazyLoadImage
-                        alt="Images"
-                        effect="blur"
-                        src={folder + img}
-                      />
-                    </div>
-                  ))}
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={index}
+                        {...bind}
+                        className="relative select-none"
+                      >
+                        <div
+                          className={`${
+                            likesDoubleTap ? "opacity-100" : "opacity-0"
+                          } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
+                        >
+                          {!isLikes ? (
+                            <ThumbUpIcon
+                              className="h-14 w-14 text-indigo-500"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <ThumbDownIcon
+                              className="h-14 w-14 text-gray-400"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+
+                        <LazyLoadImage
+                          alt="Images"
+                          effect="blur"
+                          src={folder + img}
+                        />
+                      </div>
+                    );
+                  }
+                })}
                 </ReactCarousel>
               </div>
             )}
@@ -581,7 +601,10 @@ const Timeline = ({ post }) => {
                     .map((comment) => (
                       <Suspense
                         fallback={
-                          <DotsLoader className="overflow-hidden flex items-center justify-center" color="grey" />
+                          <DotsLoader
+                            className="overflow-hidden flex items-center justify-center"
+                            color="grey"
+                          />
                         }
                         key={comment._id}
                       >

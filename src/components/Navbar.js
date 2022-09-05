@@ -362,10 +362,6 @@ const Navbar = () => {
                                 {({ active }) => (
                                   <div
                                     onClick={() => {
-                                      // dispatch({ type: "LOGOUT" });
-                                      // router.push("/auth/login", null, {
-                                      //   shallow: true,
-                                      // });
                                       cookie?.remembertoken?.filter(
                                         (item) =>
                                           item.id === user?._id &&

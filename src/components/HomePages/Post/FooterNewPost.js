@@ -19,6 +19,7 @@ import useHeader from "@/hooks/useHeader";
 const FooterNewPost = ({ setOpen, ...props }) => {
   /* State */
   const [file, setFile] = useState([]);
+  // const [fileVideo , setFileVideo] = useState(null)
   /* End State */
 
   /* Hooks */
@@ -40,6 +41,7 @@ const FooterNewPost = ({ setOpen, ...props }) => {
     },
     [file]
   );
+
 
   const savePost = async () => {
     try {
@@ -107,7 +109,6 @@ const FooterNewPost = ({ setOpen, ...props }) => {
 
   /* useEffect */
   useEffect(() => {
-    // setForm({ ...form, file });
     if (file.length > 0) {
       dispatchGlobal({
         type: "GLOBAL_STATE",
@@ -148,12 +149,23 @@ const FooterNewPost = ({ setOpen, ...props }) => {
             </label>
           </Tooltip>
           <Tooltip content="Add a video" placement="top">
-            <button
-              type="button"
-              className="w-max inline-flex justify-center rounded-md border border-transparent px-4 py-2  text-base font-medium text-white hover:bg-slate-500/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
+          <label
+              htmlFor="inputVideo"
+              className="cursor-pointer w-max inline-flex justify-center rounded-md border border-transparent px-4 py-2  text-base font-medium text-white hover:bg-slate-500/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
             >
+              <span className="sr-only">
+                Insert link
+                <input
+                  accept=".mov,.mp4,.avi,.wmv,.flv,.mkv,.mpeg,.mpg,.3gp,.3g2,.m4v,.webm"
+                  className="input"
+                  id="inputVideo"
+                  multiple
+                  type="file"
+                  onChange={(e) => handleFile(e)}
+                />
+              </span>
               <PlayIcon className="h-5 w-5" />
-            </button>
+            </label>
           </Tooltip>
           <Tooltip content="Add a document" placement="top">
             <button
