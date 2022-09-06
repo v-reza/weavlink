@@ -237,7 +237,7 @@ export default function Login() {
                                           if (
                                             cookies?.remembertoken?.length === 1
                                           ) {
-                                            cookies.remove("remembertoken");
+                                            removeCookie("remembertoken", { path: "/" });
                                             console.log("keluar cookie")
                                           } else {
                                             console.log("masuk cookie");
