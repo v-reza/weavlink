@@ -238,10 +238,12 @@ export default function Login() {
                                             cookies?.remembertoken?.length === 1
                                           ) {
                                             removeCookie("remembertoken");
+                                            console.log("keluar cookie")
                                           } else {
+                                            console.log("masuk cookie");
                                             setCookie(
                                               "remembertoken",
-                                              cookies.remembertoken.filter(
+                                              cookies?.remembertoken?.filter(
                                                 (cookie) =>
                                                   cookie.id !== item.id
                                               ),
