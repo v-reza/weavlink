@@ -55,7 +55,7 @@ export default function Login() {
 
   useEffect(() => {
     setTimeout(() => {
-      if (myRememberUser.length === 0) {
+      if (myRememberUser?.length === 0) {
         setRememberUser(false);
       }
     }, 1500)
