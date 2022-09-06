@@ -237,8 +237,10 @@ export default function Login() {
                                           if (
                                             cookies?.remembertoken?.length === 1
                                           ) {
-                                            removeCookie("remembertoken", { path: "/" });
-                                            console.log("keluar cookie")
+                                            removeCookie("remembertoken", {
+                                              path: "/",
+                                            });
+                                            console.log("keluar cookie");
                                           } else {
                                             console.log("masuk cookie");
                                             setCookie(
@@ -270,10 +272,23 @@ export default function Login() {
                       </div>
                     ))
                   ) : (
-                    <DotsLoader
-                      className="flex items-center justify-center overflow-hidden"
-                      color="grey"
-                    />
+                    <>
+                      <DotsLoader
+                        className="flex items-center justify-center overflow-hidden"
+                        color="grey"
+                      />
+                      {setTimeout(() => {
+                        if (myRememberUser.length === 0) {
+                          return (
+                            <div className="flex items-center justify-center overflow-hidden">
+                              <p className="text-slate-200 text-center">
+                                No account found
+                              </p>
+                            </div>
+                          );
+                        }
+                      }, 1500)}
+                    </>
                   )}
                 </div>
                 <div
