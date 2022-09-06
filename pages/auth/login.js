@@ -53,13 +53,6 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (myRememberUser?.length === 0) {
-        setRememberUser(false);
-      }
-    }, 5000)
-  }, [myRememberUser])
 
   const handleLoginRemember = async (id) => {
     try {

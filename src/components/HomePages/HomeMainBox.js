@@ -10,7 +10,7 @@ import {
 import React from "react";
 
 const HomeMainBox = ({ user, setOpen, ...props }) => {
-  const { selector, dispatch: dispatchGlobal } = useGlobal()
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
   return (
     <>
       <div className="flex items-center space-x-4">
@@ -28,7 +28,19 @@ const HomeMainBox = ({ user, setOpen, ...props }) => {
           hoverBg="slate-700"
           justify="start"
           rounded="full"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setOpen(true);
+            dispatchGlobal({
+              type: "GLOBAL_STATE",
+              payload: {
+                ...selector,
+                form: {
+                  ...selector.form,
+                  editPhoto: false,
+                },
+              },
+            });
+          }}
         >
           <span className="text-white text-sm font-medium">Start a post</span>
         </Button>
@@ -44,10 +56,10 @@ const HomeMainBox = ({ user, setOpen, ...props }) => {
                 ...selector,
                 form: {
                   ...selector.form,
-                  editPhoto: true
-                }
-              }
-            })
+                  editPhoto: true,
+                },
+              },
+            });
           }}
         >
           <div className="flex items-center cursor-pointer">
@@ -58,7 +70,22 @@ const HomeMainBox = ({ user, setOpen, ...props }) => {
           </div>
         </div>
         <div className="cursor-pointer hover:bg-slate-500/30 px-4 py-1 rounded-lg">
-          <div className="flex items-center cursor-pointer">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => {
+              setOpen(true);
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  ...selector,
+                  form: {
+                    ...selector.form,
+                    editPhoto: true,
+                  },
+                },
+              });
+            }}
+          >
             <PlayIcon className="h-6 w-6 text-green-500" />
             <span className="hidden sm:block text-white ml-2 text-sm font-medium">
               Video

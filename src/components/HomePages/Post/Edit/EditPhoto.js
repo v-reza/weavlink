@@ -59,19 +59,46 @@ const FormNewPost = ({ user }) => {
                   );
                 } else if (file?.type?.includes("video")) {
                   return (
-                    <video
-                      key={index}
-                      className="mb-2 select-none w-full h-auto"
-                      src={URL.createObjectURL(file)}
-                      controls
-                    />
+                    <div key={index} className="relative">
+                      <div className="absolute top-0 right-0 pr-4 -mt-6 ">
+                        <Tooltip placement="top" content="Delete">
+                          <button
+                            type="button"
+                            className="bg-transparent rounded-md text-rose-500 hover:text-rose-600"
+                            onClick={() => {
+                              const deleteFile = selector.form?.file.filter(
+                                (item) => item.name !== file.name
+                              );
+                              dispatchGlobal({
+                                type: "GLOBAL_STATE",
+                                payload: {
+                                  form: {
+                                    ...selector.form,
+                                    file: deleteFile,
+                                  },
+                                },
+                              });
+                            }}
+                          >
+                            <span className="sr-only">Close</span>
+                            <TrashIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
+                        </Tooltip>
+                      </div>
+                      <video
+                        key={index}
+                        className="mt-2 mb-2 select-none w-full h-auto"
+                        src={URL.createObjectURL(file)}
+                        controls
+                      />
+                    </div>
                   );
                 }
               })}
             </div>
           ) : (
             <span className="flex items-center justify-center text-md font-medium text-slate-300">
-              No Picture Selected
+              No File Selected
             </span>
           )}
         </div>
