@@ -58,7 +58,7 @@ export default function Login() {
       if (myRememberUser?.length === 0) {
         setRememberUser(false);
       }
-    }, 1500)
+    }, 5000)
   }, [myRememberUser])
 
   const handleLoginRemember = async (id) => {
