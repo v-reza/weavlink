@@ -53,13 +53,13 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
 
-  const forgetRememberUser = (id) => {
-    setCookie(
-      "remembertoken",
-      cookies.remembertoken.filter((item) => item.id !== id),
-      { path: "/" }
-    );
-  };
+  useEffect(() => {
+    setTimeout(() => {
+      if (myRememberUser.length === 0) {
+        setRememberUser(false);
+      }
+    }, 1500)
+  }, [myRememberUser])
 
   const handleLoginRemember = async (id) => {
     try {
@@ -272,23 +272,10 @@ export default function Login() {
                       </div>
                     ))
                   ) : (
-                    <>
-                      <DotsLoader
-                        className="flex items-center justify-center overflow-hidden"
-                        color="grey"
-                      />
-                      {setTimeout(() => {
-                        if (myRememberUser.length === 0) {
-                          return (
-                            <div className="flex items-center justify-center overflow-hidden">
-                              <p className="text-slate-200 text-center">
-                                No account found
-                              </p>
-                            </div>
-                          );
-                        }
-                      }, 1500)}
-                    </>
+                    <DotsLoader
+                      className="flex items-center justify-center overflow-hidden"
+                      color="grey"
+                    />
                   )}
                 </div>
                 <div
