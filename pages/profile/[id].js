@@ -5,11 +5,12 @@ import useUser from "@/hooks/useUser";
 import Card from "@/uiComponents/Card";
 import Container from "@/uiComponents/Container";
 import { axiosGet } from "@/utils/axiosInstance";
-import { PencilIcon } from "@heroicons/react/outline";
-import { CameraIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import classNames from "@/utils/classNames";
 import React, { useEffect, useState } from "react";
+import { Tooltip } from "flowbite-react";
+import Divider from "@/uiComponents/Divider";
+import ProfileBox from "@/components/ProfilePages/ProfileBox";
 
 const Profile = (props) => {
   const { user, userProfile } = props;
@@ -33,136 +34,56 @@ const Profile = (props) => {
       {isSSR && (
         <Container>
           <Container.Main lg="8" xl="8">
-            <ul role="list">
-              <div className="overflow-hidden sm:rounded-md shadow-slate-800">
-                <div className="rounded-lg shadow bg-slate-800">
-                  <div
-                    style={
-                      user?.coverPicture
-                        ? {
-                            backgroundImage: `url(${
-                              folder + user.coverPicture
-                            })`,
-                            backgroundSize: "contain",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                          }
-                        : {
-                            backgroundImage: `url('https://static-exp1.licdn.com/sc/h/lortj0v1h4bx9wlwbdx6zs3f')`,
-                          }
-                    }
-                    className="p-16 relative cursor-pointer"
-                  >
-                    <div className="absolute right-0 top-0 m-4">
-                      <div className="bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 16 16"
-                          data-supported-dps="16x16"
-                          fill="currentColor"
-                          className="mercado-match text-blue-500 hover:text-blue-600"
-                          width="16"
-                          height="16"
-                          focusable="false"
-                        >
-                          <path d="M10 9a2 2 0 11-2-2 2 2 0 012 2zm5-2.5V14H1V6.5A2.5 2.5 0 013.5 4h.75L5 2h6l.75 2h.75A2.5 2.5 0 0115 6.5zM11 9a3 3 0 10-3 3 3 3 0 003-3z"></path>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full flex items-center justify-start relative px-8">
-                    <img
-                      src={user?.profilePicture || "/avatar.png"}
-                      className="w-36 h-36 rounded-full absolute border-2 border-slate-800 object-cover"
-                      referrerPolicy="no-referrer"
-                      alt=""
-                    />
-                  </div>
-                  <div className="flex items-center justify-end cursor-pointer p-2">
-                    <div className="rounded-full hover:bg-slate-700/20 p-4">
-                      <PencilIcon className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div className="px-0 -mt-8">
-                    <div className="px-8 py-8">
-                      <div className="grid grid-cols-12">
-                        <div className="col-span-6">
-                          <div className="flex items-center justify-start mt-2">
-                            <span className="text-white text-xl font-medium">
-                              {user?.firstname + " " + user?.lastname}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-start">
-                            <span className="text-slate-300 text-md">
-                              {userProfile?.headLine}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-start">
-                            <span className="text-gray-400 text-md">
-                              {userProfile?.city || userProfile?.country ? (
-                                <>
-                                  {userProfile?.city +
-                                    ", " +
-                                    userProfile?.country}{" "}
-                                  •
-                                  <span className="text-blue-300 cursor-pointer hover:underline">
-                                    {" "}
-                                    Contact info
-                                  </span>
-                                </>
-                              ) : (
-                                <span className="text-gray-400 text-md">
-                                  {user._id === currentUser._id ? (
-                                    <>{"Add your location"}</>
-                                  ) : (
-                                    "Location not available"
-                                  )}
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-start">
-                            <span className="text-blue-300 text-md cursor-pointer hover:underline">
-                              {user?.followers?.length} connections
-                            </span>
-                          </div>
-                        </div>
-                        <div className="col-span-6 flex items-center justify-end mx-4">
-                          <div className="grid grid-rows-3 grid-flow-col">
-                            <div className="flex-shrink-0 row-span-3 space-y-2">
-                              <div className="flex items-center space-x-2">
-                                <img
-                                  className="object-cover w-8 h-8"
-                                  src="/avatar.png"
-                                  alt=""
-                                />
-                                <span className="text-slate-300 font-medium text-sm">
-                                  ICUBE by Sirclo
-                                </span>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <img
-                                  className="object-cover w-8 h-8"
-                                  src="/avatar.png"
-                                  alt=""
-                                />
-                                <span className="text-slate-300 font-medium text-sm">
-                                  SMKN 4 Malang
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ul>
+            <ProfileBox user={user} userProfile={userProfile} />
           </Container.Main>
           <Container.Rightbar lg="4" xl="4">
             <Card>
-              <Card></Card>
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 font-medium text-md hover:underline cursor-pointer">
+                  Edit Public profile & URL
+                </span>
+                <Tooltip
+                  placement="bottom"
+                  content="See and edit how you look to people who are not signed in, and find you through search engines (ex: Google, Bing)."
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    data-supported-dps="16x16"
+                    fill="currentColor"
+                    className="mercado-match text-slate-400"
+                    width="16"
+                    height="16"
+                    focusable="false"
+                  >
+                    <path d="M8 1a7 7 0 107 7 7 7 0 00-7-7zm0 11.25A1.25 1.25 0 119.25 11 1.25 1.25 0 018 12.25zM8.82 9H7v-.95l.93-.46C8.64 7.24 9 6.89 9 6.6S8.57 6 8 6a6.49 6.49 0 00-3 .91V4.84A6.35 6.35 0 018.1 4c2 0 2.9 1 2.9 2.4 0 .9-.5 1.83-2.18 2.6z"></path>
+                  </svg>
+                </Tooltip>
+              </div>
+              <Divider mt={"mt-4"} mb={"mb-4"} />
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-slate-400 font-medium text-md mt-4 hover:underline cursor-pointer">
+                  Add profile in another language
+                </span>
+                <Tooltip
+                  placement="bottom"
+                  content="Creating a profile in another language makes it easier for local business contacts and recruiters to find you on WeavLink."
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    data-supported-dps="16x16"
+                    fill="currentColor"
+                    className="mercado-match text-slate-400 mt-4"
+                    width="16"
+                    height="16"
+                    focusable="false"
+                  >
+                    <path d="M8 1a7 7 0 107 7 7 7 0 00-7-7zm0 11.25A1.25 1.25 0 119.25 11 1.25 1.25 0 018 12.25zM8.82 9H7v-.95l.93-.46C8.64 7.24 9 6.89 9 6.6S8.57 6 8 6a6.49 6.49 0 00-3 .91V4.84A6.35 6.35 0 018.1 4c2 0 2.9 1 2.9 2.4 0 .9-.5 1.83-2.18 2.6z"></path>
+                  </svg>
+                </Tooltip>
+              </div>
+              {/* <Card></Card> */}
             </Card>
           </Container.Rightbar>
         </Container>

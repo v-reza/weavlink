@@ -10,7 +10,7 @@ const Button = ({
   mb = "3",
   px = "4",
   py = "3",
-  borderWidth = "1",
+  border = "border",
   borderColor = "rose-500",
   textAlign = "center",
   textSize = "sm",
@@ -25,7 +25,7 @@ const Button = ({
       customClass
         ? customClass
         : `cursor-pointer mb-${mb} ${width} inline-flex justify-start items-center px-${px} py-${py} 
-        border border-${borderColor}
+        ${border} border-${borderColor}
             text-${textSize} font-${fontWeight} text-${textAlign} rounded-${rounded} shadow-sm text-white bg-${bg} hover:bg-${hoverBg}`
     }`}
   >
