@@ -1,19 +1,35 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/display-name */
 import React, { useState } from "react";
+import classNames from "@/utils/classNames";
 
 const ContainerSidebar = ({ children, ...props }) => <>{children}</>;
 const ContainerMain = ({ lg, xl, children, ...props }) => {
   console.log("lg", lg);
-  console.log("xl", xl)
-  console.log("props...", props)
+  console.log("xl", xl);
+  console.log("props...", props);
   return (
     <>
-      <main className={`lg:col-span-${lg || 9} xs:col-span-${xl || 6}`}>{children}</main>
+      {/* <main className={`lg:col-span-${lg || 9} xs:col-span-${xl || 6}`}> */}
+      <main
+        className={classNames(
+          lg ? `lg:col-span-${lg}` : "lg:col-span-9",
+          xl ? `xl:col-span-${xl}` : "xl:col-span-6"
+        )}
+      >
+        {children}
+      </main>
     </>
   );
 };
-const ContainerRightbar = ({ children, sm, md, lg = "2", xl = "2", ...props }) => {
+const ContainerRightbar = ({
+  children,
+  sm,
+  md,
+  lg = "2",
+  xl = "2",
+  ...props
+}) => {
   return (
     <aside
       className={`hidden xl:block xl:col-span-${xl} lg:block lg:col-span-${lg}`}
@@ -22,7 +38,6 @@ const ContainerRightbar = ({ children, sm, md, lg = "2", xl = "2", ...props }) =
     </aside>
   );
 };
-
 
 const Container = ({ children, ...props }) => {
   return (
@@ -38,6 +53,6 @@ const Container = ({ children, ...props }) => {
 
 Container.Sidebar = ContainerSidebar;
 Container.Main = ContainerMain;
-Container.Rightbar = ContainerRightbar
+Container.Rightbar = ContainerRightbar;
 
 export default Container;
