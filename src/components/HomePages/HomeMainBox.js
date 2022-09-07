@@ -21,7 +21,6 @@ const HomeMainBox = ({ user, setOpen, ...props }) => {
         />
         <Button
           bg="transparent"
-          border="true"
           borderColor="slate-500"
           mb="0"
           py="2"
