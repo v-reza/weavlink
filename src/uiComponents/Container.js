@@ -17,8 +17,14 @@ const Container = ({ children, ...props }) => {
 Container.Sidebar = ({ children, ...props }) => <>{children}</>;
 
 Container.Main = ({ children, ...props }) => {
-  const [classes, setClasses] = useState(`lg:col-span-${props.lg || 9} xl:col-span-${props.xl || 6}`);
-  return <main className={classes}>{children}</main>;
+  const [classes, setClasses] = useState(
+    `lg:col-span-${props.lg || 9} xl:col-span-${props.xl || 6}`
+  );
+  return (
+    <>
+      <main className={classes}>{children}</main>
+    </>
+  );
 };
 
 Container.Rightbar = ({ children, sm, md, lg = "2", xl = "2", ...props }) => {
