@@ -33,10 +33,10 @@ const Profile = (props) => {
     <>
       {isSSR && (
         <Container>
-          <Container.Main lg="8" xl="8">
+          <Container.Main lg={8} xl={8}>
             <ProfileBox user={user} userProfile={userProfile} currentUser={currentUser} />
           </Container.Main>
-          <Container.Rightbar lg="4" xl="4">
+          <Container.Rightbar lg={4} xl={4}>
             <Card>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 font-medium text-md hover:underline cursor-pointer">
