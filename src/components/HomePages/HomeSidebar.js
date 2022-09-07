@@ -20,8 +20,9 @@ const HomeSidebar = ({ user, userProfile }) => (
             <div className="bg-[url('https://static-exp1.licdn.com/sc/h/lortj0v1h4bx9wlwbdx6zs3f')] p-8 relative" />
             <div className="w-full flex items-center justify-center relative">
               <img
-                src={user?.profilePicture}
+                src={user?.profilePicture || "/avatar.png"}
                 className="w-16 h-16 rounded-full absolute border border-slate-800"
+                referrerPolicy="no-referrer"
                 alt=""
               />
             </div>

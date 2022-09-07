@@ -34,7 +34,7 @@ const Profile = (props) => {
       {isSSR && (
         <Container>
           <Container.Main lg="8" xl="8">
-            <ProfileBox user={user} userProfile={userProfile} />
+            <ProfileBox user={user} userProfile={userProfile} currentUser={currentUser} />
           </Container.Main>
           <Container.Rightbar lg="4" xl="4">
             <Card>

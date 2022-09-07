@@ -4,7 +4,7 @@ import { Menu } from "@headlessui/react";
 import { PencilIcon, XIcon } from "@heroicons/react/outline";
 import React from "react";
 
-const ProfileBox = ({ user, userProfile }) => {
+const ProfileBox = ({ user, userProfile, currentUser }) => {
   return (
     <ul role="list" className="select-none">
       <div className="overflow-hidden sm:rounded-md shadow-slate-800">
