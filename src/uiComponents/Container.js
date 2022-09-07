@@ -22,7 +22,7 @@ Container.Main = ({ children, ...props }) => {
   );
   return (
     <>
-      <main className={classes}>{children}</main>
+      <main className={"lg:col-span-9 xl:col-span-6"}>{children}</main>
     </>
   );
 };
