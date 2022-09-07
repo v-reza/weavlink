@@ -17,8 +17,8 @@ const ContainerMain = ({ lg, xl, lgProfile, xlProfile, children, ...props }) => 
         className={classNames(
           lg ? colLg : "lg:col-span-9",
           xl ? colXl : "xl:col-span-6",
-          lgProfile ? lgProfile : "",
-          xlProfile ? xlProfile : ""
+          lgProfile ? "lg:"+lgProfile : "",
+          xlProfile ? "xl:"+xlProfile : ""
         )}
       >
         {children}
