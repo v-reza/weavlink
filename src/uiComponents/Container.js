@@ -8,13 +8,15 @@ const ContainerMain = ({ lg, xl, children, ...props }) => {
   console.log("lg", lg);
   console.log("xl", xl);
   console.log("props...", props);
+  const colLg = "lg:col-span-" + lg;
+  const colXl = "xl:col-span-" + xl;
   return (
     <>
       {/* <main className={`lg:col-span-${lg || 9} xs:col-span-${xl || 6}`}> */}
       <main
         className={classNames(
-          lg ? `lg:col-span-${classNames(lg)}` : "lg:col-span-9",
-          xl ? `xl:col-span-${classNames(xl)}` : "xl:col-span-6"
+          lg ? colLg : "lg:col-span-9",
+          xl ? colXl : "xl:col-span-6"
         )}
       >
         {children}
