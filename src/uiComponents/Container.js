@@ -15,7 +15,9 @@ Container.Sidebar = ({ children, ...props }) => <>{children}</>;
 
 Container.Main = ({ lg = "9", xl = "6", children }) => {
   return (
-    <main className={`lg:col-span-${lg} xl:col-span-${xl}`}>{children}</main>
+    <main className={`lg:col-span-${lg || 9} xl:col-span-${xl || 6}`}>
+      {children}
+    </main>
   );
 };
 
