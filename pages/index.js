@@ -142,7 +142,7 @@ export default function Home() {
               </Card>
             </Sidebar>
           </Container.Sidebar>
-          <Container.Main>
+          <Container.Main lg="9" xl="6">
             <HomeSidebar.Mobile
               user={user}
               userProfile={userProfile}
