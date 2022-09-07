@@ -13,8 +13,8 @@ const ContainerMain = ({ lg, xl, children, ...props }) => {
       {/* <main className={`lg:col-span-${lg || 9} xs:col-span-${xl || 6}`}> */}
       <main
         className={classNames(
-          lg ? `lg:col-span-${lg}` : "lg:col-span-9",
-          xl ? `xl:col-span-${xl}` : "xl:col-span-6"
+          lg ? `lg:col-span-${classNames(lg)}` : "lg:col-span-9",
+          xl ? `xl:col-span-${classNames(xl)}` : "xl:col-span-6"
         )}
       >
         {children}
