@@ -277,7 +277,7 @@ const Timeline = ({ post }) => {
 
   const username = user.username
     ? user.username
-    : user.firstname + user.lastname + "-" + user._id;
+    : user.firstname?.replaceAll(" ", "-") + user.lastname?.replaceAll(" ", "-") + "-" + user._id;
   return (
     <>
       {!loadingSSR ? (
@@ -292,7 +292,7 @@ const Timeline = ({ post }) => {
                   <img
                     onClick={() =>
                       router.push(
-                        "/profile/" + username.replace(" ", "-").toLowerCase()
+                        "/profile/" + username.toLowerCase()
                       )
                     }
                     className="cursor-pointer h-10 w-10 rounded-full"
@@ -509,7 +509,7 @@ const Timeline = ({ post }) => {
                     <ChatAltIcon
                       className={classNames(
                         post.comments.some(
-                          (comment) => comment.userId === currentUser._id
+                          (comment) => comment.userId === currentUser?._id
                         )
                           ? "text-indigo-500"
                           : "text-gray-400",
@@ -542,7 +542,7 @@ const Timeline = ({ post }) => {
               <div className="flex-shrink-0">
                 <img
                   className="inline-block h-10 w-10 rounded-full"
-                  src={currentUser.profilePicture}
+                  src={currentUser?.profilePicture}
                   alt=""
                 />
               </div>

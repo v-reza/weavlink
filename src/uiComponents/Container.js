@@ -13,12 +13,14 @@ const Container = ({ children, ...props }) => (
 
 Container.Sidebar = ({ children, ...props }) => <>{children}</>;
 
-Container.Main = ({ children }) => (
-  <main className="lg:col-span-9 xl:col-span-6">{children}</main>
+Container.Main = ({ lg = "9", xl = "6", children }) => (
+  <main className={`lg:col-span-${lg} xl:col-span-${xl}`}>{children}</main>
 );
 
-Container.Rightbar = ({ children, sm, md, lg= "2", xl = "2", ...props }) => (
-  <aside className={`hidden xl:block xl:col-span-${xl} lg:block lg:col-span-${lg}`}>
+Container.Rightbar = ({ children, sm, md, lg = "2", xl = "2", ...props }) => (
+  <aside
+    className={`hidden xl:block xl:col-span-${xl} lg:block lg:col-span-${lg}`}
+  >
     <div className="top-4 space-y-4">{children}</div>
   </aside>
 );

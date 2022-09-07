@@ -367,7 +367,7 @@ const Navbar = () => {
                                           item.id === user?._id &&
                                           item.ipAddress === selector?.ipAddress
                                       ).length > 0
-                                        ? dispatch({ type: "LOGOUT" })
+                                        ? dispatch({ type: "LOGOUT" }) && router.push("/")
                                         : setOpenLogout(true);
                                     }}
                                     className={classNames(

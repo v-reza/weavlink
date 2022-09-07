@@ -6,7 +6,7 @@ import useNotif from "@/hooks/useNotif";
 import useUser from "@/hooks/useUser";
 import Button from "@/uiComponents/Button";
 import { axiosPut } from "@/utils/axiosInstance";
-import { ArrowSmRightIcon, PlusIcon } from "@heroicons/react/outline";
+import { ArrowSmRightIcon, PlusIcon, XIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 
 const HomeRightbar = ({ listFeeds }) => {
@@ -21,13 +21,13 @@ const HomeRightbar = ({ listFeeds }) => {
 
   const handleFollow = async (user) => {
     try {
-      const ifFollow = follow.find((item) => item._id === user._id);
+      const ifFollow = follow.find((item) => item._id === user.user._id);
       if (ifFollow) {
-        const newFollow = follow.filter((item) => item._id !== user._id);
+        const newFollow = follow.filter((item) => item._id !== user.user._id);
         setFollow(newFollow);
-        await axiosPut(`/users/${user._id}/unfollow`, null, headers).then(
+        await axiosPut(`/users/${user.user._id}/unfollow`, null, headers).then(
           () => {
-            dispatch({ type: "UNFOLLOW", payload: user._id });
+            dispatch({ type: "UNFOLLOW", payload: user.user._id });
             dispatchGlobal({
               type: "GLOBAL_STATE",
               payload: {
@@ -43,27 +43,25 @@ const HomeRightbar = ({ listFeeds }) => {
           }
         );
       } else {
-        await axiosPut(`/users/${user._id}/follow`, null, headers).then(() => {
-          dispatch({ type: "FOLLOW", payload: user._id });
-          dispatchGlobal({
-            type: "GLOBAL_STATE",
-            payload: {
-              ...selector,
-              refreshTimeline: true,
-            },
-          });
-          dispatchNotif({
-            type: "NOTIF_SUCCESS",
-            title: "Success",
-            message: "Followed",
-          });
-          setFollow([...follow, user]);
-        });
+        await axiosPut(`/users/${user.user._id}/follow`, null, headers).then(
+          () => {
+            dispatch({ type: "FOLLOW", payload: user.user._id });
+            dispatchGlobal({
+              type: "GLOBAL_STATE",
+              payload: {
+                ...selector,
+                refreshTimeline: true,
+              },
+            });
+            dispatchNotif({
+              type: "NOTIF_SUCCESS",
+              title: "Success",
+              message: "Followed",
+            });
+            setFollow([...follow, user.user]);
+          }
+        );
       }
-      // setFollow((prev) => [
-      //   ...prev.filter((item) => item._id !== user._id),
-      //   user,
-      // ]);
     } catch (error) {
       dispatchNotif({
         type: "ERROR_NOTIF",
@@ -122,14 +120,22 @@ const HomeRightbar = ({ listFeeds }) => {
                     <div className="mt-2 ">
                       <Button
                         onClick={() => handleFollow(usr)}
-                        hoverBg={"slate-700"}
-                        // bg={"rose-600"}
+                        hoverBg={follow.find((item) => item._id === usr.user._id) ? "rose-700" : "slate-700"}
+                        bg={follow.find((item) => item._id === usr.user._id) ? "rose-600" : "slate-600"}
                         width="max"
                         py="1"
                         rounded="full"
                       >
                         <span className="flex items-center text-sm">
-                          <PlusIcon className="mr-2 h-4 w-4" /> Follow
+                          {follow.find((item) => item._id === usr.user._id) ? (
+                            <>
+                              <XIcon className="mr-2 h-4 w-4" /> Unfollow
+                            </>
+                          ) : (
+                            <>
+                              <PlusIcon className="mr-2 h-4 w-4" /> Follow
+                            </>
+                          )}
                         </span>
                       </Button>
                     </div>
