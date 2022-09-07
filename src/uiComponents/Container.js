@@ -13,9 +13,11 @@ const Container = ({ children, ...props }) => (
 
 Container.Sidebar = ({ children, ...props }) => <>{children}</>;
 
-Container.Main = ({ lg = "9", xl = "6", children }) => (
-  <main className={`lg:col-span-${lg} xl:col-span-${xl}`}>{children}</main>
-);
+Container.Main = ({ lg = "9", xl = "6", children }) => {
+  return (
+    <main className={`lg:col-span-${lg} xl:col-span-${xl}`}>{children}</main>
+  );
+};
 
 Container.Rightbar = ({ children, sm, md, lg = "2", xl = "2", ...props }) => (
   <aside
