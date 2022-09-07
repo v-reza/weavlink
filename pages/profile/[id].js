@@ -33,7 +33,7 @@ const Profile = (props) => {
     <>
       {isSSR && (
         <Container>
-          <Container.Main lg={8} xl={8}>
+          <Container.Main lg={8} xl={8} lgProfile={"lg:col-span-8"} xlProfile={"xl:col-span-8"}>
             <ProfileBox user={user} userProfile={userProfile} currentUser={currentUser} />
           </Container.Main>
           <Container.Rightbar lg={4} xl={4}>

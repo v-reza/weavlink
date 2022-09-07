@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import classNames from "@/utils/classNames";
 
 const ContainerSidebar = ({ children, ...props }) => <>{children}</>;
-const ContainerMain = ({ lg, xl, children, ...props }) => {
+const ContainerMain = ({ lg, xl, lgProfile, xlProfile, children, ...props }) => {
   console.log("lg", lg);
   console.log("xl", xl);
   console.log("props...", props);
@@ -16,7 +16,9 @@ const ContainerMain = ({ lg, xl, children, ...props }) => {
       <main
         className={classNames(
           lg ? colLg : "lg:col-span-9",
-          xl ? colXl : "xl:col-span-6"
+          xl ? colXl : "xl:col-span-6",
+          lgProfile ? lgProfile : "",
+          xlProfile ? xlProfile : ""
         )}
       >
         {children}
