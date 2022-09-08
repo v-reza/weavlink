@@ -35,6 +35,7 @@ import HomeMainBox from "@/components/HomePages/HomeMainBox";
 import EditPhoto from "@/components/HomePages/Post/Edit/EditPhoto";
 import FooterEditPhoto from "@/components/HomePages/Post/Edit/FooterEditPhoto";
 import DotsLoader from "@/uiComponents/DotsLoader";
+import { gridCols } from "@/utils/types";
 
 export default function Home() {
   const router = useRouter();
@@ -142,7 +143,7 @@ export default function Home() {
               </Card>
             </Sidebar>
           </Container.Sidebar>
-          <Container.Main lg={9} xl={6}>
+          <Container.Main lg={gridCols.lg[9]} xl={gridCols.xl[6]}>
             <HomeSidebar.Mobile
               user={user}
               userProfile={userProfile}
@@ -198,7 +199,7 @@ export default function Home() {
               ))}
             </InfiniteScroll>
           </Container.Main>
-          <Container.Rightbar lg={3} xl={3}>
+          <Container.Rightbar lg={gridCols.lg[3]} xl={gridCols.xl[3]}>
             <div className="hidden xl:block">
               <Card padding={4}>
                 {listFeeds.length > 0 ? (

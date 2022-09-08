@@ -6,30 +6,14 @@ import { ctx } from "@/utils/constants";
 
 const ContainerSidebar = ({ children, ...props }) => <>{children}</>;
 const ContainerMain = ({
-  lg,
-  xl,
-  lgProfile,
-  xlProfile,
+  lg = "lg:col-span-9",
+  xl = "xl:col-span-6",
   children,
   ...props
 }) => {
   return (
     <>
-      {/* <main className={`lg:col-span-${lg || 9} xs:col-span-${xl || 6}`}> */}
-      <main
-        className={classnames(`lg:col-span-${lg} xl:col-span-${xl}`, {
-          "lg:col-span-9": lgProfile,
-          "xl:col-span-6": xlProfile,
-        })}
-        // className={classNames(
-        //   lg ? colLg : "lg:col-span-9",
-        //   xl ? colXl : "xl:col-span-6",
-        //   lgProfile ? "lg:"+lgProfile : "",
-        //   xlProfile ? "xl:"+xlProfile : ""
-        // )}
-      >
-        {children}
-      </main>
+      <main className={`${lg} ${xl}`}>{children}</main>
     </>
   );
 };
@@ -37,16 +21,16 @@ const ContainerRightbar = ({
   children,
   sm,
   md,
-  lg = "2",
-  xl = "2",
+  lg = "lg:col-span-4",
+  xl = "xl:col-span-4",
   ...props
 }) => {
   return (
-    <aside
-      className={`hidden xl:block xl:col-span-${xl} lg:block lg:col-span-${lg}`}
-    >
-      <div className="top-4 space-y-4">{children}</div>
-    </aside>
+    <>
+      <aside className={ctx(`hidden xl:block ${lg} ${xl} lg:block`)}>
+        <div className="top-4 space-y-4">{children}</div>
+      </aside>
+    </>
   );
 };
 

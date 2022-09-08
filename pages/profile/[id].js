@@ -11,6 +11,13 @@ import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import Divider from "@/uiComponents/Divider";
 import ProfileBox from "@/components/ProfilePages/ProfileBox";
+import { gridCols } from "@/utils/types";
+import { EyeIcon } from "@heroicons/react/outline";
+import SuggestedForYou from "@/components/ProfilePages/SuggestedForYou";
+import Analytics from "@/components/ProfilePages/Analytics";
+import Resources from "@/components/ProfilePages/Resources";
+import Activity from "@/components/ProfilePages/Activity";
+import Experience from "@/components/ProfilePages/Experience";
 
 const Profile = (props) => {
   const { user, userProfile } = props;
@@ -27,16 +34,23 @@ const Profile = (props) => {
     setIsSSR(isAuthenticated);
   }, [isAuthenticated, router]);
 
-  const isFoundCoverPicture = `bg-[url('${folder + user.coverPicture}')]`;
-
   return (
     <>
       {isSSR && (
         <Container>
-          <Container.Main lg={9} xl={8}>
-            <ProfileBox user={user} userProfile={userProfile} currentUser={currentUser} />
+          <Container.Main lg={gridCols.lg[8]} xl={gridCols.xl[8]}>
+            <ProfileBox
+              user={user}
+              userProfile={userProfile}
+              currentUser={currentUser}
+            />
+            <SuggestedForYou />
+            <Analytics />
+            <Resources />
+            <Activity user={user} />
+            <Experience />
           </Container.Main>
-          <Container.Rightbar lg={4} xl={4}>
+          <Container.Rightbar lg={gridCols.lg[4]} xl={gridCols.xl[4]}>
             <Card>
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 font-medium text-md hover:underline cursor-pointer">

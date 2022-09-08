@@ -52,6 +52,11 @@ import {
   XIcon,
   QuestionMarkCircleIcon,
   PhotographIcon,
+  FlagIcon,
+  VolumeOffIcon,
+  BookmarkIcon,
+  LinkIcon,
+  EyeOffIcon,
 } from "@heroicons/react/outline";
 import dynamic from "next/dynamic";
 import useLoading from "@/hooks/useLoading";
@@ -277,7 +282,10 @@ const Timeline = ({ post }) => {
 
   const username = user.username
     ? user.username
-    : user.firstname?.replaceAll(" ", "-") + user.lastname?.replaceAll(" ", "-") + "-" + user._id;
+    : user.firstname?.replaceAll(" ", "-") +
+      user.lastname?.replaceAll(" ", "-") +
+      "-" +
+      user._id;
   return (
     <>
       {!loadingSSR ? (
@@ -291,9 +299,7 @@ const Timeline = ({ post }) => {
                 <div className="flex-shrink-0">
                   <img
                     onClick={() =>
-                      router.push(
-                        "/profile/" + username.toLowerCase()
-                      )
+                      router.push("/profile/" + username.toLowerCase())
                     }
                     className="cursor-pointer h-10 w-10 rounded-full"
                     src={
@@ -348,8 +354,105 @@ const Timeline = ({ post }) => {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <Menu.Items className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <BookmarkIcon
+                                className="h-5 w-5 mr-4"
+                                aria-hidden="true"
+                              />
+                              Save
+                            </a>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <LinkIcon
+                                className="h-5 w-5 mr-4"
+                                aria-hidden="true"
+                              />
+                              Copy link to post
+                            </a>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <EyeOffIcon
+                                className="h-5 w-5 mr-4"
+                                aria-hidden="true"
+                              />
+                              {"I don't want to see this"}
+                            </a>
+                          )}
+                        </Menu.Item>
+                        {currentUser?._id !== user._id && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <VolumeOffIcon
+                                className="h-8 w-8 mr-4"
+                                aria-hidden="true"
+                              />
+                              Mute {user.firstname} {user.lastname}
+                            </a>
+                          )}
+                        </Menu.Item>
+                        )}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active
+                                  ? "bg-transparent text-slate-400"
+                                  : "text-slate-300",
+                                "block px-4 py-2 text-xs font-medium flex items-center"
+                              )}
+                            >
+                              <FlagIcon
+                                className="h-5 w-5 mr-4"
+                                aria-hidden="true"
+                              />
+                              Report this post
+                            </a>
+                          )}
+                        </Menu.Item>
                           {currentUser?._id === user._id && (
                             <Menu.Item>
                               {({ active }) => (
@@ -357,16 +460,16 @@ const Timeline = ({ post }) => {
                                   onClick={() => handleDeletePost(post._id)}
                                   className={classNames(
                                     active
-                                      ? "bg-gray-100 text-gray-900"
-                                      : "text-gray-700",
-                                    "cursor-pointer flex px-4 py-2 text-sm"
+                                      ? "bg-transparent text-slate-400"
+                                      : "text-slate-300",
+                                    "cursor-pointer block px-4 py-2 text-xs font-medium flex items-center"
                                   )}
                                 >
                                   <TrashIcon
-                                    className="mr-3 h-5 w-5 text-red-400"
+                                    className="mr-3 h-5 w-5 text-red-400 hover:text-red-500"
                                     aria-hidden="true"
                                   />
-                                  <span className="text-red-500">
+                                  <span className="text-red-400 hover:text-red-500">
                                     Delete Post
                                   </span>
                                 </div>
@@ -389,52 +492,52 @@ const Timeline = ({ post }) => {
                   showStatus={false}
                   dynamicHeight={true}
                 >
-                {post.images?.map((img, index) => {
-                  if (img.split(".").pop() === "mp4") {
-                    return (
-                      <div key={index} className="relative select-none">
-                        <video
-                          key={index}
-                          className="mb-2 select-none w-full h-auto"
-                          src={folder + img}
-                          controls
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={index}
-                        {...bind}
-                        className="relative select-none"
-                      >
-                        <div
-                          className={`${
-                            likesDoubleTap ? "opacity-100" : "opacity-0"
-                          } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
-                        >
-                          {!isLikes ? (
-                            <ThumbUpIcon
-                              className="h-14 w-14 text-indigo-500"
-                              aria-hidden="true"
-                            />
-                          ) : (
-                            <ThumbDownIcon
-                              className="h-14 w-14 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          )}
+                  {post.images?.map((img, index) => {
+                    if (img.split(".").pop() === "mp4") {
+                      return (
+                        <div key={index} className="relative select-none">
+                          <video
+                            key={index}
+                            className="mb-2 select-none w-full h-auto"
+                            src={folder + img}
+                            controls
+                          />
                         </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          key={index}
+                          {...bind}
+                          className="relative select-none"
+                        >
+                          <div
+                            className={`${
+                              likesDoubleTap ? "opacity-100" : "opacity-0"
+                            } transition-all duration-700 absolute z-10 flex text-center w-full h-full items-center justify-center mx-auto text-white`}
+                          >
+                            {!isLikes ? (
+                              <ThumbUpIcon
+                                className="h-14 w-14 text-indigo-500"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <ThumbDownIcon
+                                className="h-14 w-14 text-gray-400"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </div>
 
-                        <LazyLoadImage
-                          alt="Images"
-                          effect="blur"
-                          src={folder + img}
-                        />
-                      </div>
-                    );
-                  }
-                })}
+                          <LazyLoadImage
+                            alt="Images"
+                            effect="blur"
+                            src={folder + img}
+                          />
+                        </div>
+                      );
+                    }
+                  })}
                 </ReactCarousel>
               </div>
             )}
