@@ -356,103 +356,103 @@ const Timeline = ({ post }) => {
                     >
                       <Menu.Items className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-transparent text-slate-400"
-                                  : "text-slate-300",
-                                "block px-4 py-2 text-xs font-medium flex items-center"
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active
+                                    ? "bg-transparent text-slate-400"
+                                    : "text-slate-300",
+                                  "block px-4 py-2 text-xs font-medium flex items-center"
+                                )}
+                              >
+                                <BookmarkIcon
+                                  className="h-5 w-5 mr-4"
+                                  aria-hidden="true"
+                                />
+                                Save
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active
+                                    ? "bg-transparent text-slate-400"
+                                    : "text-slate-300",
+                                  "block px-4 py-2 text-xs font-medium flex items-center"
+                                )}
+                              >
+                                <LinkIcon
+                                  className="h-5 w-5 mr-4"
+                                  aria-hidden="true"
+                                />
+                                Copy link to post
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active
+                                    ? "bg-transparent text-slate-400"
+                                    : "text-slate-300",
+                                  "block px-4 py-2 text-xs font-medium flex items-center"
+                                )}
+                              >
+                                <EyeOffIcon
+                                  className="h-5 w-5 mr-4"
+                                  aria-hidden="true"
+                                />
+                                {"I don't want to see this"}
+                              </a>
+                            )}
+                          </Menu.Item>
+                          {currentUser?._id !== user._id && (
+                            <Menu.Item>
+                              {({ active }) => (
+                                <a
+                                  href="#"
+                                  className={classNames(
+                                    active
+                                      ? "bg-transparent text-slate-400"
+                                      : "text-slate-300",
+                                    "block px-4 py-2 text-xs font-medium flex items-center"
+                                  )}
+                                >
+                                  <VolumeOffIcon
+                                    className="h-8 w-8 mr-4"
+                                    aria-hidden="true"
+                                  />
+                                  Mute {user.firstname} {user.lastname}
+                                </a>
                               )}
-                            >
-                              <BookmarkIcon
-                                className="h-5 w-5 mr-4"
-                                aria-hidden="true"
-                              />
-                              Save
-                            </a>
+                            </Menu.Item>
                           )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-transparent text-slate-400"
-                                  : "text-slate-300",
-                                "block px-4 py-2 text-xs font-medium flex items-center"
-                              )}
-                            >
-                              <LinkIcon
-                                className="h-5 w-5 mr-4"
-                                aria-hidden="true"
-                              />
-                              Copy link to post
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-transparent text-slate-400"
-                                  : "text-slate-300",
-                                "block px-4 py-2 text-xs font-medium flex items-center"
-                              )}
-                            >
-                              <EyeOffIcon
-                                className="h-5 w-5 mr-4"
-                                aria-hidden="true"
-                              />
-                              {"I don't want to see this"}
-                            </a>
-                          )}
-                        </Menu.Item>
-                        {currentUser?._id !== user._id && (
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-transparent text-slate-400"
-                                  : "text-slate-300",
-                                "block px-4 py-2 text-xs font-medium flex items-center"
-                              )}
-                            >
-                              <VolumeOffIcon
-                                className="h-8 w-8 mr-4"
-                                aria-hidden="true"
-                              />
-                              Mute {user.firstname} {user.lastname}
-                            </a>
-                          )}
-                        </Menu.Item>
-                        )}
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active
-                                  ? "bg-transparent text-slate-400"
-                                  : "text-slate-300",
-                                "block px-4 py-2 text-xs font-medium flex items-center"
-                              )}
-                            >
-                              <FlagIcon
-                                className="h-5 w-5 mr-4"
-                                aria-hidden="true"
-                              />
-                              Report this post
-                            </a>
-                          )}
-                        </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active
+                                    ? "bg-transparent text-slate-400"
+                                    : "text-slate-300",
+                                  "block px-4 py-2 text-xs font-medium flex items-center"
+                                )}
+                              >
+                                <FlagIcon
+                                  className="h-5 w-5 mr-4"
+                                  aria-hidden="true"
+                                />
+                                Report this post
+                              </a>
+                            )}
+                          </Menu.Item>
                           {currentUser?._id === user._id && (
                             <Menu.Item>
                               {({ active }) => (
@@ -490,6 +490,7 @@ const Timeline = ({ post }) => {
                 <ReactCarousel
                   showThumbs={false}
                   showStatus={false}
+                  showIndicators={post.images?.length > 1 ? true : false}
                   dynamicHeight={true}
                 >
                   {post.images?.map((img, index) => {

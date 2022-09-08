@@ -18,6 +18,9 @@ import Analytics from "@/components/ProfilePages/Analytics";
 import Resources from "@/components/ProfilePages/Resources";
 import Activity from "@/components/ProfilePages/Activity";
 import Experience from "@/components/ProfilePages/Experience";
+import Education from "@/components/ProfilePages/Education";
+import LicensesCertifications from "@/components/ProfilePages/LicensesCertifications";
+import Skills from "@/components/ProfilePages/Skills";
 
 const Profile = (props) => {
   const { user, userProfile } = props;
@@ -49,6 +52,9 @@ const Profile = (props) => {
             <Resources />
             <Activity user={user} />
             <Experience />
+            <Education />
+            <LicensesCertifications />
+            <Skills/>
           </Container.Main>
           <Container.Rightbar lg={gridCols.lg[4]} xl={gridCols.xl[4]}>
             <Card>
