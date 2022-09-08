@@ -551,9 +551,9 @@ const Timeline = ({ post }) => {
               onMouseLeave={() => setOpenLike(false)}
               className={classNames(
                 openLike ? "block" : "hidden",
-                "block -mt-5 bg-slate-800 border border-slate-600 px-4 py-1.5 w-max rounded-md absolute"
+                post?.desc ? "-mt-5" : "-mt-8",
+                "block bg-slate-800 border border-slate-600 px-4 py-1.5 w-max rounded-md absolute"
               )}
-              // )}
             >
               <div className="flex items-center justify-between space-x-4">
                 <ThumbUpIcon
