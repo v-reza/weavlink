@@ -103,6 +103,7 @@ router.put("/:id/follow", verifyBearerToken, async (req, res) => {
   if (req.user.users._id !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
+      console.log(user)
       const currentUser = await User.findById(req.user.users._id);
       if (!user.followers.includes(req.user.users._id)) {
         await user.updateOne({ $push: { followers: req.user.users._id } });
@@ -112,6 +113,7 @@ router.put("/:id/follow", verifyBearerToken, async (req, res) => {
         res.status(403).json("your allready follow this user");
       }
     } catch (error) {
+      // console.log(error)
       res.status(500).json(error);
     }
   } else {

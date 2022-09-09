@@ -15,6 +15,10 @@ const UserProfileSchema = new mongoose.Schema(
       type: Array,
       default: []
     },
+    skills: {
+      type: Array,
+      default: []
+    },
     industry: {
       type: String,
     },

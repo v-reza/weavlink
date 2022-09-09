@@ -19,6 +19,7 @@ const imagesRouter = require("./router/images");
 const jobsRouter = require("./router/jobs");
 const companyRouter = require("./router/company");
 const commentRouter = require("./router/comments");
+const skillsRouter = require("./router/skills");
 const verifyBearerToken = require("./helper/verifyBearerToken");
 
 /* Connect Env */
@@ -51,6 +52,7 @@ app.use("/api/images", imagesRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/comments", commentRouter);
+app.use("/api/skills", skillsRouter);
 
 const options = {
   method: "POST",

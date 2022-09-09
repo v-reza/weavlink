@@ -41,6 +41,15 @@ router.post("/register", async (req, res) => {
     });
 
     const { password, ...userDocs } = user._doc;
+    const updateUsername = await User.findById(user._id);
+    await updateUsername.updateOne({
+      username: (
+        user.firstname.replaceAll(" ", "-") +
+        user.lastname.replaceAll(" ", "-") +
+        "-" +
+        user._id
+      ).toLowerCase(),
+    });
 
     return res.status(201).json({
       user: userDocs,
@@ -97,9 +106,9 @@ router.post("/login-remember", async (req, res) => {
       token: token,
     });
   } catch (error) {
-    return res.status(500).json(error)
+    return res.status(500).json(error);
   }
-})
+});
 
 router.post("/google-login", async (req, res) => {
   try {
@@ -107,7 +116,7 @@ router.post("/google-login", async (req, res) => {
     const oldUser = await User.findOne({ email: req.body.email });
     if (oldUser) {
       const { password, ...userDocs } = oldUser._doc;
-      
+
       const token = jwt.sign({ users: userDocs }, process.env.JWT_TOKEN, {
         expiresIn: "2h",
       });
@@ -149,6 +158,15 @@ router.post("/google-login", async (req, res) => {
     });
 
     const { password, ...userDocs } = user._doc;
+    const updateUsername = await User.findById(user._id);
+    await updateUsername.updateOne({
+      username: (
+        user.firstname.replaceAll(" ", "-") +
+        user.lastname.replaceAll(" ", "-") +
+        "-" +
+        user._id
+      ).toLowerCase(),
+    });
 
     return res.status(201).json({
       statusCode: 404,
@@ -186,7 +204,6 @@ router.put("/google-set-password", async (req, res) => {
     return res.status(500).json(error);
   }
 });
-
 
 /* Auth Company */
 router.post("/register-company", async (req, res) => {
@@ -245,7 +262,7 @@ router.post("/company-login", async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json(error);
-  }
+  } 
 });
 
 module.exports = router;
