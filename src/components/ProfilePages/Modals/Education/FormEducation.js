@@ -381,8 +381,8 @@ const FormEducation = () => {
           <Listbox value={selectedEndDate} onChange={setSelectedEndDate}>
             {({ open }) => (
               <>
-                <Listbox.Label className="block text-sm font-medium text-slate-300 text-left">
-                  End date (or expected)
+                <Listbox.Label className="block flex items-center text-sm font-medium text-slate-300 text-left">
+                  End date <span className="hidden sm:block text-xs text-slate-400 ml-1">(or expected)</span>
                 </Listbox.Label>
                 <div className="mt-1 relative">
                   <Listbox.Button className="bg-transparent relative w-full border border-gray-300 text-white rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">

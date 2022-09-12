@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import Button from "@/uiComponents/Button";
 import { Menu } from "@headlessui/react";
-import { PencilIcon, XIcon } from "@heroicons/react/outline";
+import { PencilIcon, UserAddIcon, XIcon } from "@heroicons/react/outline";
+import { PaperAirplaneIcon } from "@heroicons/react/solid";
 import React from "react";
 
 const ProfileBox = ({ user, userProfile, currentUser }) => {
@@ -122,50 +123,84 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-2 flex items-center space-x-2">
-                <Button
-                  rounded="full"
-                  width="max"
-                  py="1"
-                  bg="blue-500"
-                  border="border-none"
-                  hoverBg="blue-600"
-                >
-                  <span className="text-black/80">Open to</span>
-                </Button>
-                <div className="block sm:hidden">
+              {user._id === currentUser?._id ? (
+                <div className="mt-2 flex items-center space-x-2">
                   <Button
                     rounded="full"
                     width="max"
                     py="1"
-                    bg="transparent"
-                    hoverBg="slate-700"
+                    bg="blue-500"
+                    border="border-none"
+                    hoverBg="blue-600"
                   >
-                    <span className="text-slate-200">More..</span>
+                    <span className="text-black/80">Open to</span>
                   </Button>
+                  <div className="block sm:hidden">
+                    <Button
+                      rounded="full"
+                      width="max"
+                      py="1"
+                      bg="transparent"
+                      hoverBg="slate-700"
+                    >
+                      <span className="text-slate-200">More..</span>
+                    </Button>
+                  </div>
+                  <div className="hidden sm:block space-x-2">
+                    <Button
+                      rounded="full"
+                      width="max"
+                      py="1"
+                      borderColor="blue-300"
+                      bg="transparent"
+                      hoverBg="slate-700"
+                    >
+                      <span className="text-blue-300">Add profile section</span>
+                    </Button>
+                    <Button
+                      rounded="full"
+                      width="max"
+                      py="1"
+                      bg="transparent"
+                      hoverBg="slate-700"
+                    >
+                      <span className="text-slate-200">More</span>
+                    </Button>
+                  </div>
                 </div>
-                <div className="hidden sm:block space-x-2">
+              ) : (
+                <div className="mt-2 flex items-center space-x-2">
                   <Button
                     rounded="full"
                     width="max"
                     py="1"
-                    borderColor="blue-300"
-                    bg="transparent"
-                    hoverBg="slate-700"
+                    bg="blue-500"
+                    border="border-none"
+                    hoverBg="blue-600"
                   >
-                    <span className="text-blue-300">Add profile section</span>
+                    {!user?.followers?.includes(currentUser?._id) ? (
+                      <>
+                        <UserAddIcon className="w-5 h-5 text-black/80 mr-1" />
+                        <span className="text-black/80">Connect</span>
+                      </>
+                    ) : (
+                      <>
+                        <PaperAirplaneIcon className="w-5 h-5 text-black/80 mr-1" />
+                        <span className="text-black/80">Message</span>
+                      </>
+                    )}
                   </Button>
                   <Button
-                    rounded="full"
-                    width="max"
-                    py="1"
-                    bg="transparent"
-                    hoverBg="slate-700"
-                  >
-                    <span className="text-slate-200">More</span>
-                  </Button>
+                      rounded="full"
+                      width="max"
+                      py="1"
+                      bg="transparent"
+                      hoverBg="slate-700"
+                    >
+                      <span className="text-slate-200">More</span>
+                    </Button>
                 </div>
-              </div>
+              )}
               <div className="mt-4 grid grid-rows-3 grid-flow-col block sm:hidden">
                 <div className="flex-shrink-0 row-span-3 space-y-2">
                   <div className="flex items-center space-x-2">

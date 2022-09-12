@@ -41,7 +41,7 @@ const Education = ({ user }) => {
         },
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?._id, selector?.newEducations]);
   return (
     <>
@@ -76,21 +76,32 @@ const Education = ({ user }) => {
             <div className="flex space-x-2 mt-2">
               <div className="min-w-0 flex-1">
                 {educations?.length > 0 ? (
-                  educations.map((education) => (
+                  educations.map((education, index) => (
                     <div className="mt-4" key={education._id}>
                       <div className="text-sm font-medium text-white">
                         <span>{education.education}</span>
                       </div>
                       <div className="text-sm text-slate-300">
                         <span>
-                          {education.degree + ", " + education.fieldOfStudy}
+                          {education.degree || education.fieldOfStudy ? (
+                            <>
+                              {education.degree + ", " + education.fieldOfStudy}
+                            </>
+                          ) : null}
                         </span>
                       </div>
                       <div className="text-sm text-slate-500 font-medium">
                         <span>
-                          {education.startYears} - {education.endYears}
+                          {education.startYears || education.endYears ? (
+                            <>
+                              {education.startYears} - {education.endYears}
+                            </>
+                          ) : null}
                         </span>
                       </div>
+                      {index !== educations.length - 1 && (
+                        <Divider mt={"mt-2"} />
+                      )}
                     </div>
                   ))
                 ) : (
@@ -107,7 +118,6 @@ const Education = ({ user }) => {
                 )}
               </div>
             </div>
-            {/* <Divider mt={"mt-2"} /> */}
           </div>
         </Card>
       </div>

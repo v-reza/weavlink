@@ -99,7 +99,7 @@ const Skills = ({ user }) => {
             <div className="flex space-x-2 ">
               <div className="min-w-0 flex-1">
                 {skills.length > 0 ? (
-                  skills.slice(0, 5).map((skill) => (
+                  skills.slice(0, 5).map((skill, index) => (
                     <div className="mt-4" key={skill._id}>
                       <div className="text-sm font-medium text-white">
                         <span>{skill.skill}</span>
@@ -120,6 +120,9 @@ const Skills = ({ user }) => {
                         <UsersIcon className="w-5 h-5" />
                         <span>{skill.endorsment?.length || 0} Endorsment</span>
                       </div>
+                      {index !== skills.length - 1 && (
+                        <Divider mt={"mt-2"} />
+                      )}
                     </div>
                   ))
                 ) : (
