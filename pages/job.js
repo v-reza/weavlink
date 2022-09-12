@@ -2,7 +2,7 @@ import React from 'react'
 
 const job = () => {
   return (
-    <div>job</div>
+    <div className='text-white font-medium'>On Progress</div>
   )
 }
 
