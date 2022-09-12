@@ -1,19 +1,48 @@
 /* eslint-disable @next/next/no-img-element */
 import useGlobal from "@/hooks/useGlobal";
+import useNotif from "@/hooks/useNotif";
 import useUser from "@/hooks/useUser";
 import Card from "@/uiComponents/Card";
 import Divider from "@/uiComponents/Divider";
 import Modal from "@/uiComponents/Modal";
+import { axiosGet } from "@/utils/axiosInstance";
 import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FooterFormEducation from "./Modals/Education/FooterFormEducation";
 import FormEducation from "./Modals/Education/FormEducation";
 
 const Education = ({ user }) => {
   const [open, setOpen] = useState(false);
+  const [educations, setEducations] = useState([]);
 
   const { user: currentUser } = useUser();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { dispatch: dispatchNotif } = useNotif();
+
+  useEffect(() => {
+    const getMyEducations = async () => {
+      try {
+        const res = await axiosGet(`/educations/myEducations/${user._id}`);
+        setEducations(res.data.education);
+      } catch (error) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
+      }
+    };
+    getMyEducations();
+    if (selector?.newEducations) {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          newEducations: false,
+        },
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id, selector?.newEducations]);
   return (
     <>
       <Modal
@@ -46,15 +75,36 @@ const Education = ({ user }) => {
             </div>
             <div className="flex space-x-2 mt-2">
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium text-white">
-                  <span>SMK Negeri 4 Malang</span>
-                </div>
-                <div className="text-sm text-slate-300">
-                  <span>Pelajar, Rekayasa Perangkat Lunak</span>
-                </div>
-                <div className="text-sm text-slate-500 font-medium">
-                  <span>2019 - 2022</span>
-                </div>
+                {educations?.length > 0 ? (
+                  educations.map((education) => (
+                    <div className="mt-4" key={education._id}>
+                      <div className="text-sm font-medium text-white">
+                        <span>{education.education}</span>
+                      </div>
+                      <div className="text-sm text-slate-300">
+                        <span>
+                          {education.degree + ", " + education.fieldOfStudy}
+                        </span>
+                      </div>
+                      <div className="text-sm text-slate-500 font-medium">
+                        <span>
+                          {education.startYears} - {education.endYears}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-slate-300 font-medium">
+                    {user._id !== currentUser?._id ? (
+                      <>No educations yet on this users.</>
+                    ) : (
+                      <>
+                        No educations yet. Add your educations to show your
+                        expertise.
+                      </>
+                    )}
+                  </span>
+                )}
               </div>
             </div>
             {/* <Divider mt={"mt-2"} /> */}

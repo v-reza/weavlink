@@ -63,12 +63,22 @@ const FormEducation = () => {
       payload: {
         educations: {
           ...selector.educations,
-          name: selectedEducations?.name,
+          education: selectedEducations?.name,
+          startYears: selectedStartYears?.name,
+          endYears: selectedEndYears?.name,
+          startDate: selectedStartDate?.name,
+          endDate: selectedEndDate?.name,
         },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedEducations]);
+  }, [
+    selectedEducations,
+    selectedStartYears,
+    selectedEndYears,
+    selectedStartDate,
+    selectedEndDate,
+  ]);
 
   const filteredEducations =
     query === ""
@@ -170,6 +180,18 @@ const FormEducation = () => {
         </label>
         <div className="mt-1">
           <input
+            value={selector?.educations?.degree}
+            onChange={(event) =>
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  educations: {
+                    ...selector.educations,
+                    degree: event.target.value,
+                  },
+                },
+              })
+            }
             type="text"
             className="bg-transparent border border-gray-300 text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="Ex: Bachelor's"
@@ -182,6 +204,18 @@ const FormEducation = () => {
         </label>
         <div className="mt-1">
           <input
+            value={selector?.educations?.fieldOfStudy}
+            onChange={(event) =>
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  educations: {
+                    ...selector.educations,
+                    fieldOfStudy: event.target.value,
+                  },
+                },
+              })
+            }
             type="text"
             className="bg-transparent border border-gray-300 text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="Ex: Business"
@@ -217,9 +251,9 @@ const FormEducation = () => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                      {date.map((date) => (
+                      {date.map((date, index) => (
                         <Listbox.Option
-                          key={date.id}
+                          key={index}
                           className={({ active }) =>
                             classNames(
                               active
@@ -293,9 +327,9 @@ const FormEducation = () => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                      {years.map((year) => (
+                      {years.map((year, index) => (
                         <Listbox.Option
-                          key={year.id}
+                          key={index}
                           className={({ active }) =>
                             classNames(
                               active
@@ -371,9 +405,9 @@ const FormEducation = () => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                      {date.map((date) => (
+                      {date.map((date, index) => (
                         <Listbox.Option
-                          key={date.id}
+                          key={index}
                           className={({ active }) =>
                             classNames(
                               active
@@ -447,9 +481,9 @@ const FormEducation = () => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-slate-800 border border-slate-600 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                      {years.map((year) => (
+                      {years.map((year, index) => (
                         <Listbox.Option
-                          key={year.id}
+                          key={index}
                           className={({ active }) =>
                             classNames(
                               active
@@ -502,9 +536,20 @@ const FormEducation = () => {
         </label>
         <div className="mt-1">
           <input
+            value={selector?.educations?.grade}
+            onChange={(e) => {
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  educations: {
+                    ...selector?.educations,
+                    grade: e.target.value,
+                  },
+                },
+              });
+            }}
             type="text"
             className="bg-transparent border border-gray-300 text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder="Ex: D4/S1"
           />
         </div>
       </div>
@@ -514,7 +559,19 @@ const FormEducation = () => {
         </label>
         <div className="mt-1">
           <textarea
-            maxRows={3}
+            value={selector?.educations?.activities}
+            onChange={(e) => {
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  educations: {
+                    ...selector?.educations,
+                    activities: e.target.value,
+                  },
+                },
+              });
+            }}
+            rows={3}
             className="bg-transparent border border-gray-300 text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="Ex: Bachelor's"
           />
@@ -526,7 +583,19 @@ const FormEducation = () => {
         </label>
         <div className="mt-1">
           <textarea
-            maxRows={3}
+            value={selector?.educations?.description}
+            onChange={(e) => {
+              dispatchGlobal({
+                type: "GLOBAL_STATE",
+                payload: {
+                  educations: {
+                    ...selector?.educations,
+                    description: e.target.value,
+                  },
+                },
+              });
+            }}
+            rows={3}
             className="bg-transparent border border-gray-300 text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
           />
         </div>

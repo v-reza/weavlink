@@ -35,6 +35,7 @@ const Skills = ({ user }) => {
         },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user._id, selector?.newSkills]);
   return (
     <>

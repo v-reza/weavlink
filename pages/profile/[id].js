@@ -47,7 +47,7 @@ const Profile = (props) => {
               userProfile={userProfile}
               currentUser={currentUser}
             />
-            {user._id === currentUser._id && (
+            {user._id === currentUser?._id && (
               <>
                 <SuggestedForYou />
                 <Analytics />
