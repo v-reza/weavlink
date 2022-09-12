@@ -54,7 +54,7 @@ const Profile = (props) => {
             <Experience />
             <Education />
             <LicensesCertifications />
-            <Skills />
+            <Skills user={user} />
           </Container.Main>
           <Container.Rightbar lg={gridCols.lg[4]} xl={gridCols.xl[4]}>
             <Card>

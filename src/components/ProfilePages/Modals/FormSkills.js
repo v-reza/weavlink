@@ -6,6 +6,7 @@ import { axiosGet } from "@/utils/axiosInstance";
 import useGlobal from "@/hooks/useGlobal";
 import Card from "@/uiComponents/Card";
 import { XIcon } from "@heroicons/react/outline";
+import Button from "@/uiComponents/Button";
 
 const FormSkills = () => {
   const [query, setQuery] = useState("");
@@ -31,7 +32,7 @@ const FormSkills = () => {
         },
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSkills]);
 
   const filteredSkills =
@@ -40,7 +41,6 @@ const FormSkills = () => {
       : listSkills.filter((skill) =>
           skill?.name.toLowerCase().includes(query.toLowerCase())
         );
-  console.log(selectedSkills);
 
   return (
     <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -142,7 +142,30 @@ const FormSkills = () => {
                   </div>
                 </div>
               </div>
-              {/* <Divider mt={"mt-2"} /> */}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                {[
+                  "JavaScript",
+                  "React",
+                  "NodeJS",
+                  "MongoDB",
+                  "Git",
+                  "SQL",
+                  "Linux",
+                  "AngularJS",
+                  "GraphQL",
+                ].map((item) => (
+                  <Button
+                    key={item}
+                    rounded="full"
+                    width="max"
+                    py="1"
+                    bg="transparent"
+                    hoverBg="slate-700"
+                  >
+                    <span className="text-slate-200">{item}</span>
+                  </Button>
+                ))}
+              </div>
             </div>
           </Card>
         </div>

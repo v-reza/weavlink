@@ -80,7 +80,7 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                         </>
                       ) : (
                         <span className="text-gray-400 text-md">
-                          {user._id === currentUser._id ? (
+                          {user._id === currentUser?._id ? (
                             <>{"Add your location"}</>
                           ) : (
                             "Location not available"

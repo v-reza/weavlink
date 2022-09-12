@@ -18,14 +18,43 @@ import useHeader from "@/hooks/useHeader";
 
 const FooterFormSkills = ({ setOpen, ...props }) => {
   const { selector, dispatch: dispatchGlobal } = useGlobal();
-  console.log(selector);
+  const { dispatch: dispatchNotif} = useNotif()
+  const { dispatch: dispatchLoading } = useLoading()
+  const { token } = useAuth()
+  const headers = useHeader(token)
+  const handleSaveSkills = async () => {
+    try {
+      dispatchLoading({type: "PROCESSING"})
+      await axiosPost("/skills", {
+        name: selector.skills.name,
+      }, headers).then(() => {
+        dispatchLoading({type: "FINISHED"})
+        dispatchNotif({type: "NOTIF_SUCCESS", title: "Success", message: "Your skills has been saved"})
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            skills: null,
+            newSkills: true
+          },
+        });
+      });
+      setOpen(false);
+    } catch (err) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: err.message,
+      })
+    }
+  }
   return (
     <div className="w-full  border-t border-slate-600">
       <div className="mt-2 flex space-x-2">
         <div className="w-full flex items-center justify-end">
           <button
             type="button"
-            disabled={!selector.skills?.name ? false : true}
+            onClick={() => handleSaveSkills()}
+            disabled={selector.skills?.name ? false : true}
             className={classNames(
               selector.skills?.name
                 ? "bg-indigo-600 hover:bg-indigo-700"
