@@ -1,24 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
+import useGlobal from "@/hooks/useGlobal";
+import useUser from "@/hooks/useUser";
 import Card from "@/uiComponents/Card";
 import Divider from "@/uiComponents/Divider";
 import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
 import React from "react";
 
-const Experience = () => {
+const Experience = ({ user }) => {
+  const { user: currentUser } = useUser();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
+
   return (
     <div className="mt-4">
       <Card>
         <div>
           <div className="flex items-center justify-between">
             <span className="text-white text-md font-medium">Experience</span>
-            <div className="flex space-x-3">
-              <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
-                <PlusIcon className="w-5 h-5 text-slate-300" />
+            {currentUser?._id === user?._id && (
+              <div className="flex space-x-3">
+                <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
+                  <PlusIcon className="w-5 h-5 text-slate-300" />
+                </div>
+                <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
+                  <PencilIcon className="w-5 h-5 text-slate-300" />
+                </div>
               </div>
-              <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
-                <PencilIcon className="w-5 h-5 text-slate-300" />
-              </div>
-            </div>
+            )}
           </div>
           <div className="flex space-x-2 mt-2">
             <div className="flex-shrink-0">
@@ -45,7 +52,7 @@ const Experience = () => {
                 <span className="text-white font-medium">Skills:</span>
                 <span className="text-slate-300 text-sm truncate">
                   &nbsp; React Native • React js • Node js • Express js •
-                  MongoDB 
+                  MongoDB
                 </span>
               </div>
             </div>

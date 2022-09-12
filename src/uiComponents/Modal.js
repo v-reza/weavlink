@@ -2,7 +2,15 @@ import { Dialog, Tab, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import React, { Fragment } from "react";
 
-const Modal = ({ open, setOpen, title, children, footer, ...props }) => {
+const Modal = ({
+  open,
+  setOpen,
+  title,
+  children,
+  footer,
+  maxWidth,
+  ...props
+}) => {
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed z-10 inset-0" onClose={setOpen}>
@@ -35,7 +43,11 @@ const Modal = ({ open, setOpen, title, children, footer, ...props }) => {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block bg-slate-800 rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg xs:w-full xs:h-max sm:w-full sm:p-6">
+            <div
+              className={`inline-block bg-slate-800 rounded-lg px-4 pt-5 pb-4  text-left shadow-xl transform transition-all sm:my-8 sm:align-middle ${
+                maxWidth ? maxWidth : "sm:max-w-lg"
+              }  xs:w-full xs:h-max sm:w-full sm:p-6`}
+            >
               <div className="sm:block absolute top-0 right-0 pt-4 pr-4 mt-2">
                 <button
                   type="button"

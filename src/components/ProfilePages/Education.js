@@ -1,49 +1,67 @@
 /* eslint-disable @next/next/no-img-element */
+import useGlobal from "@/hooks/useGlobal";
+import useUser from "@/hooks/useUser";
 import Card from "@/uiComponents/Card";
 import Divider from "@/uiComponents/Divider";
+import Modal from "@/uiComponents/Modal";
 import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
-import React from "react";
+import React, { useState } from "react";
+import FooterFormEducation from "./Modals/Education/FooterFormEducation";
+import FormEducation from "./Modals/Education/FormEducation";
 
-const Education = () => {
+const Education = ({ user }) => {
+  const [open, setOpen] = useState(false);
+
+  const { user: currentUser } = useUser();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
   return (
-    <div className="mt-4">
-      <Card>
-        <div>
-          <div className="flex items-center justify-between">
-            <span className="text-white text-md font-medium">Education</span>
-            <div className="flex space-x-3">
-              <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
-                <PlusIcon className="w-5 h-5 text-slate-300" />
-              </div>
-              <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
-                <PencilIcon className="w-5 h-5 text-slate-300" />
+    <>
+      <Modal
+        title={"Add Education"}
+        open={open}
+        setOpen={setOpen}
+        footer={<FooterFormEducation setOpen={setOpen} />}
+        maxWidth={"sm:max-w-2xl"}
+      >
+        <FormEducation />
+      </Modal>
+      <div className="mt-4">
+        <Card>
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-white text-md font-medium">Education</span>
+              {currentUser?._id === user._id && (
+                <div className="flex space-x-3">
+                  <div
+                    className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer"
+                    onClick={() => setOpen(true)}
+                  >
+                    <PlusIcon className="w-5 h-5 text-slate-300" />
+                  </div>
+                  <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
+                    <PencilIcon className="w-5 h-5 text-slate-300" />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex space-x-2 mt-2">
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium text-white">
+                  <span>SMK Negeri 4 Malang</span>
+                </div>
+                <div className="text-sm text-slate-300">
+                  <span>Pelajar, Rekayasa Perangkat Lunak</span>
+                </div>
+                <div className="text-sm text-slate-500 font-medium">
+                  <span>2019 - 2022</span>
+                </div>
               </div>
             </div>
+            {/* <Divider mt={"mt-2"} /> */}
           </div>
-          <div className="flex space-x-2 mt-2">
-            <div className="flex-shrink-0">
-              <img
-                src="/avatar.png"
-                className="w-12 h-12 object-cover"
-                alt=""
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-medium text-white">
-                <span>SMK Negeri 4 Malang</span>
-              </div>
-              <div className="text-sm text-slate-300">
-                <span>Pelajar, Rekayasa Perangkat Lunak</span>
-              </div>
-              <div className="text-sm text-slate-500 font-medium">
-                <span>2019 - 2022</span>
-              </div>
-            </div>
-          </div>
-          {/* <Divider mt={"mt-2"} /> */}
-        </div>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </>
   );
 };
 

@@ -11,8 +11,8 @@ import { axiosGet } from "@/utils/axiosInstance";
 import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
 import { ArrowRightIcon, UsersIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
-import FooterFormSkills from "./Modals/FooterFormSkills";
-import FormSkills from "./Modals/FormSkills";
+import FooterFormSkills from "./Modals/Skills/FooterFormSkills";
+import FormSkills from "./Modals/Skills/FormSkills";
 
 const Skills = ({ user }) => {
   const [open, setOpen] = useState(false);

@@ -1,3 +1,5 @@
+import useGlobal from "@/hooks/useGlobal";
+import useUser from "@/hooks/useUser";
 import Button from "@/uiComponents/Button";
 import Card from "@/uiComponents/Card";
 import Divider from "@/uiComponents/Divider";
@@ -5,22 +7,27 @@ import { ArrowRightIcon } from "@heroicons/react/solid";
 import React from "react";
 
 const Activity = ({ user }) => {
+  const { user: currentUser } = useUser();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
+
   return (
     <div className="mt-4">
       <Card usePx0={true}>
         <div className="p-8">
           <div className="flex items-center justify-between">
             <span className="text-white text-md font-medium">Activity</span>
-            <Button
-              rounded="full"
-              width="max"
-              py="1"
-              borderColor="blue-300"
-              bg="transparent"
-              hoverBg="slate-700"
-            >
-              <span className="text-blue-300 font-medium">Start a post</span>
-            </Button>
+            {currentUser?._id === user._id && (
+              <Button
+                rounded="full"
+                width="max"
+                py="1"
+                borderColor="blue-300"
+                bg="transparent"
+                hoverBg="slate-700"
+              >
+                <span className="text-blue-300 font-medium">Start a post</span>
+              </Button>
+            )}
           </div>
           <div className="text-blue-300 text-sm flex font-medium">
             {user?.followers.length} followers

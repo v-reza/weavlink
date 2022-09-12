@@ -47,13 +47,17 @@ const Profile = (props) => {
               userProfile={userProfile}
               currentUser={currentUser}
             />
-            <SuggestedForYou />
-            <Analytics />
-            <Resources />
+            {user._id === currentUser._id && (
+              <>
+                <SuggestedForYou />
+                <Analytics />
+                <Resources />
+              </>
+            )}
             <Activity user={user} />
-            <Experience />
-            <Education />
-            <LicensesCertifications />
+            <Experience user={user} />
+            <Education user={user} />
+            <LicensesCertifications user={user} />
             <Skills user={user} />
           </Container.Main>
           <Container.Rightbar lg={gridCols.lg[4]} xl={gridCols.xl[4]}>
