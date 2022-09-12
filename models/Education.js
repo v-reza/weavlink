@@ -2,30 +2,24 @@ const mongoose = require("mongoose");
 
 const EducationSchema = new mongoose.Schema(
   {
-    school: {
-      type: String,
+    domains: {
+      type: Array,
     },
-    degree: {
-      type: String,
+    alpha_two_code: {
+      type: String
     },
-    fieldOfStudy: {
-      type: String,
+    country: {
+      type: String
     },
-    startDate: {
-      type: String,
+    web_pages: {
+      type: Array
     },
-    endDate: {
-      type: String,
+    name: {
+      type: String
     },
-    grade: {
-      type: String,
-    },
-    activitiesAndSocieties: {
-      type: String,
-    },
-    description: {
-      type: String,
-    },
+    state_province: {
+      type: String
+    }
   },
   { timestamps: true }
 );

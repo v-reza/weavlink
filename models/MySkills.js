@@ -10,6 +10,10 @@ const MySkillsSchema = new mongoose.Schema(
       type: Array,
       default: []
     },
+    endorsment: {
+      type: Array,
+      default: []
+    }
   },
   { timestamps: true }
 );

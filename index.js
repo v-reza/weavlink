@@ -20,6 +20,7 @@ const jobsRouter = require("./router/jobs");
 const companyRouter = require("./router/company");
 const commentRouter = require("./router/comments");
 const skillsRouter = require("./router/skills");
+const educationsRouter = require("./router/educations");
 const verifyBearerToken = require("./helper/verifyBearerToken");
 
 /* Connect Env */
@@ -53,6 +54,7 @@ app.use("/api/jobs", jobsRouter);
 app.use("/api/company", companyRouter);
 app.use("/api/comments", commentRouter);
 app.use("/api/skills", skillsRouter);
+app.use("/api/educations", educationsRouter);
 
 const options = {
   method: "POST",
