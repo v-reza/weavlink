@@ -10,6 +10,7 @@ import Modal from "@/uiComponents/Modal";
 import { axiosGet } from "@/utils/axiosInstance";
 import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
 import { ArrowRightIcon, UsersIcon } from "@heroicons/react/solid";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import FooterFormSkills from "./Modals/Skills/FooterFormSkills";
 import FormSkills from "./Modals/Skills/FormSkills";
@@ -21,6 +22,7 @@ const Skills = ({ user }) => {
   const headers = useHeader(token);
   const { user: currentUser } = useUser();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const router = useRouter()
   useEffect(() => {
     const getMySkills = async () => {
       const res = await axiosGet(`/skills/mySkills/${user._id}`);
@@ -141,7 +143,7 @@ const Skills = ({ user }) => {
             {/* <Divider mt={"mt-2"} /> */}
           </div>
           <Divider />
-          <div className="py-2 w-full cursor-pointer hover:bg-slate-500/30">
+          <div className="py-2 w-full cursor-pointer hover:bg-slate-500/30" onClick={() => router.push(`/profile/${user.username}/details/skills`)}>
             <div className="flex items-center justify-center">
               <span className="text-white text-sm font-medium cursor-pointer flex items-center">
                 Show all {skills.length || 0} skills <ArrowRightIcon className="w-4 h-4 ml-2" />

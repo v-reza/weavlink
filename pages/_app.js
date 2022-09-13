@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
 import LoadingBackdrop from "@/uiComponents/Loading/LoadingBackdrop";
 import Notification from "@/uiComponents/Notification";
+import MessageBox from "@/components/Messages/MessageBox";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -26,6 +27,7 @@ function MyApp({ Component, pageProps }) {
             <LoadingBackdrop />
             <Notification />
             <Navbar />
+            <MessageBox />
             <Component {...pageProps} />
           </AuthGuard>
         </Layout>
