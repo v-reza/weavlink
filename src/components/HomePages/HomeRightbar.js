@@ -71,8 +71,6 @@ const HomeRightbar = ({ listFeeds }) => {
     }
   };
 
-  console.log(follow);
-
   return (
     <div>
       <div className="flex items-center justify-between">
