@@ -7,7 +7,10 @@ import { ChevronDownIcon, DotsHorizontalIcon } from "@heroicons/react/outline";
 import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import ChatBox from "./Chat/ChatBox";
-
+// import socket from "@/utils/socket";
+import io from "socket.io-client";
+const server = process.env.NEXT_APP_API;
+let socket;
 const MessageBox = () => {
   const dummyConversation = [
     {
@@ -46,6 +49,19 @@ const MessageBox = () => {
   useEffect(() => {
     setIsSSR(isAuthenticated);
   }, [isAuthenticated]);
+  const options = {
+    "force new connection": true,
+    reconnectionAttempts: "Infinity",
+    timeout: 10000,
+    transports: ["websocket"],
+  };
+  useEffect(() => {
+    socket = io(server, options);
+    socket.connect()
+    return () => {
+      socket.disconnect();
+    }
+  }, []);
 
   return (
     <div>
@@ -148,7 +164,7 @@ const MessageBox = () => {
               selectedConversation={selectedConversation}
               setSelectedConversation={setSelectedConversation}
             />
-          )}  
+          )}
         </div>
       )}
     </div>
