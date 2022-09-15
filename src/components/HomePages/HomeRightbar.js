@@ -7,6 +7,7 @@ import useUser from "@/hooks/useUser";
 import Button from "@/uiComponents/Button";
 import { axiosPut } from "@/utils/axiosInstance";
 import { ArrowSmRightIcon, PlusIcon, XIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 const HomeRightbar = ({ listFeeds }) => {
@@ -17,6 +18,7 @@ const HomeRightbar = ({ listFeeds }) => {
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch } = useUser();
+  const router = useRouter();
   /* End Hooks */
 
   const handleFollow = async (user) => {
@@ -93,7 +95,14 @@ const HomeRightbar = ({ listFeeds }) => {
           <div key={usr._id}>
             <div className="py-2">
               <div className="flex space-x-3 cursor-pointer">
-                <div className="flex-shrink-0">
+                <div
+                  className="flex-shrink-0"
+                  onClick={() =>
+                    router.push(`/profile/${usr.user.username}`, null, {
+                      shallow: true,
+                    })
+                  }
+                >
                   <img
                     className="h-10 w-10 rounded-full"
                     src={
@@ -106,7 +115,14 @@ const HomeRightbar = ({ listFeeds }) => {
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium text-slate-300">
+                  <div
+                    className="text-sm font-medium text-slate-300 hover:underline"
+                    onClick={() =>
+                      router.push(`/profile/${usr.user.username}`, null, {
+                        shallow: true,
+                      })
+                    }
+                  >
                     <p className="truncate">
                       {usr.user.firstname} {usr.user.lastname}
                     </p>
@@ -118,8 +134,16 @@ const HomeRightbar = ({ listFeeds }) => {
                     <div className="mt-2 ">
                       <Button
                         onClick={() => handleFollow(usr)}
-                        hoverBg={follow.find((item) => item._id === usr.user._id) ? "rose-700" : "slate-700"}
-                        bg={follow.find((item) => item._id === usr.user._id) ? "rose-600" : "slate-600"}
+                        hoverBg={
+                          follow.find((item) => item._id === usr.user._id)
+                            ? "rose-700"
+                            : "slate-700"
+                        }
+                        bg={
+                          follow.find((item) => item._id === usr.user._id)
+                            ? "rose-600"
+                            : "slate-600"
+                        }
                         width="max"
                         py="1"
                         rounded="full"

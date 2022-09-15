@@ -45,7 +45,7 @@ export default function Home() {
   const [limit, setLimit] = useState(6);
   const [listFeeds, setListFeeds] = useState([]);
   const [showMoreMobile, setShowMoreMobile] = useState(false);
-  const [form, setForm] = useState({});
+  const [noFeedsFound, setNoFeedsFound] = useState(false);
 
   /* Hooks */
   const { isAuthenticated, token } = useAuth();
@@ -131,6 +131,13 @@ export default function Home() {
     };
   }, [user?._id]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (listFeeds.length === 0) {
+        setNoFeedsFound(true);
+      }
+    }, 2000);
+  }, [listFeeds]);
   return (
     <>
       {isSSR && (
@@ -189,7 +196,10 @@ export default function Home() {
                 </h1>
               }
               loader={
-                <DotsLoader className="overflow-hidden flex items-center justify-center" color="grey" />
+                <DotsLoader
+                  className="overflow-hidden flex items-center justify-center"
+                  color="grey"
+                />
               }
             >
               {timeline.map((post) => (
@@ -204,13 +214,19 @@ export default function Home() {
               <Card padding={4}>
                 {listFeeds.length > 0 ? (
                   <HomeRightbar listFeeds={listFeeds} />
-                ) : (
+                ) : !noFeedsFound ? (
                   <div className="flex items-center">
                     <SkeletonProfile />
                     <div className="mt-4">
                       <SkeletonText />
                       <SkeletonText />
                     </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <h1 className="text-md font-medium text-white">
+                      No feeds recommended for you
+                    </h1>
                   </div>
                 )}
               </Card>

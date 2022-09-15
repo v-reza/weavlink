@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import useAuth from "@/hooks/useAuth";
 import useFolder from "@/hooks/useFolder";
@@ -21,6 +22,7 @@ import Experience from "@/components/ProfilePages/Experience";
 import Education from "@/components/ProfilePages/Education";
 import LicensesCertifications from "@/components/ProfilePages/LicensesCertifications";
 import Skills from "@/components/ProfilePages/Skills";
+import useGlobal from "@/hooks/useGlobal";
 
 const Profile = (props) => {
   const { user, userProfile } = props;
@@ -29,6 +31,7 @@ const Profile = (props) => {
   const folder = useFolder();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -36,6 +39,18 @@ const Profile = (props) => {
     }
     setIsSSR(isAuthenticated);
   }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (selector?.refreshProfile) {
+      router.replace(router.asPath)
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshProfile: false,
+        },
+      });
+    }
+  }, [selector?.refreshProfile]);
 
   return (
     <>

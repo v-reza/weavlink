@@ -66,7 +66,7 @@ const Conversations = ({
             <div className="flex items-center justify-between">
               <a
                 href="#"
-                className="hover:underline text-sm font-medium text-slate-300"
+                className="hover:underline text-sm font-medium text-slate-300 truncate"
               >
                 {user?.firstname + " "  + user?.lastname}
               </a>

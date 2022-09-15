@@ -3,8 +3,9 @@ import useAuth from "@/hooks/useAuth";
 import useGlobal from "@/hooks/useGlobal";
 import useHeader from "@/hooks/useHeader";
 import useNotif from "@/hooks/useNotif";
+import useUser from "@/hooks/useUser";
 import Button from "@/uiComponents/Button";
-import { axiosGet, axiosPost } from "@/utils/axiosInstance";
+import { axiosGet, axiosPost, axiosPut } from "@/utils/axiosInstance";
 import { Menu } from "@headlessui/react";
 import { PencilIcon, UserAddIcon, XIcon } from "@heroicons/react/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/solid";
@@ -15,7 +16,8 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchNotif } = useNotif();
-  const { selector, dispatch: dispatchGlobal } = useGlobal()
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { dispatch } = useUser();
   const [conversationsUsers, setConversationsUsers] = useState(null);
   useEffect(() => {
     const getConversation = async () => {
@@ -27,57 +29,81 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
       dispatchGlobal({
         type: "GLOBAL_STATE",
         payload: {
-          refreshConversations: false
-        }
-      })
+          refreshConversations: false,
+        },
+      });
     }
   }, [user?._id, selector?.refreshConversations]);
+
   useEffect(() => {
     conversations.find((conversation) => {
       return setConversationsUsers(conversation.members.includes(user._id));
     });
-  }, [conversations, user._id])
+  }, [conversations, user._id]);
 
-  const handleFollow = async () => {};
+  const handleFollow = async () => {
+    await axiosPut(`/users/${user._id}/follow`, null, headers).then(() => {
+      dispatch({ type: "FOLLOW", payload: user._id });
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          refreshProfile: true,
+        },
+      });
+      dispatchNotif({
+        type: "NOTIF_SUCCESS",
+        title: "Success",
+        message: "Followed",
+      });
+    });
+  };
 
   const handleMessage = async () => {
-    
     if (!conversationsUsers) {
       try {
         const data = {
           senderId: currentUser?._id,
           receiverId: user?._id,
-        }
+        };
         await axiosPost("/conversations", data).then(() => {
           dispatchNotif({
             type: "NOTIF_SUCCESS",
             title: "Success",
             message: "Conversations created",
-          })
+          });
           dispatchGlobal({
             type: "GLOBAL_STATE",
             payload: {
-              refreshConversations: true
-            }
-          })
-        })
+              refreshConversations: true,
+            },
+          });
+        });
       } catch (error) {
         dispatchNotif({
           type: "NOTIF_ERROR",
           title: "Error",
           message: error.message,
-        })
+        });
       }
     } else {
       dispatchNotif({
         type: "NOTIF_SUCCESS",
         title: "Success",
         message: "Conversations already created",
-      })
+      });
     }
+    
+    dispatchGlobal({
+      type: "GLOBAL_STATE",
+      payload: {
+        ...selector,
+        openMessaging: true,
+      }
+    })
   };
 
-  console.log(conversations)
+  console.log(conversations);
   return (
     <ul role="list" className="select-none">
       <div className="overflow-hidden sm:rounded-md shadow-slate-800">
@@ -262,7 +288,18 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                       </>
                     ) : (
                       <>
-                        <PaperAirplaneIcon className="w-5 h-5 text-black/80 mr-1" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16 16"
+                          data-supported-dps="16x16"
+                          fill="currentColor"
+                          className="mercado-match text-black/80 mr-1"
+                          width="16"
+                          height="16"
+                          focusable="false"
+                        >
+                          <path d="M14 2L0 6.67l5 2.64 5.67-3.98L6.7 11l2.63 5L14 2z"></path>
+                        </svg>
                         <span className="text-black/80">Message</span>
                       </>
                     )}

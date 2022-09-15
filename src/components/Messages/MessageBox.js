@@ -34,6 +34,19 @@ const MessageBox = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    if (selector?.openMessaging) {
+      setOpen(true);
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          openMessaging: false,
+        },
+      });
+    }
+  }, [selector?.openMessaging]);
+
+  useEffect(() => {
     const getConversation = async () => {
       const res = await axiosGet("/conversations", headers);
       setConversations(res.data);
