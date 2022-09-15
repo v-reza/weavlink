@@ -40,6 +40,21 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/userSearch", async(req, res) => {
+  try {
+    const users = await User.find().select([
+      "-password",
+      "-__v",
+      "-createdAt",
+      "-updatedAt",
+      "-email",
+    ]);
+    return res.json(users)
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
+
 router.get("/listUsersMentions", async (req, res) => {
   try {
     const data = [];
