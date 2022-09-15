@@ -10,6 +10,7 @@ const Conversations = ({
   currentUser,
 }) => {
   const [user, setUser] = useState();
+  const [lastMessages, setLastMessages] = useState(null);
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentUser?._id);
@@ -19,6 +20,20 @@ const Conversations = ({
     }
     getUser()
   }, [conversation, currentUser?._id])
+  
+  useEffect(() => {
+    const getLastMessage = async () => {
+      try {
+        const res = await axiosGet(`/messages/${conversation._id}`)
+        setLastMessages(res.data.filter((m) => m.sender !== currentUser?._id).slice(-1).pop())
+        
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getLastMessage()
+  }, [conversation, currentUser?._id])
+  
   return (
     <div>
       <div
@@ -54,7 +69,7 @@ const Conversations = ({
             </div>
             <p className="text-xs text-slate-400 truncate">
               {/* {conversation.lastMessage} */}
-              Last Message
+              {lastMessages ? lastMessages?.text : "No messages yet"}
             </p>
           </div>
         </div>

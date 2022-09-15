@@ -41,8 +41,6 @@ const MessageBox = () => {
     getConversation();
   }, [user?._id]);
 
-  
-
   return (
     <div>
       {isSSR && (
