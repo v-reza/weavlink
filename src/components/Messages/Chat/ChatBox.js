@@ -14,6 +14,7 @@ import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import useGlobal from "@/hooks/useGlobal";
+import { useRouter } from "next/router";
 let socket;
 const ChatBox = ({
   chatBoxOpen,
@@ -28,10 +29,11 @@ const ChatBox = ({
   const [receiveUser, setReceiveUser] = useState(null);
   const [arrivalMessageSocket, setArrivalMessageSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const router = useRouter();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const msgRef = useRef();
   const { user } = useUser();
-
+  console.log(currentChat)
   useEffect(() => {
     if (chatBoxOpen) {
       setTimeout(() => {
@@ -59,7 +61,7 @@ const ChatBox = ({
       }
     };
     getMessages();
-  }, []);
+  }, [currentChat?._id]);
 
   useEffect(() => {
     const receiveUser = currentChat?.members.find((m) => m !== user?._id);
@@ -171,7 +173,13 @@ const ChatBox = ({
                   </span>
                 </div>
                 <div className="min-w-0 flex-1 mt-1">
-                  <p className="text-xs font-medium text-white">
+                  <p
+                    className="text-xs font-medium text-white hover:underline truncate"
+                    onClick={() =>
+                      open &&
+                      router.push(`/profile/${selectedConversation.username}`)
+                    }
+                  >
                     {selectedConversation.firstname +
                       " " +
                       selectedConversation.lastname}

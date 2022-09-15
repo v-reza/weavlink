@@ -3,6 +3,7 @@ import useGlobal from "@/hooks/useGlobal";
 import { axiosGet } from "@/utils/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
+import ConversationsSearch from "./ConversationsSearch";
 
 const Conversations = ({
   conversation,
@@ -12,38 +13,42 @@ const Conversations = ({
 }) => {
   const [user, setUser] = useState();
   const [lastMessages, setLastMessages] = useState(null);
-  const { selector, dispatch: dispatchGlobal } = useGlobal()
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentUser?._id);
     const getUser = async () => {
-      const res = await axiosGet(`/users/${friendId}`)
-      setUser(res.data)
-    }
-    getUser()
-  }, [conversation, currentUser?._id])
-  
+      const res = await axiosGet(`/users/${friendId}`);
+      setUser(res.data);
+    };
+    getUser();
+  }, [conversation, currentUser?._id]);
+
   useEffect(() => {
     const getLastMessage = async () => {
       try {
-        const res = await axiosGet(`/messages/${conversation._id}`)
-        setLastMessages(res.data.filter((m) => m.sender !== currentUser?._id).slice(-1).pop())
-        
+        const res = await axiosGet(`/messages/${conversation._id}`);
+        setLastMessages(
+          res.data
+            .filter((m) => m.sender !== currentUser?._id)
+            .slice(-1)
+            .pop()
+        );
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-    getLastMessage()
-    if (selector?.refreshMessages) { 
+    };
+    getLastMessage();
+    if (selector?.refreshMessages) {
       dispatchGlobal({
         type: "GLOBAL_STATE",
         payload: {
-          refreshMessages: false
-        }
-      })
+          refreshMessages: false,
+        },
+      });
     }
-  }, [conversation, currentUser?._id, selector?.refreshMessages])
-  
+  }, [conversation, currentUser?._id, selector?.refreshMessages]);
+
   return (
     <div>
       <div
@@ -68,7 +73,7 @@ const Conversations = ({
                 href="#"
                 className="hover:underline text-sm font-medium text-slate-300 truncate"
               >
-                {user?.firstname + " "  + user?.lastname}
+                {user?.firstname + " " + user?.lastname}
               </a>
               <a
                 href="#"

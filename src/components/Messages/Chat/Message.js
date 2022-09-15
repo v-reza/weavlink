@@ -24,7 +24,7 @@ const Message = ({ message, receiveUser }) => {
             <img
               className="h-10 w-10 rounded-full"
               src={user?.profilePicture || "/avatar.png"}
-              noReferrerPolicy="no-referrer"
+              noreferrerpolicy="no-referrer"
               alt=""
             />
           </div>

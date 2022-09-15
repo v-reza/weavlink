@@ -13,6 +13,7 @@ import io from "socket.io-client";
 import Conversations from "./Conversations";
 import useHeader from "@/hooks/useHeader";
 import { axiosGet } from "@/utils/axiosInstance";
+import ConversationsSearch from "./ConversationsSearch";
 
 let socket;
 const MessageBox = () => {
@@ -114,6 +115,12 @@ const MessageBox = () => {
                     </div>
                   </div>
                 </div>
+                <ConversationsSearch
+                  setSelectedConversation={setSelectedConversation}
+                  setChatBoxOpen={setChatBoxOpen}
+                  conversation={conversations}
+                  setCurrentChat={setCurrentChat}
+                />
                 {conversations.length > 0 ? (
                   conversations.map((conversation) => (
                     <div

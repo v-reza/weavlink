@@ -102,8 +102,7 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
       }
     })
   };
-
-  console.log(conversations);
+  
   return (
     <ul role="list" className="select-none">
       <div className="overflow-hidden sm:rounded-md shadow-slate-800">
