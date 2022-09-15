@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import useAuth from "@/hooks/useAuth";
 import useGlobal from "@/hooks/useGlobal";
@@ -9,59 +10,38 @@ import React, { useEffect, useState } from "react";
 import ChatBox from "./Chat/ChatBox";
 // import socket from "@/utils/socket";
 import io from "socket.io-client";
-const server = process.env.NEXT_APP_API;
+import Conversations from "./Conversations";
+import useHeader from "@/hooks/useHeader";
+import { axiosGet } from "@/utils/axiosInstance";
+
 let socket;
 const MessageBox = () => {
-  const dummyConversation = [
-    {
-      id: 1,
-      name: "Jonny",
-      profilePicture: "/avatar.png",
-      lastMessage: "Hey, how are you?",
-      lastMessageTime: "2:30 PM",
-      unreadMessages: 2,
-    },
-    {
-      id: 2,
-      name: "Jonny the pablo",
-      profilePicture:
-        "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      lastMessage: "Hey, how are you dummy message?",
-      lastMessageTime: "2:30 PM",
-      unreadMessages: 2,
-    },
-    {
-      id: 3,
-      name: "Jonny the pablo ke 3",
-      profilePicture:
-        "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      lastMessage: "Hey, how are you dummy message?",
-      lastMessageTime: "2:30 PM",
-      unreadMessages: 2,
-    },
-  ];
+  
   const [isSSR, setIsSSR] = useState(false);
   const [open, setOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
+
+  const [conversations, setConversations] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
+
+  const { isAuthenticated, token } = useAuth();
   const { user } = useUser();
+  const headers = useHeader(token);
+
   useEffect(() => {
     setIsSSR(isAuthenticated);
   }, [isAuthenticated]);
-  const options = {
-    "force new connection": true,
-    reconnectionAttempts: "Infinity",
-    timeout: 10000,
-    transports: ["websocket"],
-  };
+
   useEffect(() => {
-    socket = io(server, options);
-    socket.connect()
-    return () => {
-      socket.disconnect();
-    }
-  }, []);
+    const getConversation = async () => {
+      const res = await axiosGet("/conversations", headers);
+      setConversations(res.data);
+    };
+    getConversation();
+  }, [user?._id]);
+
+  
 
   return (
     <div>
@@ -115,43 +95,17 @@ const MessageBox = () => {
                     </div>
                   </div>
                 </div>
-                {dummyConversation.map((conversation) => (
+                {conversations.map((conversation) => (
                   <div
-                    className="bg-transparent p-3 hover:bg-slate-700/50 cursor-pointer"
-                    onClick={() => {
-                      setSelectedConversation(conversation);
-                      setChatBoxOpen(true);
-                    }}
-                    key={conversation.id}
+                    key={conversation._id}
+                    onClick={() => setCurrentChat(conversation)}
                   >
-                    <div className="flex space-x-3">
-                      <div className="flex-shrink-0">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={conversation.profilePicture}
-                          alt=""
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between">
-                          <a
-                            href="#"
-                            className="hover:underline text-sm font-medium text-slate-300"
-                          >
-                            {conversation.name}
-                          </a>
-                          <a
-                            href="#"
-                            className="hover:underline text-xs font-medium text-slate-400"
-                          >
-                            {conversation.lastMessageTime}
-                          </a>
-                        </div>
-                        <p className="text-xs text-slate-400 truncate">
-                          {conversation.lastMessage}
-                        </p>
-                      </div>
-                    </div>
+                    <Conversations
+                      conversation={conversation}
+                      setSelectedConversation={setSelectedConversation}
+                      setChatBoxOpen={setChatBoxOpen}
+                      currentUser={user}
+                    />
                   </div>
                 ))}
               </div>
@@ -159,6 +113,7 @@ const MessageBox = () => {
           </div>
           {selectedConversation && (
             <ChatBox
+              currentChat={currentChat}
               chatBoxOpen={chatBoxOpen}
               setChatBoxOpen={setChatBoxOpen}
               selectedConversation={selectedConversation}

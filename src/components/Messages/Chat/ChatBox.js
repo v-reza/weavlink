@@ -2,77 +2,42 @@
 import useAuth from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
 import Divider from "@/uiComponents/Divider";
+import { axiosGet, axiosPost } from "@/utils/axiosInstance";
 import classNames from "@/utils/classNames";
 import {
   DotsHorizontalIcon,
   QuestionMarkCircleIcon,
   XIcon,
 } from "@heroicons/react/outline";
+import io from "socket.io-client";
 import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
+let socket;
 const ChatBox = ({
   chatBoxOpen,
   setChatBoxOpen,
   setSelectedConversation,
   selectedConversation,
+  currentChat,
 }) => {
   const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState("");
+  const [receiveUser, setReceiveUser] = useState(null);
+  const [arrivalMessageSocket, setArrivalMessageSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const msgRef = useRef();
-
-  const dummyMessage = [
-    {
-      id: 1,
-      message: "Hey, how are you?",
-      time: "2:30 PM",
-      isSender: true,
-    },
-    {
-      id: 2,
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: false,
-    },
-    {
-      id: 3,
-
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: true,
-    },
-    {
-      id: 4,
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: false,
-    },
-    {
-      id: 5,
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: true,
-    },
-    {
-      id: 6,
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: false,
-    },
-    {
-      id: 7,
-      message: "Hey, how are you dummy message?",
-      time: "2:30 PM",
-      isSender: true,
-    },
-  ];
+  const { user } = useUser();
 
   useEffect(() => {
     if (chatBoxOpen) {
       setTimeout(() => {
         msgRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 500);
-    }
-  }, [dummyMessage, chatBoxOpen]);
+    } 
+    msgRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, chatBoxOpen]);
 
   useEffect(() => {
     if (chatBoxOpen) {
@@ -81,6 +46,89 @@ const ChatBox = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatBoxOpen]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const res = await axiosGet(`/messages/${currentChat?._id}`);
+        setMessages(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMessages();
+  }, []);
+
+  useEffect(() => {
+    const receiveUser = currentChat?.members.find((m) => m !== user?._id);
+    setReceiveUser(receiveUser);
+  }, [currentChat, user?._id]);
+
+  //socket
+  const options = {
+    "force new connection": true,
+    reconnectionAttempts: "Infinity",
+    timeout: 10000,
+    transports: ["websocket"],
+  };
+  const server = "https://weavsocket.herokuapp.com";
+  // const server = "http://localhost:5000";
+  console.log(arrivalMessageSocket)
+  useEffect(() => {
+    socket = io(server);
+    socket.connect();
+    
+    socket.on("getMessage", (data) => {
+      setArrivalMessageSocket({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+    
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    arrivalMessageSocket &&
+      currentChat?.members.includes(arrivalMessageSocket.sender) &&
+      setMessages((prev) => [...prev, arrivalMessageSocket]);
+  }, [arrivalMessageSocket, currentChat?.members]);
+
+  useEffect(() => {
+    socket.emit("addUser", user?._id);
+    socket.on("getUsers", (users) => {
+      setOnlineUsers(
+        user?.followings?.filter((f) => users.some((u) => u.senderId === f))
+      );
+    });
+  }, [user?._id, user?.followings]);
+
+  const handleSubmit = async (e) => {
+    const message = {
+      sender: user?._id,
+      text: text,
+      conversationId: currentChat?._id,
+    };
+
+    const receiverId = currentChat?.members.find((m) => m !== user?._id);
+    socket.emit("sendMessage", {
+      senderId: user?._id,
+      receiverId: receiverId,
+      text: text,
+    });
+
+    try {
+      const res = await axiosPost("/messages", message);
+      setMessages([...messages, res.data]);
+      setText("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <div
@@ -116,7 +164,9 @@ const ChatBox = ({
                 </div>
                 <div className="min-w-0 flex-1 mt-1">
                   <p className="text-xs font-medium text-white">
-                    {selectedConversation.name}
+                    {selectedConversation.firstname +
+                      " " +
+                      selectedConversation.lastname}
                   </p>
                 </div>
                 <div
@@ -131,9 +181,14 @@ const ChatBox = ({
               </div>
             </div>
             <div className="h-56 overflow-y-auto">
-              {dummyMessage.map((message) => (
-                <div key={message.id} ref={msgRef}>
-                  <Message message={message.message} />
+              {messages.map((message) => (
+                <div key={message._id} ref={msgRef}>
+                  <Message
+                    message={message}
+                    receiveUser={
+                      message.sender !== user._id ? receiveUser : user?._id
+                    }
+                  />
                 </div>
               ))}
             </div>
@@ -142,6 +197,8 @@ const ChatBox = ({
                 <div className="w-full flex relative items-center px-2 py-1">
                   <textarea
                     rows={1}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
                     className="resize-none text-md focus:border-transparent focus:ring-0 focus:outline-none w-full bg-transparent sm:text-sm text-slate-400 font-medium border-transparent"
                     placeholder="Write a message..."
                   />
@@ -158,6 +215,7 @@ const ChatBox = ({
               <div className="mt-2 flex space-x-2">
                 <div className="w-full flex items-center justify-end mr-2">
                   <button
+                    onClick={(e) => handleSubmit(e)}
                     type="button"
                     className="w-max bg-indigo-600 hover:bg-indigo-700 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
                   >
