@@ -13,6 +13,7 @@ import io from "socket.io-client";
 import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
+import useGlobal from "@/hooks/useGlobal";
 let socket;
 const ChatBox = ({
   chatBoxOpen,
@@ -27,6 +28,7 @@ const ChatBox = ({
   const [receiveUser, setReceiveUser] = useState(null);
   const [arrivalMessageSocket, setArrivalMessageSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
   const msgRef = useRef();
   const { user } = useUser();
 
@@ -35,7 +37,7 @@ const ChatBox = ({
       setTimeout(() => {
         msgRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 500);
-    } 
+    }
     msgRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, chatBoxOpen]);
 
@@ -73,11 +75,11 @@ const ChatBox = ({
   };
   const server = "https://weavsocket.herokuapp.com";
   // const server = "http://localhost:5000";
-  console.log(arrivalMessageSocket)
+  console.log(arrivalMessageSocket);
   useEffect(() => {
     socket = io(server);
     socket.connect();
-    
+
     socket.on("getMessage", (data) => {
       setArrivalMessageSocket({
         sender: data.senderId,
@@ -85,7 +87,7 @@ const ChatBox = ({
         createdAt: Date.now(),
       });
     });
-    
+
     return () => {
       socket.disconnect();
     };
@@ -124,6 +126,12 @@ const ChatBox = ({
       const res = await axiosPost("/messages", message);
       setMessages([...messages, res.data]);
       setText("");
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshMessages: true,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -134,7 +142,7 @@ const ChatBox = ({
       <div
         className={`hidden sm:block ${
           !open && "cursor-pointer"
-        } flex fixed bottom-0 right-0 mr-[22rem] z-10`}
+        } flex fixed bottom-0 right-0 mr-[22rem] z-30`}
       >
         <div>
           <div
@@ -216,8 +224,14 @@ const ChatBox = ({
                 <div className="w-full flex items-center justify-end mr-2">
                   <button
                     onClick={(e) => handleSubmit(e)}
+                    disabled={!text ? true : false}
                     type="button"
-                    className="w-max bg-indigo-600 hover:bg-indigo-700 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
+                    className={classNames(
+                      !text
+                        ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700",
+                      "w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
+                    )}
                   >
                     Send
                   </button>

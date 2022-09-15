@@ -1,11 +1,83 @@
 /* eslint-disable @next/next/no-img-element */
+import useAuth from "@/hooks/useAuth";
+import useGlobal from "@/hooks/useGlobal";
+import useHeader from "@/hooks/useHeader";
+import useNotif from "@/hooks/useNotif";
 import Button from "@/uiComponents/Button";
+import { axiosGet, axiosPost } from "@/utils/axiosInstance";
 import { Menu } from "@headlessui/react";
 import { PencilIcon, UserAddIcon, XIcon } from "@heroicons/react/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/solid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const ProfileBox = ({ user, userProfile, currentUser }) => {
+  const [conversations, setConversations] = useState([]);
+  const { token } = useAuth();
+  const headers = useHeader(token);
+  const { dispatch: dispatchNotif } = useNotif();
+  const { selector, dispatch: dispatchGlobal } = useGlobal()
+  const [conversationsUsers, setConversationsUsers] = useState(null);
+  useEffect(() => {
+    const getConversation = async () => {
+      const res = await axiosGet("/conversations", headers);
+      setConversations(res.data);
+    };
+    getConversation();
+    if (selector?.refreshConversations) {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshConversations: false
+        }
+      })
+    }
+  }, [user?._id, selector?.refreshConversations]);
+  useEffect(() => {
+    conversations.find((conversation) => {
+      return setConversationsUsers(conversation.members.includes(user._id));
+    });
+  }, [conversations, user._id])
+
+  const handleFollow = async () => {};
+
+  const handleMessage = async () => {
+    
+    if (!conversationsUsers) {
+      try {
+        const data = {
+          senderId: currentUser?._id,
+          receiverId: user?._id,
+        }
+        await axiosPost("/conversations", data).then(() => {
+          dispatchNotif({
+            type: "NOTIF_SUCCESS",
+            title: "Success",
+            message: "Conversations created",
+          })
+          dispatchGlobal({
+            type: "GLOBAL_STATE",
+            payload: {
+              refreshConversations: true
+            }
+          })
+        })
+      } catch (error) {
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        })
+      }
+    } else {
+      dispatchNotif({
+        type: "NOTIF_SUCCESS",
+        title: "Success",
+        message: "Conversations already created",
+      })
+    }
+  };
+
+  console.log(conversations)
   return (
     <ul role="list" className="select-none">
       <div className="overflow-hidden sm:rounded-md shadow-slate-800">
@@ -177,6 +249,11 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                     bg="blue-500"
                     border="border-none"
                     hoverBg="blue-600"
+                    onClick={() => {
+                      !user?.followers?.includes(currentUser?._id)
+                        ? handleFollow()
+                        : handleMessage();
+                    }}
                   >
                     {!user?.followers?.includes(currentUser?._id) ? (
                       <>
@@ -191,14 +268,14 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                     )}
                   </Button>
                   <Button
-                      rounded="full"
-                      width="max"
-                      py="1"
-                      bg="transparent"
-                      hoverBg="slate-700"
-                    >
-                      <span className="text-slate-200">More</span>
-                    </Button>
+                    rounded="full"
+                    width="max"
+                    py="1"
+                    bg="transparent"
+                    hoverBg="slate-700"
+                  >
+                    <span className="text-slate-200">More</span>
+                  </Button>
                 </div>
               )}
               <div className="mt-4 grid grid-rows-3 grid-flow-col block sm:hidden">
@@ -276,7 +353,7 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                         <div className="flex-shrink-0 self-center flex -mt-4">
                           <Menu
                             as="div"
-                            className="relative z-30 inline-block text-left"
+                            className="relative z-10 inline-block text-left"
                           >
                             <div>
                               <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">

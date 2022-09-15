@@ -26,7 +26,7 @@ const Notification = () => {
       {/* Global notification live region, render this permanently at the end of the document */}
       <div
         aria-live="assertive"
-        className="fixed inset-16 flex items-end px-2 py-2 pointer-events-none sm:p-6 sm:items-start"
+        className="z-50 fixed inset-16 flex items-end px-2 py-2 pointer-events-none sm:p-6 sm:items-start"
       >
         <div className="w-full flex flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}

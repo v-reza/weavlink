@@ -16,7 +16,6 @@ import { axiosGet } from "@/utils/axiosInstance";
 
 let socket;
 const MessageBox = () => {
-  
   const [isSSR, setIsSSR] = useState(false);
   const [open, setOpen] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
@@ -28,6 +27,7 @@ const MessageBox = () => {
   const { isAuthenticated, token } = useAuth();
   const { user } = useUser();
   const headers = useHeader(token);
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
 
   useEffect(() => {
     setIsSSR(isAuthenticated);
@@ -39,7 +39,15 @@ const MessageBox = () => {
       setConversations(res.data);
     };
     getConversation();
-  }, [user?._id]);
+    if (selector?.refreshConversations) {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshConversations: false,
+        },
+      });
+    }
+  }, [user?._id, selector?.refreshConversations]);
 
   return (
     <div>
@@ -93,19 +101,25 @@ const MessageBox = () => {
                     </div>
                   </div>
                 </div>
-                {conversations.map((conversation) => (
-                  <div
-                    key={conversation._id}
-                    onClick={() => setCurrentChat(conversation)}
-                  >
-                    <Conversations
-                      conversation={conversation}
-                      setSelectedConversation={setSelectedConversation}
-                      setChatBoxOpen={setChatBoxOpen}
-                      currentUser={user}
-                    />
+                {conversations.length > 0 ? (
+                  conversations.map((conversation) => (
+                    <div
+                      key={conversation._id}
+                      onClick={() => setCurrentChat(conversation)}
+                    >
+                      <Conversations
+                        conversation={conversation}
+                        setSelectedConversation={setSelectedConversation}
+                        setChatBoxOpen={setChatBoxOpen}
+                        currentUser={user}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-white text-center mt-4">
+                    No conversations
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

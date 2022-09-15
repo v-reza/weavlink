@@ -34,7 +34,7 @@ const Message = ({ message, receiveUser }) => {
                 href="#"
                 className="hover:underline text-sm font-medium text-slate-300"
               >
-                {user?.firstname + " " + user?.lastname}
+                {user?.firstname && user?.lastname ? user?.firstname + " " + user?.lastname : "Loading..."}
               </a>
               <a
                 href="#"

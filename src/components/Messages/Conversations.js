@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import useGlobal from "@/hooks/useGlobal";
 import { axiosGet } from "@/utils/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
@@ -11,6 +12,7 @@ const Conversations = ({
 }) => {
   const [user, setUser] = useState();
   const [lastMessages, setLastMessages] = useState(null);
+  const { selector, dispatch: dispatchGlobal } = useGlobal()
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentUser?._id);
@@ -32,7 +34,15 @@ const Conversations = ({
       }
     }
     getLastMessage()
-  }, [conversation, currentUser?._id])
+    if (selector?.refreshMessages) { 
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshMessages: false
+        }
+      })
+    }
+  }, [conversation, currentUser?._id, selector?.refreshMessages])
   
   return (
     <div>
@@ -64,7 +74,7 @@ const Conversations = ({
                 href="#"
                 className="hover:underline text-xs font-medium text-slate-400"
               >
-                {format(conversation.updatedAt)}
+                {format(lastMessages?.createdAt)}
               </a>
             </div>
             <p className="text-xs text-slate-400 truncate">
