@@ -1,19 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
 import useGlobal from "@/hooks/useGlobal";
 import { axiosGet } from "@/utils/axiosInstance";
+import { replaceFormatDate } from "@/utils/constants";
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
-import ConversationsSearch from "./ConversationsSearch";
 
 const Conversations = ({
   conversation,
   setSelectedConversation,
   setChatBoxOpen,
   currentUser,
+  onlineUsers,
+  arrivalTyping,
 }) => {
   const [user, setUser] = useState();
   const [lastMessages, setLastMessages] = useState(null);
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const [isTyping, setIsTyping] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
+
+  useEffect(() => {
+    const checkIsOnline = onlineUsers?.find(
+      (online) => online.userId === user?._id
+    );
+    setIsOnline(checkIsOnline ? true : false);
+  }, [onlineUsers, user?._id]);
+
+  useEffect(() => {
+    setIsTyping(arrivalTyping?.senderId === user?._id ? true : false);
+  }, [arrivalTyping?.senderId, user?._id]);
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== currentUser?._id);
@@ -48,6 +63,7 @@ const Conversations = ({
       });
     }
   }, [conversation, currentUser?._id, selector?.refreshMessages]);
+  // console.log(lastMessages)
 
   return (
     <div>
@@ -61,11 +77,18 @@ const Conversations = ({
       >
         <div className="flex space-x-3">
           <div className="flex-shrink-0">
-            <img
-              className="h-10 w-10 rounded-full"
-              src={user?.profilePicture || "/avatar.png"}
-              alt=""
-            />
+            <span className="inline-block relative">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={user?.profilePicture || "/avatar.png"}
+                alt=""
+              />
+              <span
+                className={`absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-1 ring-black ${
+                  isOnline ? "bg-green-400" : "bg-gray-600"
+                }`}
+              />
+            </span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between">
@@ -79,13 +102,24 @@ const Conversations = ({
                 href="#"
                 className="hover:underline text-xs font-medium text-slate-400"
               >
-                {format(lastMessages?.createdAt)}
+                {lastMessages?.createdAt
+                  ? replaceFormatDate(format(lastMessages?.createdAt))
+                  : replaceFormatDate(format(conversation.createdAt))}
               </a>
             </div>
-            <p className="text-xs text-slate-400 truncate">
-              {/* {conversation.lastMessage} */}
-              {lastMessages ? lastMessages?.text : "No messages yet"}
-            </p>
+            {isTyping ? (
+              <p
+                href="#"
+                className="animate-pulse text-xs font-medium text-slate-400"
+              >
+                typing....
+              </p>
+            ) : (
+              <p className="text-xs text-slate-400 truncate">
+                {/* {conversation.lastMessage} */}
+                {lastMessages ? lastMessages?.text : "No messages yet"}
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -23,7 +23,10 @@ const HomeSidebar = ({ user, userProfile }) => {
               <div className="bg-[url('https://static-exp1.licdn.com/sc/h/lortj0v1h4bx9wlwbdx6zs3f')] p-8 relative" />
               <div
                 className="w-full flex items-center justify-center relative cursor-pointer"
-                onClick={() => router.push(`/profile/${user.username}`)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push(`/profile/${user.username}`);
+                }}
               >
                 <img
                   src={user?.profilePicture || "/avatar.png"}
@@ -36,7 +39,10 @@ const HomeSidebar = ({ user, userProfile }) => {
                 <div className="px-8 py-8">
                   <div
                     className="flex items-center justify-center mt-2 cursor-pointer"
-                    onClick={() => router.push(`/profile/${user.username}`)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push(`/profile/${user.username}`);
+                    }}
                   >
                     <span className="text-white text-md font-medium">
                       {user?.firstname + " " + user?.lastname}

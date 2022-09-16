@@ -5,7 +5,9 @@ import { Combobox } from "@headlessui/react";
 import classNames from "@/utils/classNames";
 import { axiosGet } from "@/utils/axiosInstance";
 import useUser from "@/hooks/useUser";
-
+import useGlobal from "@/hooks/useGlobal";
+import io from "socket.io-client";
+let socket
 export default function ConversationsSearch({
   setSelectedConversation,
   setChatBoxOpen,
@@ -15,7 +17,31 @@ export default function ConversationsSearch({
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [listUsers, setListUsers] = useState([]);
+  const { selector, dispatch: dispatchGlobal} = useGlobal()
   const { user } = useUser();
+  const server = "http://localhost:5000";
+  
+  useEffect(() => {
+    socket = io(server);
+    socket.connect();
+    
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on("getUsers", (data) => {
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          userReceiver: data?.filter((item) => item.userId !== user?._id),
+        }
+      })
+    });
+  }, [selectedPerson, selector, user?._id])
+
 
   useEffect(() => {
     const getListUsers = async () => {
@@ -50,9 +76,15 @@ export default function ConversationsSearch({
         setSelectedConversation(selectedPerson);
         setChatBoxOpen(true);
         setCurrentChat(null)
+        socket.emit("addUser", selectedPerson._id)
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            ...selector,
+            receiverId: selectedPerson._id,
+          }
+        })
       }
-      // setSelectedConversation(selectedPerson);
-      // setChatBoxOpen(true);
     }
   }, [conversation, selectedPerson]);
   // console.log(selectedPerson);

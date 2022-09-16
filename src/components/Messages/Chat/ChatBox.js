@@ -15,25 +15,49 @@ import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import useGlobal from "@/hooks/useGlobal";
 import { useRouter } from "next/router";
-let socket;
+// let socket;
 const ChatBox = ({
+  socket,
   chatBoxOpen,
   setChatBoxOpen,
   setSelectedConversation,
   selectedConversation,
   currentChat,
+  setCurrentChat,
+  arrivalMessages,
+  onlineUsers,
+  arrivalTyping,
 }) => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [receiveUser, setReceiveUser] = useState(null);
-  const [arrivalMessageSocket, setArrivalMessageSocket] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isOnline, setIsOnline] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const router = useRouter();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const msgRef = useRef();
   const { user } = useUser();
-  console.log(currentChat)
+
+  
+  /* Socket check is Online users */
+  useEffect(() => {
+    const checkIsOnline = onlineUsers?.find(
+      (online) => online.userId === selectedConversation?._id
+    );
+    setIsOnline(checkIsOnline ? true : false);
+  }, [onlineUsers, selectedConversation?._id]);
+
+  /* Socket check is users typing */
+  useEffect(() => {
+    // const checkIsTyping =
+    //   (typing) => typing.receiverId === selectedConversation?._id
+    // );
+    setIsTyping(
+      arrivalTyping?.senderId === selectedConversation?._id ? true : false
+    );
+  }, [arrivalTyping, selectedConversation?._id]);
+
   useEffect(() => {
     if (chatBoxOpen) {
       setTimeout(() => {
@@ -75,67 +99,136 @@ const ChatBox = ({
     timeout: 10000,
     transports: ["websocket"],
   };
-  const server = "https://weavsocket.herokuapp.com";
-  // const server = "http://localhost:5000";
-  console.log(arrivalMessageSocket);
+  // const server = "https://weavsocket.herokuapp.com";
+  const server = "http://localhost:5000";
+
+  // useEffect(() => {
+  //   socket = io(server);
+  //   socket.connect();
+  //   console.log("socket on chatbox connect?");
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   socket.on("getMessage", (data) => {
+  //     console.log("getMessageChatBox => ",data )
+  //     setArrivalMessageSocket({
+  //       sender: data.senderId,
+  //       text: data.text,
+  //       createdAt: Date.now(),
+  //     });
+  //   });
+  //   if (selector?.oneTimes) {
+  //     setArrivalMessageSocket({
+  //       sender: selector?.arrivalMessages?.senderId,
+  //       text: selector?.arrivalMessages?.text,
+  //       createdAt: Date.now(),
+  //     })
+  //     dispatchGlobal({
+  //       type: "GLOBAL_STATE",
+  //       payload: {
+  //         oneTimes: false,
+  //       }
+  //     })
+  //   }
+  // }, [user?._id, selector?.oneTimes])
+  // console.log(selector?.arrivalMessages)
+
+  // console.log(arrivalMessageSocket)
+
   useEffect(() => {
-    socket = io(server);
-    socket.connect();
-
-    socket.on("getMessage", (data) => {
-      setArrivalMessageSocket({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
-      });
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    arrivalMessageSocket &&
-      currentChat?.members.includes(arrivalMessageSocket.sender) &&
-      setMessages((prev) => [...prev, arrivalMessageSocket]);
-  }, [arrivalMessageSocket, currentChat?.members]);
-
-  useEffect(() => {
-    socket.emit("addUser", user?._id);
-    socket.on("getUsers", (users) => {
-      setOnlineUsers(
-        user?.followings?.filter((f) => users.some((u) => u.senderId === f))
-      );
-    });
-  }, [user?._id, user?.followings]);
+    arrivalMessages &&
+      currentChat?.members.includes(arrivalMessages.sender) &&
+      setMessages((prev) => [...prev, arrivalMessages]);
+  }, [arrivalMessages, currentChat?.members]);
 
   const handleSubmit = async (e) => {
-    const message = {
-      sender: user?._id,
-      text: text,
-      conversationId: currentChat?._id,
-    };
-
-    const receiverId = currentChat?.members.find((m) => m !== user?._id);
-    socket.emit("sendMessage", {
-      senderId: user?._id,
-      receiverId: receiverId,
-      text: text,
-    });
-
-    try {
-      const res = await axiosPost("/messages", message);
-      setMessages([...messages, res.data]);
-      setText("");
-      dispatchGlobal({
-        type: "GLOBAL_STATE",
-        payload: {
-          refreshMessages: true,
-        },
+    if (!currentChat) {
+      const dataConversation = {
+        senderId: user?._id,
+        receiverId: selector.receiverId,
+      };
+      const res = await axiosPost("/conversations", dataConversation);
+      socket.emit("sendConversations", {
+        conversationId: res.data._id,
+        senderId: user?._id,
+        receiverId: selector?.receiverId,
       });
-    } catch (error) {
-      console.log(error);
+      setCurrentChat(res.data);
+      const message = {
+        sender: user?._id,
+        text,
+        conversationId: res.data._id,
+      };
+      const receiverId = res.data.members.find((m) => m !== user?._id);
+      // socket.emit("addUser", receiverId);
+      socket.emit("sendMessage", {
+        senderId: user?._id,
+        receiverId: receiverId,
+        text: text,
+      });
+
+      // socket.emit("sendTest", {
+      //   receiverId: selector?.userReceiver[0].userId
+      // })
+
+      // socket.emit("sendConversations", {
+      //   conversationId: res.data._id,
+      //   senderId: user?._id,
+      //   receiverId: receiverId
+      // })
+
+      try {
+        const res = await axiosPost("/messages", message);
+        setMessages([...messages, res.data]);
+        setText("");
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            ...selector,
+            // refreshMessages: true,
+            // socketConversations: true,
+            refreshConversations: true,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      const message = {
+        sender: user?._id,
+        text: text,
+        conversationId: currentChat?._id,
+      };
+
+      const receiverId = currentChat?.members.find((m) => m !== user?._id);
+      socket.emit("sendMessage", {
+        senderId: user?._id,
+        receiverId: receiverId,
+        text: text,
+      });
+      socket.emit("sendTyping", {
+        isTyping: false,
+        senderId: user?._id,
+        receiverId: receiverId,
+      });
+
+      try {
+        const res = await axiosPost("/messages", message);
+        setMessages([...messages, res.data]);
+        setText("");
+        dispatchGlobal({
+          type: "GLOBAL_STATE",
+          payload: {
+            refreshMessages: true,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -169,21 +262,32 @@ const ChatBox = ({
                       src={selectedConversation.profilePicture || "/avatar.png"}
                       alt=""
                     />
-                    <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-1 ring-black bg-green-400" />
+                    <span
+                      className={`absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-1 ring-black ${
+                        isOnline ? "bg-green-400" : "bg-gray-600"
+                      }`}
+                    />
                   </span>
                 </div>
                 <div className="min-w-0 flex-1 mt-1">
-                  <p
-                    className="text-xs font-medium text-white hover:underline truncate"
+                  <div
+                    className="flex text-xs font-medium text-white  truncate"
                     onClick={() =>
                       open &&
                       router.push(`/profile/${selectedConversation.username}`)
                     }
                   >
-                    {selectedConversation.firstname +
-                      " " +
-                      selectedConversation.lastname}
-                  </p>
+                    <span className="hover:underline">
+                      {selectedConversation.firstname +
+                        " " +
+                        selectedConversation.lastname}
+                    </span>
+                    {isTyping && (
+                      <div className="animate-pulse text-slate-300 hover:no-underline font-medium text-xs ml-2 ">
+                        typing......
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div
                   className="flex-shrink-0 self-center flex space-x-2 hover:bg-slate-600 rounded-full p-2"
@@ -197,8 +301,8 @@ const ChatBox = ({
               </div>
             </div>
             <div className="h-56 overflow-y-auto">
-              {messages.map((message) => (
-                <div key={message._id} ref={msgRef}>
+              {messages.map((message, index) => (
+                <div key={index} ref={msgRef}>
                   <Message
                     message={message}
                     receiveUser={
@@ -214,7 +318,17 @@ const ChatBox = ({
                   <textarea
                     rows={1}
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => {
+                      setText(e.target.value);
+                      const receiverId = currentChat?.members.find(
+                        (m) => m !== user?._id
+                      );
+                      socket.emit("sendTyping", {
+                        isTyping: e.target.value.length > 0 ? true : false,
+                        senderId: user?._id,
+                        receiverId: receiverId,
+                      });
+                    }}
                     className="resize-none text-md focus:border-transparent focus:ring-0 focus:outline-none w-full bg-transparent sm:text-sm text-slate-400 font-medium border-transparent"
                     placeholder="Write a message..."
                   />

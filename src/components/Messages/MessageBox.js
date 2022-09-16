@@ -24,7 +24,10 @@ const MessageBox = () => {
 
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
-
+  const [arrivalConversations, setArrivalConversations] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [arrivalMessages, setArrivalMessages] = useState(null);
+  const [arrivalTyping, setArrivalTyping] = useState(null);
   const { isAuthenticated, token } = useAuth();
   const { user } = useUser();
   const headers = useHeader(token);
@@ -46,6 +49,60 @@ const MessageBox = () => {
       });
     }
   }, [selector?.openMessaging]);
+  // const server = "https://weavsocket.herokuapp.com";
+  const server = "http://localhost:5000";
+  // console.log(arrivalConversations)
+
+  useEffect(() => {
+    socket = io(server);
+    socket.connect();
+    socket.emit("addUser", user?._id);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?._id]);
+
+  useEffect(() => {
+    socket.on("getConversations", (data) => {
+      console.log("getConversations => ", data);
+      setArrivalConversations({
+        _id: data.conversationId,
+        members: [data.senderId, data.receiverId],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+    });
+
+    socket.on("getMessage", (data) => {
+      console.log("getMessageBox => ", data);
+      setArrivalMessages({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+
+    socket.on("getUsers", (data) => {
+      setOnlineUsers(data.filter((item) => item.userId !== user?._id));
+    });
+
+    socket.on("getTyping", (data) => {
+      if (data.isTyping) {
+        setArrivalTyping(data);
+      } else {
+        setArrivalTyping(null);
+      }
+    });
+  }, [user?._id, selector?.socketConversations]);
+
+  // console.log("online users", onlineUsers);
+
+  useEffect(() => {
+    arrivalConversations &&
+      //   arrivalConversations?.members.includes(user?._id) &&
+      setConversations((prev) => [...prev, arrivalConversations]);
+  }, [arrivalConversations]);
 
   useEffect(() => {
     const getConversation = async () => {
@@ -62,6 +119,9 @@ const MessageBox = () => {
       });
     }
   }, [user?._id, selector?.refreshConversations]);
+
+  // const getOnlineUsersConversations = conversations.map
+  // console.log(getOnlineUsersConversations)
 
   return (
     <div>
@@ -122,16 +182,18 @@ const MessageBox = () => {
                   setCurrentChat={setCurrentChat}
                 />
                 {conversations.length > 0 ? (
-                  conversations.map((conversation) => (
+                  conversations.map((conversation, index) => (
                     <div
                       key={conversation._id}
                       onClick={() => setCurrentChat(conversation)}
                     >
                       <Conversations
                         conversation={conversation}
+                        onlineUsers={onlineUsers}
                         setSelectedConversation={setSelectedConversation}
                         setChatBoxOpen={setChatBoxOpen}
                         currentUser={user}
+                        arrivalTyping={arrivalTyping}
                       />
                     </div>
                   ))
@@ -145,11 +207,16 @@ const MessageBox = () => {
           </div>
           {selectedConversation && (
             <ChatBox
+              socket={socket}
+              arrivalMessages={arrivalMessages}
+              setCurrentChat={setCurrentChat}
               currentChat={currentChat}
               chatBoxOpen={chatBoxOpen}
               setChatBoxOpen={setChatBoxOpen}
               selectedConversation={selectedConversation}
               setSelectedConversation={setSelectedConversation}
+              onlineUsers={onlineUsers}
+              arrivalTyping={arrivalTyping}
             />
           )}
         </div>

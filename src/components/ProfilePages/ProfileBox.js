@@ -36,10 +36,11 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
   }, [user?._id, selector?.refreshConversations]);
 
   useEffect(() => {
-    conversations.find((conversation) => {
-      return setConversationsUsers(conversation.members.includes(user._id));
+    const findConversations = conversations.find((conversation) => {
+      return conversation.members.includes(user?._id);
     });
-  }, [conversations, user._id]);
+    setConversationsUsers(findConversations)
+  }, [conversations, user?._id]);
 
   const handleFollow = async () => {
     await axiosPut(`/users/${user._id}/follow`, null, headers).then(() => {
