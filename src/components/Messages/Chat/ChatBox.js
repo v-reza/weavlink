@@ -99,8 +99,8 @@ const ChatBox = ({
     timeout: 10000,
     transports: ["websocket"],
   };
-  // const server = "https://weavsocket.herokuapp.com";
-  const server = "http://localhost:5000";
+  const server = "https://weavsocket.herokuapp.com";
+  // const server = "http://localhost:5000";
 
   // useEffect(() => {
   //   socket = io(server);

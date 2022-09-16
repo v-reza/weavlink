@@ -49,8 +49,8 @@ const MessageBox = () => {
       });
     }
   }, [selector?.openMessaging]);
-  // const server = "https://weavsocket.herokuapp.com";
-  const server = "http://localhost:5000";
+  const server = "https://weavsocket.herokuapp.com";
+  // const server = "http://localhost:5000";
   // console.log(arrivalConversations)
 
   useEffect(() => {
