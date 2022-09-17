@@ -8,14 +8,20 @@ import Card from "@/uiComponents/Card";
 import Divider from "@/uiComponents/Divider";
 import Modal from "@/uiComponents/Modal";
 import { axiosGet } from "@/utils/axiosInstance";
-import { PencilIcon, PlusIcon } from "@heroicons/react/outline";
+import {
+  ArrowLeftIcon,
+  ChevronLeftIcon,
+  DotsHorizontalIcon,
+  PencilIcon,
+  PlusIcon,
+} from "@heroicons/react/outline";
 import { ArrowRightIcon, UsersIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import FooterFormSkills from "./Modals/Skills/FooterFormSkills";
-import FormSkills from "./Modals/Skills/FormSkills";
+import FooterFormSkills from "../ProfilePages/Modals/Skills/FooterFormSkills";
+import FormSkills from "../ProfilePages/Modals/Skills/FormSkills";
 
-const Skills = ({ user }) => {
+const SkillsDetail = ({ user }) => {
   const [open, setOpen] = useState(false);
   const [skills, setSkills] = useState([]);
   const { token } = useAuth();
@@ -53,7 +59,15 @@ const Skills = ({ user }) => {
         <Card usePx0={true}>
           <div className="p-8">
             <div className="flex items-center justify-between">
-              <span className="text-white text-md font-medium">Skills</span>
+              <span className="text-white text-md font-medium flex items-center">
+                <div
+                  className="hover:bg-slate-700/50 rounded-full cursor-pointer p-1"
+                  onClick={() => router.replace(`/profile/${user.username}`)}
+                >
+                  <ArrowLeftIcon className="w-6 h-6" />
+                </div>
+                <span className="ml-2">Skills</span>
+              </span>
               <div className="flex space-x-3">
                 <div className="hidden sm:block">
                   <Button
@@ -71,19 +85,14 @@ const Skills = ({ user }) => {
                 </div>
                 {currentUser?._id === user._id && (
                   <>
+                    <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
+                      <DotsHorizontalIcon className="w-5 h-5 text-slate-300" />
+                    </div>
                     <div
                       className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer"
                       onClick={() => setOpen(true)}
                     >
                       <PlusIcon className="w-5 h-5 text-slate-300" />
-                    </div>
-                    <div
-                      className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer"
-                      onClick={() =>
-                        router.push(`/profile/${user.username}/details/skills`)
-                      }
-                    >
-                      <PencilIcon className="w-5 h-5 text-slate-300" />
                     </div>
                   </>
                 )}
@@ -108,8 +117,11 @@ const Skills = ({ user }) => {
                 {skills.length > 0 ? (
                   skills.slice(0, 5).map((skill, index) => (
                     <div className="mt-4" key={skill._id}>
-                      <div className="text-sm font-medium text-white">
+                      <div className="text-sm font-medium text-white flex items-center justify-between">
                         <span>{skill.skill}</span>
+                        <div className="rounded-full hover:bg-slate-700/50 p-2 cursor-pointer">
+                          <PencilIcon className="w-5 h-5 text-slate-300" />
+                        </div>
                       </div>
                       {skill.skillToUse?.length > 0 && (
                         <div className="flex items-center space-x-2 mt-2">
@@ -145,24 +157,10 @@ const Skills = ({ user }) => {
             </div>
             {/* <Divider mt={"mt-2"} /> */}
           </div>
-          <Divider />
-          <div
-            className="py-2 w-full cursor-pointer hover:bg-slate-500/30"
-            onClick={() =>
-              router.push(`/profile/${user.username}/details/skills`)
-            }
-          >
-            <div className="flex items-center justify-center">
-              <span className="text-white text-sm font-medium cursor-pointer flex items-center">
-                Show all {skills.length || 0} skills{" "}
-                <ArrowRightIcon className="w-4 h-4 ml-2" />
-              </span>
-            </div>
-          </div>
         </Card>
       </div>
     </>
   );
 };
 
-export default Skills;
+export default SkillsDetail;

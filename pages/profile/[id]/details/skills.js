@@ -6,21 +6,11 @@ import Card from "@/uiComponents/Card";
 import Container from "@/uiComponents/Container";
 import { axiosGet } from "@/utils/axiosInstance";
 import { useRouter } from "next/router";
-import classNames from "@/utils/classNames";
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import Divider from "@/uiComponents/Divider";
-import ProfileBox from "@/components/ProfilePages/ProfileBox";
 import { gridCols } from "@/utils/types";
-import { EyeIcon } from "@heroicons/react/outline";
-import SuggestedForYou from "@/components/ProfilePages/SuggestedForYou";
-import Analytics from "@/components/ProfilePages/Analytics";
-import Resources from "@/components/ProfilePages/Resources";
-import Activity from "@/components/ProfilePages/Activity";
-import Experience from "@/components/ProfilePages/Experience";
-import Education from "@/components/ProfilePages/Education";
-import LicensesCertifications from "@/components/ProfilePages/LicensesCertifications";
-import Skills from "@/components/ProfilePages/Skills";
+import SkillsDetail from "@/components/ProfileDetailPages/SkillsDetail";
 
 const DetailSkills = (props) => {
   const { user, userProfile } = props;
@@ -43,23 +33,7 @@ const DetailSkills = (props) => {
       {isSSR && (
         <Container>
           <Container.Main lg={gridCols.lg[8]} xl={gridCols.xl[8]}>
-            <ProfileBox
-              user={user}
-              userProfile={userProfile}
-              currentUser={currentUser}
-            />
-            {user._id === currentUser?._id && (
-              <>
-                <SuggestedForYou />
-                <Analytics />
-                <Resources />
-              </>
-            )}
-            <Activity user={user} />
-            <Experience user={user} />
-            <Education user={user} />
-            <LicensesCertifications user={user} />
-            <Skills user={user} />
+            <SkillsDetail user={user} />
           </Container.Main>
           <Container.Rightbar lg={gridCols.lg[4]} xl={gridCols.xl[4]}>
             <Card>
