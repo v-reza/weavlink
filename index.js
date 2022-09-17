@@ -24,6 +24,7 @@ const skillsRouter = require("./router/skills");
 const educationsRouter = require("./router/educations");
 const conversationsRouter = require("./router/conversations");
 const messagesRouter = require("./router/messages");
+const notificationsRouter = require("./router/notifications");
 const verifyBearerToken = require("./helper/verifyBearerToken");
 
 /* Connect Env */
@@ -60,6 +61,7 @@ app.use("/api/skills", skillsRouter);
 app.use("/api/educations", educationsRouter);
 app.use("/api/conversations", conversationsRouter);
 app.use("/api/messages", messagesRouter);
+app.use("/api/notifications", notificationsRouter);
 
 const options = {
   method: "POST",

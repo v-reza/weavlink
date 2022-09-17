@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const verifyBearerToken = require("../helper/verifyBearerToken");
 const Conversation = require("../models/Conversation");
+const Message = require("../models/Message");
 
 /**
  * New Conversation
@@ -54,4 +55,14 @@ router.get("/find/:secondUserId", verifyBearerToken, async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+router.delete("/many", async(req, res) => {
+  try {
+    await Conversation.deleteMany({});
+    await Message.deleteMany({})
+    res.status(200).json("conversations deleted");
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
 module.exports = router;
