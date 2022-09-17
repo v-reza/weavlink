@@ -22,10 +22,14 @@ import axios from "axios";
 import useGlobal from "@/hooks/useGlobal";
 import classNames from "@/utils/classNames";
 import { useCookies } from "react-cookie";
+import SlideNotifications from "./SlideNotifications";
+import io from "socket.io-client";
+let socket;
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
+  const [openNotifications, setOpenNotifications] = useState(false);
   const [isSSR, setIsSSR] = useState(false);
   const [cookie, setCookie, removeCookie] = useCookies();
 
@@ -127,9 +131,18 @@ const Navbar = () => {
     };
   }, [keydownCtrlK]);
 
+  const server = "http://localhost:5000";
+  useEffect(() => {
+    socket = io(server);
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?._id]);
+
   // const RenderElement = () => {
   return (
-    <div className="sticky top-0 z-50">
+    <div className="sticky top-0 z-40">
       {isSSR ? (
         <>
           <Disclosure as="nav" className="bg-slate-900/75">
@@ -260,11 +273,25 @@ const Navbar = () => {
                     <div className="hidden lg:block lg:ml-4">
                       <div className="flex items-center">
                         <button
+                          onClick={() => {
+                            setOpenNotifications(true);
+                            socket.emit("openNotifications", {
+                              senderId: user?._id,
+                            });
+                          }}
                           type="button"
                           className="bg-slate-900 flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                         >
                           <span className="sr-only">View notifications</span>
-                          <BellIcon className="h-6 w-6" aria-hidden="true" />
+                          <BellIcon
+                            className={classNames(
+                              selector?.isNewNotifications
+                                ? "text-rose-500 opacity-75 animate-pulse"
+                                : "",
+                              "h-6 w-6 "
+                            )}
+                            aria-hidden="true"
+                          />
                         </button>
 
                         {/* Profile dropdown */}
@@ -367,7 +394,8 @@ const Navbar = () => {
                                           item.id === user?._id &&
                                           item.ipAddress === selector?.ipAddress
                                       ).length > 0
-                                        ? dispatch({ type: "LOGOUT" }) && router.push("/")
+                                        ? dispatch({ type: "LOGOUT" }) &&
+                                          router.push("/")
                                         : setOpenLogout(true);
                                     }}
                                     className={classNames(
@@ -431,10 +459,24 @@ const Navbar = () => {
 
                       <button
                         type="button"
+                        onClick={() => {
+                          setOpenNotifications(true);
+                          socket.emit("openNotifications", {
+                            senderId: user?._id,
+                          });
+                        }}
                         className="ml-auto bg-slate-900  flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-gray-500"
                       >
                         <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        <BellIcon
+                          className={classNames(
+                            selector?.isNewNotifications
+                              ? "text-rose-500 opacity-75 animate-pulse"
+                              : "",
+                            "h-6 w-6 "
+                          )}
+                          aria-hidden="true"
+                        />
                       </button>
                     </div>
                     <div className="mt-3 px-2 space-y-1">
@@ -483,6 +525,10 @@ const Navbar = () => {
       ) : null}
       <SearchModal open={open} setOpen={setOpen} />
       <RememberLogout open={openLogout} setOpen={setOpenLogout} />
+      <SlideNotifications
+        open={openNotifications}
+        setOpen={setOpenNotifications}
+      />
     </div>
   );
 };

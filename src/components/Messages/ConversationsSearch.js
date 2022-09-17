@@ -19,8 +19,8 @@ export default function ConversationsSearch({
   const [listUsers, setListUsers] = useState([]);
   const { selector, dispatch: dispatchGlobal} = useGlobal()
   const { user } = useUser();
-  // const server = "http://localhost:5000";
-  const server = "https://weavsocket.herokuapp.com";
+  const server = "http://localhost:5000";
+  // const server = "https://weavsocket.herokuapp.com";
   
   useEffect(() => {
     socket = io(server);

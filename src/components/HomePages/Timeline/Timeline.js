@@ -115,7 +115,7 @@ const moods = [
   },
 ];
 
-const Timeline = ({ post }) => {
+const Timeline = ({ post, socket }) => {
   /* Hooks */
   const { dispatch: dispatchNotif } = useNotif();
   const { token } = useAuth();
@@ -278,6 +278,29 @@ const Timeline = ({ post }) => {
       }
     }
   };
+
+  const sendNotifications = async () => {
+    socket.emit("sendNotifications", {
+      senderId: currentUser?._id,
+      receiverId: user?._id,
+      text: "visited your profile",
+    });
+
+
+    try {
+      const data = {
+        userId: user?._id,
+        text: "visited your profile",
+      }
+      await axiosPost("/notifications", data, headers)  
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      })
+    }
+  };
   /* End Action */
 
   const username = user.username
@@ -298,9 +321,10 @@ const Timeline = ({ post }) => {
               <div className="flex space-x-3">
                 <div className="flex-shrink-0">
                   <img
-                    onClick={() =>
-                      router.push("/profile/" + username.toLowerCase())
-                    }
+                    onClick={() => {
+                      router.push("/profile/" + username.toLowerCase());
+                      sendNotifications();
+                    }}
                     className="cursor-pointer h-10 w-10 rounded-full"
                     src={
                       user.profilePicture ? user.profilePicture : "/avatar.png"
@@ -312,11 +336,12 @@ const Timeline = ({ post }) => {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-gray-900">
                     <span
-                      onClick={() =>
+                      onClick={() => {
                         router.push(
                           "/profile/" + username.replace(" ", "-").toLowerCase()
-                        )
-                      }
+                        );
+                        sendNotifications();
+                      }}
                       className="cursor-pointer hover:underline text-slate-300"
                     >
                       {user.firstname && user.firstname + " " + user.lastname}

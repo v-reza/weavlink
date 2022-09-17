@@ -36,6 +36,8 @@ import EditPhoto from "@/components/HomePages/Post/Edit/EditPhoto";
 import FooterEditPhoto from "@/components/HomePages/Post/Edit/FooterEditPhoto";
 import DotsLoader from "@/uiComponents/DotsLoader";
 import { gridCols } from "@/utils/types";
+import io from "socket.io-client";
+let socket;
 
 export default function Home() {
   const router = useRouter();
@@ -69,6 +71,16 @@ export default function Home() {
   }),
     [isAuthenticated];
 
+
+  const server = "http://localhost:5000";
+  useEffect(() => {
+    socket = io(server);
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?._id]);
+  
   useEffect(() => {
     const getTimeline = async () => {
       try {
@@ -204,7 +216,7 @@ export default function Home() {
             >
               {timeline.map((post) => (
                 <Card key={post._id} className="mb-4" overFlow="">
-                  <Timeline post={post} />
+                  <Timeline post={post} socket={socket}/>
                 </Card>
               ))}
             </InfiniteScroll>

@@ -49,8 +49,8 @@ const MessageBox = () => {
       });
     }
   }, [selector?.openMessaging]);
-  const server = "https://weavsocket.herokuapp.com";
-  // const server = "http://localhost:5000";
+  // const server = "https://weavsocket.herokuapp.com";
+  const server = "http://localhost:5000";
   // console.log(arrivalConversations)
 
   useEffect(() => {
@@ -58,11 +58,15 @@ const MessageBox = () => {
     socket.connect();
     socket.emit("addUser", user?._id);
 
+
     return () => {
       socket.disconnect();
     };
   }, [user?._id]);
 
+
+
+  //Hooks Socket
   useEffect(() => {
     socket.on("getConversations", (data) => {
       console.log("getConversations => ", data);
@@ -85,6 +89,13 @@ const MessageBox = () => {
 
     socket.on("getUsers", (data) => {
       setOnlineUsers(data.filter((item) => item.userId !== user?._id));
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          ...selector,
+          onlineUsers: data.filter((item) => item.userId !== user?._id),
+        }
+      })
     });
 
     socket.on("getTyping", (data) => {
@@ -94,6 +105,25 @@ const MessageBox = () => {
         setArrivalTyping(null);
       }
     });
+    socket.on("getNotifications", (data) => {
+      console.log("getNotifications => ", data)
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          notifications: data
+        }
+      })
+    })
+
+    socket.on("isNewNotifications", (data) => {
+      console.log("isNewNotifications => ", data)
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          isNewNotifications: data.isNew
+        }
+      })
+    })
   }, [user?._id, selector?.socketConversations]);
 
   // console.log("online users", onlineUsers);
