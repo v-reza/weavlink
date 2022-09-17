@@ -1,21 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
+import useNotif from "@/hooks/useNotif";
 import { axiosGet } from "@/utils/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
 
 const Message = ({ message, receiveUser }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
+  const { dispatch: dispatchNotif } = useNotif();
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axiosGet(`/users/${receiveUser}`)
-        setUser(res.data)
+        const res = await axiosGet(`/users/${receiveUser}`);
+        setUser(res.data);
       } catch (error) {
-        console.log(error)
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
       }
-    }
-    getUser()
-  }, [receiveUser])
+    };
+    getUser();
+  }, [receiveUser]);
   return (
     <>
       <div className="bg-transparent p-3 hover:bg-slate-700/50 cursor-pointer">
@@ -34,7 +40,9 @@ const Message = ({ message, receiveUser }) => {
                 href="#"
                 className="hover:underline text-sm font-medium text-slate-300"
               >
-                {user?.firstname && user?.lastname ? user?.firstname + " " + user?.lastname : "Loading..."}
+                {user?.firstname && user?.lastname
+                  ? user?.firstname + " " + user?.lastname
+                  : "Loading..."}
               </a>
               <a
                 href="#"

@@ -7,25 +7,27 @@ import { axiosGet } from "@/utils/axiosInstance";
 import useUser from "@/hooks/useUser";
 import useGlobal from "@/hooks/useGlobal";
 import io from "socket.io-client";
-let socket
+import useNotif from "@/hooks/useNotif";
+let socket;
 export default function ConversationsSearch({
   setSelectedConversation,
   setChatBoxOpen,
   setCurrentChat,
-  conversation
+  conversation,
 }) {
   const [query, setQuery] = useState("");
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [listUsers, setListUsers] = useState([]);
-  const { selector, dispatch: dispatchGlobal} = useGlobal()
+  const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { dispatch: dispatchNotif } = useNotif();
   const { user } = useUser();
-  const server = "http://localhost:5000";
+  const server = process.env.NEXT_APP_SOCKET;
   // const server = "https://weavsocket.herokuapp.com";
-  
+
   useEffect(() => {
     socket = io(server);
     socket.connect();
-    
+
     return () => {
       socket.disconnect();
     };
@@ -38,11 +40,10 @@ export default function ConversationsSearch({
         payload: {
           ...selector,
           userReceiver: data?.filter((item) => item.userId !== user?._id),
-        }
-      })
+        },
+      });
     });
-  }, [selectedPerson, selector, user?._id])
-
+  }, [selectedPerson, selector, user?._id]);
 
   useEffect(() => {
     const getListUsers = async () => {
@@ -50,7 +51,11 @@ export default function ConversationsSearch({
         const res = await axiosGet("/users/userSearch");
         setListUsers(res.data.filter((usr) => usr._id !== user?._id));
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
       }
     };
     getListUsers();
@@ -68,7 +73,9 @@ export default function ConversationsSearch({
 
   useEffect(() => {
     if (selectedPerson) {
-      const filterConversations = conversation.find((conv) => conv.members.includes(selectedPerson._id));
+      const filterConversations = conversation.find((conv) =>
+        conv.members.includes(selectedPerson._id)
+      );
       if (filterConversations) {
         setSelectedConversation(selectedPerson);
         setCurrentChat(filterConversations);
@@ -76,15 +83,15 @@ export default function ConversationsSearch({
       } else {
         setSelectedConversation(selectedPerson);
         setChatBoxOpen(true);
-        setCurrentChat(null)
-        socket.emit("addUser", selectedPerson._id)
+        setCurrentChat(null);
+        socket.emit("addUser", selectedPerson._id);
         dispatchGlobal({
           type: "GLOBAL_STATE",
           payload: {
             ...selector,
             receiverId: selectedPerson._id,
-          }
-        })
+          },
+        });
       }
     }
   }, [conversation, selectedPerson]);

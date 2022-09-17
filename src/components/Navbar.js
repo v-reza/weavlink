@@ -131,7 +131,7 @@ const Navbar = () => {
     };
   }, [keydownCtrlK]);
 
-  const server = "http://localhost:5000";
+  const server = process.env.NEXT_APP_SOCKET;
   useEffect(() => {
     socket = io(server);
     socket.connect();

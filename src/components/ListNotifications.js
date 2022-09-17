@@ -1,13 +1,22 @@
+import useAuth from "@/hooks/useAuth";
 import useGlobal from "@/hooks/useGlobal";
+import useHeader from "@/hooks/useHeader";
+import useNotif from "@/hooks/useNotif";
+import { axiosDelete } from "@/utils/axiosInstance";
 import classNames from "@/utils/classNames";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
 import { format } from "timeago.js";
 
-const ListNotifications = ({ person }) => {
+const ListNotifications = ({ person, setRefreshNotifications }) => {
   const [isOnline, setIsOnline] = useState(false);
   const { selector } = useGlobal();
+  const router = useRouter();
+  const { token } = useAuth();
+  const headers = useHeader(token);
+  const { dispatch: dispatchNotif } = useNotif();
   /* Socket check is Online users */
   useEffect(() => {
     const checkIsOnline = selector?.onlineUsers?.find(
@@ -15,6 +24,20 @@ const ListNotifications = ({ person }) => {
     );
     setIsOnline(checkIsOnline ? true : false);
   }, [person.users?._id, selector?.onlineUsers]);
+
+  const handleDelete = async () => {
+    try {
+      await axiosDelete(`/notifications/${person._id}`, headers).then(() => {
+        setRefreshNotifications(true);
+      });
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      })
+    }
+  };
 
   return (
     <li key={person._id}>
@@ -50,7 +73,7 @@ const ListNotifications = ({ person }) => {
           as="div"
           className="ml-2 flex-shrink-0 relative inline-block text-left"
         >
-          <Menu.Button className="group relative w-8 h-8 bg-transparent rounded-full inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <Menu.Button className="group relative w-8 h-8 bg-transparent rounded-full inline-flex items-center justify-center">
             <span className="sr-only">Open options menu</span>
             <span className="flex items-center justify-center h-full w-full rounded-full">
               <DotsVerticalIcon
@@ -68,32 +91,38 @@ const ListNotifications = ({ person }) => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="origin-top-right absolute z-10 top-0 right-9 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="origin-top-right absolute z-10 top-0 right-9 w-48 rounded-md shadow-lg bg-slate-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1">
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <div
+                      onClick={() =>
+                        router.push(`/profile/${person.users.username}`)
+                      }
                       className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        active
+                          ? "bg-slate-800/50 text-slate-400"
+                          : "text-slate-300",
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                     >
                       View profile
-                    </a>
+                    </div>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <div
+                      onClick={() => handleDelete()}
                       className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
+                        active
+                          ? "bg-slate-800/50 text-slate-400"
+                          : "text-slate-300",
+                        "block px-4 py-2 text-sm cursor-pointer"
                       )}
                     >
                       Delete
-                    </a>
+                    </div>
                   )}
                 </Menu.Item>
               </div>

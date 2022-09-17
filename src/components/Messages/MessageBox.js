@@ -50,7 +50,7 @@ const MessageBox = () => {
     }
   }, [selector?.openMessaging]);
   // const server = "https://weavsocket.herokuapp.com";
-  const server = "http://localhost:5000";
+  const server = process.env.NEXT_APP_SOCKET;
   // console.log(arrivalConversations)
 
   useEffect(() => {

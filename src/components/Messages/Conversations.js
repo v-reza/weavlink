@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import useGlobal from "@/hooks/useGlobal";
+import useNotif from "@/hooks/useNotif";
 import { axiosGet } from "@/utils/axiosInstance";
 import { replaceFormatDate } from "@/utils/constants";
 import React, { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ const Conversations = ({
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
+  const { dispatch: dispatchNotif } = useNotif();
 
   useEffect(() => {
     const checkIsOnline = onlineUsers?.find(
@@ -50,7 +52,11 @@ const Conversations = ({
             .pop()
         );
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
       }
     };
     getLastMessage();

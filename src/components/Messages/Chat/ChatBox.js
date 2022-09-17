@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import useGlobal from "@/hooks/useGlobal";
 import { useRouter } from "next/router";
+import useNotif from "@/hooks/useNotif";
 // let socket;
 const ChatBox = ({
   socket,
@@ -34,12 +35,12 @@ const ChatBox = ({
   const [receiveUser, setReceiveUser] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const { dispatch: dispatchNotif } = useNotif();
   const router = useRouter();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const msgRef = useRef();
   const { user } = useUser();
 
-  
   /* Socket check is Online users */
   useEffect(() => {
     const checkIsOnline = onlineUsers?.find(
@@ -81,7 +82,11 @@ const ChatBox = ({
         const res = await axiosGet(`/messages/${currentChat?._id}`);
         setMessages(res.data);
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        });
       }
     };
     getMessages();
@@ -100,7 +105,7 @@ const ChatBox = ({
     transports: ["websocket"],
   };
   // const server = "https://weavsocket.herokuapp.com";
-  const server = "http://localhost:5000";
+  const server = process.env.NEXT_APP_SOCKET;
 
   // useEffect(() => {
   //   socket = io(server);
@@ -195,7 +200,11 @@ const ChatBox = ({
           },
         });
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        })
       }
     } else {
       const message = {
@@ -227,7 +236,11 @@ const ChatBox = ({
           },
         });
       } catch (error) {
-        console.log(error);
+        dispatchNotif({
+          type: "NOTIF_ERROR",
+          title: "Error",
+          message: error.message,
+        })
       }
     }
   };

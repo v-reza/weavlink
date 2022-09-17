@@ -72,7 +72,7 @@ export default function Home() {
     [isAuthenticated];
 
 
-  const server = "http://localhost:5000";
+  const server = process.env.NEXT_APP_SOCKET;
   useEffect(() => {
     socket = io(server);
     socket.connect();
@@ -80,7 +80,7 @@ export default function Home() {
       socket.disconnect();
     };
   }, [user?._id]);
-  
+
   useEffect(() => {
     const getTimeline = async () => {
       try {
@@ -222,7 +222,7 @@ export default function Home() {
             </InfiniteScroll>
           </Container.Main>
           <Container.Rightbar lg={gridCols.lg[3]} xl={gridCols.xl[3]}>
-            <div className="hidden xl:block">
+            <div className="hidden lg:block xl:block">
               <Card padding={4}>
                 {listFeeds.length > 0 ? (
                   <HomeRightbar listFeeds={listFeeds} />

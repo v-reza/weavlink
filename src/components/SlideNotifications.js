@@ -90,9 +90,13 @@ export default function SlideNotifications({ open, setOpen }) {
                     role="list"
                     className="flex-1 divide-y divide-slate-700 overflow-y-auto"
                   >
-                    {notifications.map((person) => (
-                      <ListNotifications person={person} key={person._id} />
-                    ))}
+                    {notifications.length > 0 ?notifications.map((person) => (
+                      <ListNotifications person={person} key={person._id} setRefreshNotifications={setRefreshNotifications} />
+                    )): (
+                      <div className="flex items-center justify-center">
+                        <p className="text-white">No notifications</p>
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>
