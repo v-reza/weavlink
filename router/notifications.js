@@ -51,4 +51,22 @@ router.post("/", verifyBearerToken, async (req, res) => {
   }
 });
 
+router.delete("/:id", verifyBearerToken, async(req, res) => {
+  try {
+    const notifications = await Notifications.findOne({
+      _id: req.params.id,
+      userId: req.user.users._id,
+    })
+    if (!notifications) {
+      return res.status(404).json({
+        message: "Notification not found",
+      });
+    }
+    await notifications.deleteOne();
+    return res.status(200).json("Notification deleted");
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+})
+
 module.exports = router;
