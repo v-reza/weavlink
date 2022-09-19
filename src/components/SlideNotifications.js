@@ -12,25 +12,17 @@ import useHeader from "@/hooks/useHeader";
 import { axiosGet } from "@/utils/axiosInstance";
 import { format } from "timeago.js";
 import ListNotifications from "./ListNotifications";
-
-const team = [
-  {
-    name: "Leslie Alexander",
-    handle: "lesliealexander",
-    href: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    status: "online",
-  },
-];
+import useSocket from "@/hooks/useSocket";
 
 export default function SlideNotifications({ open, setOpen }) {
   const [notifications, setNotifications] = useState([]);
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { socket } = useSocket();
   const { user } = useUser();
   const { token } = useAuth();
   const headers = useHeader(token);
   const [refreshNotifications, setRefreshNotifications] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([])
   useEffect(() => {
     const getNotifications = async () => {
       const res = await axiosGet("/notifications", headers);
@@ -42,10 +34,19 @@ export default function SlideNotifications({ open, setOpen }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?._id, refreshNotifications]);
+  
   useEffect(() => {
-    selector?.notifications?.receiverId === user?._id &&
-      setRefreshNotifications(true);
-  }, [selector?.notifications?.receiverId, user?._id]);
+    socket?.on("getNotifications", (data) => {
+      if (data.receiverId === user?._id) {
+        setRefreshNotifications(true);
+      }
+    });
+
+    socket?.on("getUsers", (data) => {
+      console.log("getUsersNotifSlide => ", data)
+      setOnlineUsers(data.filter((item) => item.userId !== user?._id))
+    })
+  }, [socket, user?._id]);
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -90,9 +91,16 @@ export default function SlideNotifications({ open, setOpen }) {
                     role="list"
                     className="flex-1 divide-y divide-slate-700 overflow-y-auto"
                   >
-                    {notifications.length > 0 ?notifications.map((person) => (
-                      <ListNotifications person={person} key={person._id} setRefreshNotifications={setRefreshNotifications} />
-                    )): (
+                    {notifications.length > 0 ? (
+                      notifications.map((person) => (
+                        <ListNotifications
+                          person={person}
+                          key={person._id}
+                          setRefreshNotifications={setRefreshNotifications}
+                          onlineUsers={onlineUsers}
+                        />
+                      ))
+                    ) : (
                       <div className="flex items-center justify-center">
                         <p className="text-white">No notifications</p>
                       </div>

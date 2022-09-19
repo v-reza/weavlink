@@ -8,19 +8,19 @@ import { ChevronDownIcon, DotsHorizontalIcon } from "@heroicons/react/outline";
 import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import ChatBox from "./Chat/ChatBox";
-// import socket from "@/utils/socket";
-import io from "socket.io-client";
 import Conversations from "./Conversations";
 import useHeader from "@/hooks/useHeader";
 import { axiosGet } from "@/utils/axiosInstance";
 import ConversationsSearch from "./ConversationsSearch";
+import useSocket from "@/hooks/useSocket";
 
-let socket;
+// let socket;
 const MessageBox = () => {
   const [isSSR, setIsSSR] = useState(false);
   const [open, setOpen] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const { socket } = useSocket()
 
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -49,26 +49,29 @@ const MessageBox = () => {
       });
     }
   }, [selector?.openMessaging]);
-  // const server = "https://weavsocket.herokuapp.com";
-  const server = process.env.NEXT_APP_SOCKET;
-  // console.log(arrivalConversations)
+  
 
-  useEffect(() => {
-    socket = io(server);
-    socket.connect();
-    socket.emit("addUser", user?._id);
+  // useEffect(() => {
+  //   socket = io(server);
+  //   socket.connect();
+  //   socket.emit("addUser", user?._id);
+  //   dispatchGlobal({
+  //     type: "GLOBAL_STATE",
+  //     payload: {
+  //       ...selector,
+  //       socket,
+  //     }
+  //   })
 
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [user?._id]);
-
-
+    
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, [user?._id]);
 
   //Hooks Socket
   useEffect(() => {
-    socket.on("getConversations", (data) => {
+    socket?.on("getConversations", (data) => {
       console.log("getConversations => ", data);
       setArrivalConversations({
         _id: data.conversationId,
@@ -78,7 +81,7 @@ const MessageBox = () => {
       });
     });
 
-    socket.on("getMessage", (data) => {
+    socket?.on("getMessage", (data) => {
       console.log("getMessageBox => ", data);
       setArrivalMessages({
         sender: data.senderId,
@@ -87,35 +90,21 @@ const MessageBox = () => {
       });
     });
 
-    socket.on("getUsers", (data) => {
+    socket?.on("getUsers", (data) => {
+      console.log("getUsersBox => ", data)
       setOnlineUsers(data.filter((item) => item.userId !== user?._id));
-      dispatchGlobal({
-        type: "GLOBAL_STATE",
-        payload: {
-          ...selector,
-          onlineUsers: data.filter((item) => item.userId !== user?._id),
-        }
-      })
     });
 
-    socket.on("getTyping", (data) => {
+    socket?.on("getTyping", (data) => {
       if (data.isTyping) {
         setArrivalTyping(data);
       } else {
         setArrivalTyping(null);
       }
     });
-    socket.on("getNotifications", (data) => {
-      console.log("getNotifications => ", data)
-      dispatchGlobal({
-        type: "GLOBAL_STATE",
-        payload: {
-          notifications: data
-        }
-      })
-    })
+    
 
-    socket.on("isNewNotifications", (data) => {
+    socket?.on("isNewNotifications", (data) => {
       console.log("isNewNotifications => ", data)
       dispatchGlobal({
         type: "GLOBAL_STATE",
@@ -124,9 +113,8 @@ const MessageBox = () => {
         }
       })
     })
-  }, [user?._id, selector?.socketConversations]);
+  }, [user?._id, selector?.socketConversations, socket]);
 
-  // console.log("online users", onlineUsers);
 
   useEffect(() => {
     arrivalConversations &&
@@ -149,9 +137,6 @@ const MessageBox = () => {
       });
     }
   }, [user?._id, selector?.refreshConversations]);
-
-  // const getOnlineUsersConversations = conversations.map
-  // console.log(getOnlineUsersConversations)
 
   return (
     <div>

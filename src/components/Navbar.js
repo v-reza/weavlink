@@ -23,23 +23,23 @@ import useGlobal from "@/hooks/useGlobal";
 import classNames from "@/utils/classNames";
 import { useCookies } from "react-cookie";
 import SlideNotifications from "./SlideNotifications";
-import io from "socket.io-client";
-let socket;
+import useSocket from "@/hooks/useSocket";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
   const [openNotifications, setOpenNotifications] = useState(false);
   const [isSSR, setIsSSR] = useState(false);
-  const [cookie, setCookie, removeCookie] = useCookies();
-
+  const [isNewNotifications, setIsNewNotifications] = useState(false);
   /* Hooks */
+  const [cookie, setCookie, removeCookie] = useCookies();
   const router = useRouter();
   const { token, dispatch, isAuthenticated } = useAuth();
   const headers = useHeader(token);
   const { user } = useUser();
   const { dispatch: dispatchNotif } = useNotif();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { socket } = useSocket()
 
   /* End Hooks */
 
@@ -74,6 +74,16 @@ const Navbar = () => {
       onMounted = true;
     };
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    socket?.on("isNewNotifications", (data) => {
+      if (openNotifications) {
+        setIsNewNotifications(false);
+      } else {
+        setIsNewNotifications(data.isNew);
+      }
+    })
+  }, [openNotifications, socket])
 
   const username = user?.firstname + user?.lastname + "-" + user?._id;
 
@@ -131,14 +141,6 @@ const Navbar = () => {
     };
   }, [keydownCtrlK]);
 
-  const server = process.env.NEXT_APP_SOCKET;
-  useEffect(() => {
-    socket = io(server);
-    socket.connect();
-    return () => {
-      socket.disconnect();
-    };
-  }, [user?._id]);
 
   // const RenderElement = () => {
   return (
@@ -275,7 +277,7 @@ const Navbar = () => {
                         <button
                           onClick={() => {
                             setOpenNotifications(true);
-                            socket.emit("openNotifications", {
+                            socket?.emit("openNotifications", {
                               senderId: user?._id,
                             });
                           }}
@@ -285,7 +287,7 @@ const Navbar = () => {
                           <span className="sr-only">View notifications</span>
                           <BellIcon
                             className={classNames(
-                              selector?.isNewNotifications
+                              isNewNotifications
                                 ? "text-rose-500 opacity-75 animate-pulse"
                                 : "",
                               "h-6 w-6 "
@@ -461,7 +463,7 @@ const Navbar = () => {
                         type="button"
                         onClick={() => {
                           setOpenNotifications(true);
-                          socket.emit("openNotifications", {
+                          socket?.emit("openNotifications", {
                             senderId: user?._id,
                           });
                         }}

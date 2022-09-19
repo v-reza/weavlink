@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { AuthContextProvider as AuthGuard } from "@/context/AuthContext";
+import { SocketContextProvider as SocketConnect } from "@/context/SocketContext";
 import useAuth from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import { useEffect, useState } from "react";
@@ -24,11 +25,13 @@ function MyApp({ Component, pageProps }) {
       <Theme>
         <Layout>
           <AuthGuard>
-            <LoadingBackdrop />
-            <Notification />
-            <Navbar />
-            <MessageBox />
-            <Component {...pageProps} />
+            <SocketConnect>
+              <LoadingBackdrop />
+              <Notification />
+              <Navbar />
+              <MessageBox />
+              <Component {...pageProps} />
+            </SocketConnect>
           </AuthGuard>
         </Layout>
       </Theme>

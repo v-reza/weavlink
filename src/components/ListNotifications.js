@@ -1,7 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import useAuth from "@/hooks/useAuth";
 import useGlobal from "@/hooks/useGlobal";
 import useHeader from "@/hooks/useHeader";
 import useNotif from "@/hooks/useNotif";
+import useSocket from "@/hooks/useSocket";
+import useUser from "@/hooks/useUser";
 import { axiosDelete } from "@/utils/axiosInstance";
 import classNames from "@/utils/classNames";
 import { Menu, Transition } from "@headlessui/react";
@@ -10,20 +13,21 @@ import { useRouter } from "next/router";
 import React, { Fragment, useEffect, useState } from "react";
 import { format } from "timeago.js";
 
-const ListNotifications = ({ person, setRefreshNotifications }) => {
+const ListNotifications = ({ person, setRefreshNotifications, onlineUsers }) => {
   const [isOnline, setIsOnline] = useState(false);
   const { selector } = useGlobal();
   const router = useRouter();
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchNotif } = useNotif();
-  /* Socket check is Online users */
+
+  /* check is Online users */
   useEffect(() => {
-    const checkIsOnline = selector?.onlineUsers?.find(
+    const checkIsOnline = onlineUsers?.find(
       (online) => online.userId === person.users?._id
     );
     setIsOnline(checkIsOnline ? true : false);
-  }, [person.users?._id, selector?.onlineUsers]);
+  }, [person.users?._id, onlineUsers]);
 
   const handleDelete = async () => {
     try {
@@ -35,7 +39,7 @@ const ListNotifications = ({ person, setRefreshNotifications }) => {
         type: "NOTIF_ERROR",
         title: "Error",
         message: error.message,
-      })
+      });
     }
   };
 

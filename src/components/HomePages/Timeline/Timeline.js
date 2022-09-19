@@ -62,6 +62,7 @@ import dynamic from "next/dynamic";
 import useLoading from "@/hooks/useLoading";
 import useGlobal from "@/hooks/useGlobal";
 import DotsLoader from "@/uiComponents/DotsLoader";
+import useSocket from "@/hooks/useSocket";
 const Picker = dynamic(() => import("emoji-picker-react"), {
   ssr: false,
 });
@@ -115,7 +116,7 @@ const moods = [
   },
 ];
 
-const Timeline = ({ post, socket }) => {
+const Timeline = ({ post }) => {
   /* Hooks */
   const { dispatch: dispatchNotif } = useNotif();
   const { token } = useAuth();
@@ -124,6 +125,7 @@ const Timeline = ({ post, socket }) => {
   const folder = useFolder();
   const { dispatch: dispatchLoading } = useLoading();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const { socket } = useSocket()
   /* End Hooks */
   /* State */
   const [user, setUser] = useState({});
@@ -280,7 +282,7 @@ const Timeline = ({ post, socket }) => {
   };
 
   const sendNotifications = async () => {
-    socket.emit("sendNotifications", {
+    socket?.emit("sendNotifications", {
       senderId: currentUser?._id,
       receiverId: user?._id,
       text: "visited your profile",
@@ -323,7 +325,9 @@ const Timeline = ({ post, socket }) => {
                   <img
                     onClick={() => {
                       router.push("/profile/" + username.toLowerCase());
-                      sendNotifications();
+                      if (currentUser?._id !== user?._id) {
+                        sendNotifications();
+                      } 
                     }}
                     className="cursor-pointer h-10 w-10 rounded-full"
                     src={
@@ -340,7 +344,9 @@ const Timeline = ({ post, socket }) => {
                         router.push(
                           "/profile/" + username.replace(" ", "-").toLowerCase()
                         );
-                        sendNotifications();
+                        if (currentUser?._id !== user?._id) {
+                          sendNotifications();
+                        }
                       }}
                       className="cursor-pointer hover:underline text-slate-300"
                     >
