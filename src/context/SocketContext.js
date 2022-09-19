@@ -27,14 +27,6 @@ export const SocketContextProvider = ({ children }) => {
     };
   }, [user?._id]);
 
-  // useEffect(() => {
-  //   if (state.socket) {
-  //     state.socket.on("getUsers", (data) => {
-  //       console.log("getUsersFromContext => ", data);
-  //     });
-  //   }
-  // }, [state.socket]);
-
   return (
     <SocketContext.Provider value={{ ...state, dispatch }}>
       {children}

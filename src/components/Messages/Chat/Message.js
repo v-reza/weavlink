@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import useNotif from "@/hooks/useNotif";
 import { axiosGet } from "@/utils/axiosInstance";
@@ -51,7 +52,11 @@ const Message = ({ message, receiveUser }) => {
                 {format(message.createdAt)}
               </a>
             </div>
-            <p className="text-xs text-slate-400">{message.text}</p>
+            <div className="space-y-2">
+              <img src="/avatar.png" className="w-56 h-auto" />
+              <img src="/avatar.png" className="w-56 h-auto" />
+            </div>
+            <p className="text-sm text-slate-400">{message.text}</p>
           </div>
         </div>
       </div>

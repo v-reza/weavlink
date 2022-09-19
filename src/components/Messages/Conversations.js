@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import useGlobal from "@/hooks/useGlobal";
 import useNotif from "@/hooks/useNotif";
+import { SkeletonText } from "@/uiComponents/Skeleton";
 import { axiosGet } from "@/utils/axiosInstance";
 import { replaceFormatDate } from "@/utils/constants";
 import React, { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ const Conversations = ({
         },
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation, currentUser?._id, selector?.refreshMessages]);
 
   return (
@@ -98,12 +99,16 @@ const Conversations = ({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between">
-              <a
-                href="#"
-                className="hover:underline text-sm font-medium text-slate-300 truncate"
-              >
-                {user?.firstname + " " + user?.lastname}
-              </a>
+              {user?.firstname && user?.lastname ? (
+                <a
+                  href="#"
+                  className="hover:underline text-sm font-medium text-slate-300 truncate"
+                >
+                  {user?.firstname + " " + user?.lastname}
+                </a>
+              ) : (
+                <SkeletonText />
+              )}
               <a
                 href="#"
                 className="hover:underline text-xs font-medium text-slate-400"

@@ -1,21 +1,30 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import useAuth from "@/hooks/useAuth";
 import useUser from "@/hooks/useUser";
-import Divider from "@/uiComponents/Divider";
+import { Switch } from "@headlessui/react";
 import { axiosGet, axiosPost } from "@/utils/axiosInstance";
 import classNames from "@/utils/classNames";
 import {
   DotsHorizontalIcon,
+  DotsVerticalIcon,
+  PencilIcon,
+  PhotographIcon,
   QuestionMarkCircleIcon,
   XIcon,
 } from "@heroicons/react/outline";
-import io from "socket.io-client";
 import { PencilAltIcon, ChevronUpIcon } from "@heroicons/react/solid";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import useGlobal from "@/hooks/useGlobal";
 import { useRouter } from "next/router";
 import useNotif from "@/hooks/useNotif";
+import { Menu, Transition } from "@headlessui/react";
+import { Tooltip } from "flowbite-react";
+import Modal from "@/uiComponents/Modal";
+import FooterChatFile from "./Modals/FooterChatFile";
+import FormChatFile from "./Modals/FormChatFile";
 // let socket;
 const ChatBox = ({
   socket,
@@ -29,12 +38,19 @@ const ChatBox = ({
   onlineUsers,
   arrivalTyping,
 }) => {
+  /* State */
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [receiveUser, setReceiveUser] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [enabled, setEnabled] = useState(true);
+  const [file, setFile] = useState(false);
+  const [openEditFile, setOpenEditFile] = useState(false);
+  const inputRef = useRef();
+
+  /* Hooks */
   const { dispatch: dispatchNotif } = useNotif();
   const router = useRouter();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
@@ -51,9 +67,6 @@ const ChatBox = ({
 
   /* Socket check is users typing */
   useEffect(() => {
-    // const checkIsTyping =
-    //   (typing) => typing.receiverId === selectedConversation?._id
-    // );
     setIsTyping(
       arrivalTyping?.senderId === selectedConversation?._id ? true : false
     );
@@ -97,53 +110,6 @@ const ChatBox = ({
     setReceiveUser(receiveUser);
   }, [currentChat, user?._id]);
 
-  //socket
-  const options = {
-    "force new connection": true,
-    reconnectionAttempts: "Infinity",
-    timeout: 10000,
-    transports: ["websocket"],
-  };
-  // const server = "https://weavsocket.herokuapp.com";
-  const server = process.env.NEXT_APP_SOCKET;
-
-  // useEffect(() => {
-  //   socket = io(server);
-  //   socket.connect();
-  //   console.log("socket on chatbox connect?");
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   socket.on("getMessage", (data) => {
-  //     console.log("getMessageChatBox => ",data )
-  //     setArrivalMessageSocket({
-  //       sender: data.senderId,
-  //       text: data.text,
-  //       createdAt: Date.now(),
-  //     });
-  //   });
-  //   if (selector?.oneTimes) {
-  //     setArrivalMessageSocket({
-  //       sender: selector?.arrivalMessages?.senderId,
-  //       text: selector?.arrivalMessages?.text,
-  //       createdAt: Date.now(),
-  //     })
-  //     dispatchGlobal({
-  //       type: "GLOBAL_STATE",
-  //       payload: {
-  //         oneTimes: false,
-  //       }
-  //     })
-  //   }
-  // }, [user?._id, selector?.oneTimes])
-  // console.log(selector?.arrivalMessages)
-
-  // console.log(arrivalMessageSocket)
-
   useEffect(() => {
     arrivalMessages &&
       currentChat?.members.includes(arrivalMessages.sender) &&
@@ -151,6 +117,7 @@ const ChatBox = ({
   }, [arrivalMessages, currentChat?.members]);
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!currentChat) {
       const dataConversation = {
         senderId: user?._id,
@@ -165,26 +132,16 @@ const ChatBox = ({
       setCurrentChat(res.data);
       const message = {
         sender: user?._id,
-        text,
+        text: enabled ? text : inputRef.current.value,
         conversationId: res.data._id,
       };
       const receiverId = res.data.members.find((m) => m !== user?._id);
-      // socket.emit("addUser", receiverId);
+
       socket.emit("sendMessage", {
         senderId: user?._id,
         receiverId: receiverId,
-        text: text,
+        text: enabled ? text : inputRef.current.value,
       });
-
-      // socket.emit("sendTest", {
-      //   receiverId: selector?.userReceiver[0].userId
-      // })
-
-      // socket.emit("sendConversations", {
-      //   conversationId: res.data._id,
-      //   senderId: user?._id,
-      //   receiverId: receiverId
-      // })
 
       try {
         const res = await axiosPost("/messages", message);
@@ -194,8 +151,6 @@ const ChatBox = ({
           type: "GLOBAL_STATE",
           payload: {
             ...selector,
-            // refreshMessages: true,
-            // socketConversations: true,
             refreshConversations: true,
           },
         });
@@ -204,12 +159,12 @@ const ChatBox = ({
           type: "NOTIF_ERROR",
           title: "Error",
           message: error.message,
-        })
+        });
       }
     } else {
       const message = {
         sender: user?._id,
-        text: text,
+        text: enabled ? text : inputRef.current.value,
         conversationId: currentChat?._id,
       };
 
@@ -217,7 +172,7 @@ const ChatBox = ({
       socket.emit("sendMessage", {
         senderId: user?._id,
         receiverId: receiverId,
-        text: text,
+        text: enabled ? text : inputRef.current.value,
       });
       socket.emit("sendTyping", {
         isTyping: false,
@@ -229,33 +184,43 @@ const ChatBox = ({
         const res = await axiosPost("/messages", message);
         setMessages([...messages, res.data]);
         setText("");
-        dispatchGlobal({
-          type: "GLOBAL_STATE",
-          payload: {
-            refreshMessages: true,
-          },
-        });
       } catch (error) {
         dispatchNotif({
           type: "NOTIF_ERROR",
           title: "Error",
           message: error.message,
-        })
+        });
       }
     }
   };
+
+  const keydownEnter = (e) => {
+    if (e.keyCode === 13) {
+      handleSubmit(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!enabled) {
+      document.addEventListener("keydown", keydownEnter);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", keydownEnter);
+    };
+  }, [enabled]);
 
   return (
     <div>
       <div
         className={`hidden sm:block ${
           !open && "cursor-pointer"
-        } flex fixed bottom-0 right-0 mr-[22rem] z-30`}
+        } flex fixed bottom-0 right-0 mr-[22rem] ${openEditFile ? "z-10" : "z-30"}`}
       >
         <div>
           <div
             className={`block ${!open ? "w-56" : "w-96"} ${
-              !open ? "h-12" : "h-96"
+              !open ? "h-12" : `${file ? "h-[27rem]" : "h-96"}`
             } bg-slate-800 rounded-t-md shadow hover:shadow-lg transition-all duration-300 ease-in-out border border-slate-600 ${
               !open && "hover:bg-slate-700/80"
             } `}
@@ -325,26 +290,79 @@ const ChatBox = ({
                 </div>
               ))}
             </div>
-            <div className="w-full border-t-2 border-green-600">
+            {file && (
+              <>
+                <Modal
+                  title={"Edit File"}
+                  open={openEditFile}
+                  setOpen={setOpenEditFile}
+                  footer={<FooterChatFile setOpen={setOpenEditFile} />}
+                >
+                  <FormChatFile />
+                </Modal>
+                <div
+                  className={`w-full border-t-2 ${
+                    file ? "border-green-600" : "border-slate-600"
+                  } px-2`}
+                >
+                  <div className="flex items-center justify-between p-2">
+                    <span className="text-green-500 text-xs font-medium">
+                      1 file attached
+                    </span>
+                    <div
+                      className="p-2 rounded-full hover:bg-slate-700/50 cursor-pointer"
+                      onClick={() => setOpenEditFile(true)}
+                    >
+                      <PencilIcon className="w-4 h-4 text-slate-300" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            <div
+              className={`w-full border-t-2 ${
+                file ? "border-slate-600" : "border-green-600"
+              } `}
+            >
               <div className="flex space-x-2">
                 <div className="w-full flex relative items-center px-2 py-1">
-                  <textarea
-                    rows={1}
-                    value={text}
-                    onChange={(e) => {
-                      setText(e.target.value);
-                      const receiverId = currentChat?.members.find(
-                        (m) => m !== user?._id
-                      );
-                      socket.emit("sendTyping", {
-                        isTyping: e.target.value.length > 0 ? true : false,
-                        senderId: user?._id,
-                        receiverId: receiverId,
-                      });
-                    }}
-                    className="resize-none text-md focus:border-transparent focus:ring-0 focus:outline-none w-full bg-transparent sm:text-sm text-slate-400 font-medium border-transparent"
-                    placeholder="Write a message..."
-                  />
+                  {enabled ? (
+                    <textarea
+                      rows={1}
+                      value={text}
+                      onChange={(e) => {
+                        setText(e.target.value);
+                        const receiverId = currentChat?.members.find(
+                          (m) => m !== user?._id
+                        );
+                        socket.emit("sendTyping", {
+                          isTyping: e.target.value.length > 0 ? true : false,
+                          senderId: user?._id,
+                          receiverId: receiverId,
+                        });
+                      }}
+                      className="resize-none text-md focus:border-transparent focus:ring-0 focus:outline-none w-full bg-transparent sm:text-sm text-slate-400 font-medium border-transparent"
+                      placeholder="Write a message..."
+                    />
+                  ) : (
+                    <input
+                      value={text}
+                      ref={inputRef}
+                      onChange={(e) => {
+                        setText(e.target.value);
+                        const receiverId = currentChat?.members.find(
+                          (m) => m !== user?._id
+                        );
+                        socket.emit("sendTyping", {
+                          isTyping: e.target.value.length > 0 ? true : false,
+                          senderId: user?._id,
+                          receiverId: receiverId,
+                        });
+                      }}
+                      className="px-3 py-2 resize-none text-md focus:border-transparent focus:ring-0 focus:outline-none w-full bg-transparent sm:text-sm text-slate-400 font-medium border-transparent"
+                      placeholder="Write a message..."
+                    />
+                  )}
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
                     <ChevronUpIcon
                       className="h-5 w-5 text-gray-400 hover:bg-slate-700 rounded-full cursor-pointer"
@@ -356,21 +374,133 @@ const ChatBox = ({
             </div>
             <div className="w-full border-t border-slate-600">
               <div className="mt-2 flex space-x-2">
-                <div className="w-full flex items-center justify-end mr-2">
-                  <button
-                    onClick={(e) => handleSubmit(e)}
-                    disabled={!text ? true : false}
-                    type="button"
-                    className={classNames(
-                      !text
-                        ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                        : "bg-indigo-600 hover:bg-indigo-700",
-                      "w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
-                    )}
-                  >
-                    Send
-                  </button>
+                <div className="ml-2">
+                  <Tooltip content="Add a photo" placement="top">
+                    <label
+                      htmlFor="inputFile"
+                      className="cursor-pointer w-max inline-flex justify-center rounded-md border border-transparent px-4 py-2  text-base font-medium text-white hover:bg-slate-500/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 sm:col-start-2 sm:text-sm"
+                    >
+                      <span className="sr-only">
+                        Insert link
+                        <input
+                          accept="image/*"
+                          className="input"
+                          id="inputFile"
+                          multiple
+                          type="file"
+                          onChange={() => setFile(true)}
+                          // onChange={(e) => handleFile(e)}
+                        />
+                      </span>
+                      <PhotographIcon className="h-5 w-5" />
+                    </label>
+                  </Tooltip>
                 </div>
+                <div className="w-full flex items-center justify-end mr-2">
+                  {enabled && (
+                    <button
+                      onClick={(e) => handleSubmit(e)}
+                      disabled={!text ? true : false}
+                      type="button"
+                      className={classNames(
+                        !text
+                          ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
+                          : "bg-indigo-600 hover:bg-indigo-700",
+                        "w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
+                      )}
+                    >
+                      Send
+                    </button>
+                  )}
+                </div>
+                <Menu
+                  as="div"
+                  className="flex-shrink-0 relative inline-block text-left"
+                >
+                  <Menu.Button className="group relative w-8 h-8 bg-transparent rounded-full inline-flex items-center justify-center">
+                    <span className="sr-only">Open options menu</span>
+                    <span className="flex items-center justify-center h-full w-full rounded-full">
+                      <DotsVerticalIcon
+                        className="w-5 h-5 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Menu.Button>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="-top-2 transform -translate-y-full absolute right-0 w-56 origin-top-right bg-slate-700 ring-1 ring-black ring-opacity-5 focus:outline-none rounded-md">
+                      <div className="py-1">
+                        <Menu.Item>
+                          <Switch.Group
+                            as="div"
+                            className="flex items-center block px-4 py-2 cursor-pointer"
+                          >
+                            <Switch
+                              checked={enabled}
+                              onChange={setEnabled}
+                              className={classNames(
+                                enabled
+                                  ? "bg-transparent border border-gray-400"
+                                  : "bg-indigo-600",
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                              )}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={classNames(
+                                  enabled ? "translate-x-0" : "translate-x-5",
+                                  "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                )}
+                              />
+                            </Switch>
+                            <Switch.Label as="span" className="ml-3">
+                              <span className="text-sm font-medium text-slate-400">
+                                Press Enter to Send
+                              </span>
+                            </Switch.Label>
+                          </Switch.Group>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Switch.Group
+                            as="div"
+                            className="flex items-center block px-4 py-2 cursor-pointer"
+                          >
+                            <Switch
+                              checked={enabled}
+                              onChange={setEnabled}
+                              className={classNames(
+                                enabled
+                                  ? "bg-indigo-600"
+                                  : "bg-transparent border border-gray-400",
+                                "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200"
+                              )}
+                            >
+                              <span
+                                aria-hidden="true"
+                                className={classNames(
+                                  enabled ? "translate-x-5" : "translate-x-0",
+                                  "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                                )}
+                              />
+                            </Switch>
+                            <Switch.Label as="span" className="ml-3">
+                              <span className="text-sm font-medium text-slate-400">
+                                Click Send
+                              </span>
+                            </Switch.Label>
+                          </Switch.Group>
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
               </div>
             </div>
           </div>

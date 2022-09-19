@@ -13,6 +13,7 @@ import useHeader from "@/hooks/useHeader";
 import { axiosGet } from "@/utils/axiosInstance";
 import ConversationsSearch from "./ConversationsSearch";
 import useSocket from "@/hooks/useSocket";
+import DotsLoader from "@/uiComponents/DotsLoader";
 
 // let socket;
 const MessageBox = () => {
@@ -20,14 +21,15 @@ const MessageBox = () => {
   const [open, setOpen] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const { socket } = useSocket()
-
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [arrivalConversations, setArrivalConversations] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [arrivalMessages, setArrivalMessages] = useState(null);
   const [arrivalTyping, setArrivalTyping] = useState(null);
+  const [isConversationsFound, setIsConversationsFound] = useState(false);
+
+  const { socket } = useSocket();
   const { isAuthenticated, token } = useAuth();
   const { user } = useUser();
   const headers = useHeader(token);
@@ -49,25 +51,6 @@ const MessageBox = () => {
       });
     }
   }, [selector?.openMessaging]);
-  
-
-  // useEffect(() => {
-  //   socket = io(server);
-  //   socket.connect();
-  //   socket.emit("addUser", user?._id);
-  //   dispatchGlobal({
-  //     type: "GLOBAL_STATE",
-  //     payload: {
-  //       ...selector,
-  //       socket,
-  //     }
-  //   })
-
-    
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, [user?._id]);
 
   //Hooks Socket
   useEffect(() => {
@@ -97,7 +80,7 @@ const MessageBox = () => {
     });
 
     socket?.on("getUsers", (data) => {
-      console.log("getUsersBox => ", data)
+      console.log("getUsersBox => ", data);
       setOnlineUsers(data.filter((item) => item.userId !== user?._id));
     });
 
@@ -108,19 +91,17 @@ const MessageBox = () => {
         setArrivalTyping(null);
       }
     });
-    
 
     socket?.on("isNewNotifications", (data) => {
-      console.log("isNewNotifications => ", data)
+      console.log("isNewNotifications => ", data);
       dispatchGlobal({
         type: "GLOBAL_STATE",
         payload: {
-          isNewNotifications: data.isNew
-        }
-      })
-    })
+          isNewNotifications: data.isNew,
+        },
+      });
+    });
   }, [user?._id, selector?.socketConversations, socket]);
-
 
   useEffect(() => {
     arrivalConversations &&
@@ -143,6 +124,14 @@ const MessageBox = () => {
       });
     }
   }, [user?._id, selector?.refreshConversations]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (conversations.length === 0) {
+        setIsConversationsFound(true);
+      }
+    }, 2000);
+  }, [conversations]);
 
   return (
     <div>
@@ -218,6 +207,8 @@ const MessageBox = () => {
                       />
                     </div>
                   ))
+                ) : !isConversationsFound ? (
+                  <DotsLoader className="flex items-center justify-center" color="gray"/>
                 ) : (
                   <div className="text-white text-center mt-4">
                     No conversations
