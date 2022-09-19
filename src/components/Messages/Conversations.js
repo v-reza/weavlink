@@ -68,8 +68,8 @@ const Conversations = ({
         },
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation, currentUser?._id, selector?.refreshMessages]);
-  // console.log(lastMessages)
 
   return (
     <div>

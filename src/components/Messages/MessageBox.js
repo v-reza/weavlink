@@ -83,6 +83,12 @@ const MessageBox = () => {
 
     socket?.on("getMessage", (data) => {
       console.log("getMessageBox => ", data);
+      dispatchGlobal({
+        type: "GLOBAL_STATE",
+        payload: {
+          refreshMessages: true,
+        },
+      });
       setArrivalMessages({
         sender: data.senderId,
         text: data.text,
