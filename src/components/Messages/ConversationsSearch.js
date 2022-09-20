@@ -48,7 +48,7 @@ export default function ConversationsSearch({
   useEffect(() => {
     const getListUsers = async () => {
       try {
-        const res = await axiosGet("/users/userSearch");
+        const res = await axiosGet("/users/search/userSearch");
         setListUsers(res.data.filter((usr) => usr._id !== user?._id));
       } catch (error) {
         dispatchNotif({

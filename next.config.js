@@ -4,8 +4,8 @@ const nextConfig = {
   swcMinify: true,
   env: {
     NEXT_APP_SOCKET: "https://weavsocket.herokuapp.com",
-    NEXT_APP_API: "https://velkeyapi.herokuapp.com/api",
-    NEXT_APP_API_IMAGES : "https://velkeyapi.herokuapp.com/images/",
+    NEXT_APP_API: "https://api-weavlink-production.up.railway.app/api",
+    NEXT_APP_API_IMAGES : "https://api-weavlink-production.up.railway.app/images/",
     // CI: false,
     // GENERATE_SOURCEMAP: false
   }

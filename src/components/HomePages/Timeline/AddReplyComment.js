@@ -89,7 +89,7 @@ const AddReplyComment = ({ comment, messageRef }) => {
   /* useEffect */
   useEffect(() => {
     const getListUser = async () => {
-      const res = await axiosGet("/users/listUsersMentions");
+      const res = await axiosGet("/users/mentions/listUsersMentions");
       setSuggestions(res.data.filter((item) => item.id !== user?._id));
     };
     getListUser();
