@@ -3,9 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   env: {
-    NEXT_APP_SOCKET: "https://weavsocket.herokuapp.com",
-    NEXT_APP_API: "https://api-weavlink-production.up.railway.app/api",
-    NEXT_APP_API_IMAGES : "https://api-weavlink-production.up.railway.app/images/",
+    NEXT_APP_SOCKET: "https://weav-socket.fly.dev",
+    NEXT_APP_API: "https://api-weavlink.fly.dev/api",
+    NEXT_APP_API_IMAGES : "https://api-weavlink.fly.dev/images/",
     // CI: false,
     // GENERATE_SOURCEMAP: false
   }

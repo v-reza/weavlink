@@ -7,6 +7,7 @@ import {
   ChartBarIcon,
   DotsHorizontalIcon,
 } from "@heroicons/react/outline";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import useGlobal from "@/hooks/useGlobal";
 import { Progress, Tooltip } from "flowbite-react";
 import classNames from "@/utils/classNames";
@@ -15,11 +16,13 @@ import { axiosPost } from "@/utils/axiosInstance";
 import useLoading from "@/hooks/useLoading";
 import useAuth from "@/hooks/useAuth";
 import useHeader from "@/hooks/useHeader";
+import { storage } from "@/services/firebase";
 
 const FooterNewPost = ({ setOpen, ...props }) => {
   /* State */
   const [file, setFile] = useState([]);
-  const [progressBar, setProgressBar] = useState(0);
+  const [firebaseFile, setFirebaseFile] = useState([]);
+  const [firebaseUrl, setFirebaseUrl] = useState();
   // const [fileVideo , setFileVideo] = useState(null)
   /* End State */
 
@@ -52,6 +55,8 @@ const FooterNewPost = ({ setOpen, ...props }) => {
       /* File Upload */
       const formData = new FormData();
       const fileNameList = [];
+      // const listFiles = [];
+      // const fileNames = [];
       if (selector.form?.file?.length > 0) {
         for (const key of Object.keys(selector.form?.file)) {
           const fileName =
@@ -60,11 +65,39 @@ const FooterNewPost = ({ setOpen, ...props }) => {
           const customFile = new File([selector.form?.file[key]], fileName, {
             type: selector.form?.file[key].type,
           });
+          // listFiles.push(customFile);
+          // fileNames.push(fileName);
           formData.append("images", customFile);
           fileNameList.push(
             fileName + "." + selector.form?.file[key].type.split("/")[1]
           );
+          // fileNameList.push(
+          //   `https://firebasestorage.googleapis.com/v0/b/velkey.appspot.com/o/images%2F${fileName}?alt=media&token=77c8b0ef-7c3d-424b-99c1-25dd2b7f1d2f`
+          // );
         }
+        
+        // listFiles.map(async (file, index) => {
+        //   const storageRef = ref(storage, `/images/${fileNames[index]}`);
+        //   const uploadTask = uploadBytesResumable(storageRef, file);
+        //   uploadTask.on(
+        //     "state_changed",
+        //     (snapshot) => {
+        //       const progress =
+        //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        //     },
+        //     (err) =>
+        //       dispatchNotif({
+        //         type: "NOTIF_ERROR",
+        //         title: "Error",
+        //         message: err.message,
+        //       }),
+        //     () => {
+        //       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        //         console.log("downloadUrl => ", url);
+        //       });
+        //     }
+        //   );
+        // });
         /* Upload file & update new data */
         await axiosPost("/images/upload", formData, {
           headers: {
@@ -141,7 +174,6 @@ const FooterNewPost = ({ setOpen, ...props }) => {
     <div className="w-full  border-t border-slate-600">
       <div className="mt-2 flex space-x-2">
         <div className="flex w-max ">
-        
           <Tooltip content="Add a photo" placement="top">
             <label
               htmlFor="inputFile"
