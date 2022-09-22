@@ -115,8 +115,12 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
       const fileName =
         Math.random().toString(36).substring(2, 15) +
         Math.random().toString(36).substring(2, 15);
-      
-      const profilePictureName = process.env.NEXT_APP_API_IMAGES || "http://localhost:1000/images/" + fileName + "." + e.target.files[0].type.split("/")[1];
+      const path =
+        process.env.NEXT_APP_API_IMAGES || "http://localhost:1000/images/";
+      const profilePictureName =
+        path + fileName + "." + e.target.files[0].type.split("/")[1];
+      console.log(fileName);
+      console.log(profilePictureName);
       const customFile = new File([e.target.files[0]], fileName, {
         type: e.target.files[0].type,
       });
@@ -137,12 +141,13 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
         const data = {
           profilePicture: profilePictureName,
         };
+        console.log(data);
         await axiosPut("/users/update/profileInformation", data, headers).then(
           (res) => {
             dispatchAuth({
               type: "SET_NEW_TOKEN",
-              payload: res.data.token
-            })
+              payload: res.data.token,
+            });
             dispatch({
               type: "UPDATE_USER",
               payload: res.data.user,
