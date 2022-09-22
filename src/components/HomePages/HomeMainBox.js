@@ -11,6 +11,7 @@ import React from "react";
 
 const HomeMainBox = ({ user, setOpen, ...props }) => {
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  console.log(user)
   return (
     <>
       <div className="flex items-center space-x-4">

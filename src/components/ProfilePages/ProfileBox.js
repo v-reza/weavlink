@@ -2,6 +2,7 @@
 import useAuth from "@/hooks/useAuth";
 import useGlobal from "@/hooks/useGlobal";
 import useHeader from "@/hooks/useHeader";
+import useLoading from "@/hooks/useLoading";
 import useNotif from "@/hooks/useNotif";
 import useUser from "@/hooks/useUser";
 import Button from "@/uiComponents/Button";
@@ -9,16 +10,20 @@ import { axiosGet, axiosPost, axiosPut } from "@/utils/axiosInstance";
 import { Menu } from "@headlessui/react";
 import { PencilIcon, UserAddIcon, XIcon } from "@heroicons/react/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/solid";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 
 const ProfileBox = ({ user, userProfile, currentUser }) => {
   const [conversations, setConversations] = useState([]);
-  const { token } = useAuth();
+  const { dispatch: dispatchLoading } = useLoading();
+  const { token, dispatch: dispatchAuth } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchNotif } = useNotif();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const { dispatch } = useUser();
   const [conversationsUsers, setConversationsUsers] = useState(null);
+  const photoRef = useRef();
+  const router = useRouter();
   useEffect(() => {
     const getConversation = async () => {
       const res = await axiosGet("/conversations", headers);
@@ -39,7 +44,7 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
     const findConversations = conversations.find((conversation) => {
       return conversation.members.includes(user?._id);
     });
-    setConversationsUsers(findConversations)
+    setConversationsUsers(findConversations);
   }, [conversations, user?._id]);
 
   const handleFollow = async () => {
@@ -94,16 +99,73 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
         message: "Conversations already created",
       });
     }
-    
+
     dispatchGlobal({
       type: "GLOBAL_STATE",
       payload: {
         ...selector,
         openMessaging: true,
-      }
-    })
+      },
+    });
   };
-  
+
+  const handlePhoto = async (e) => {
+    try {
+      const formData = new FormData();
+      const fileName =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+      
+      const profilePictureName = process.env.NEXT_APP_API_IMAGES || "http://localhost:1000/images/" + fileName + "." + e.target.files[0].type.split("/")[1];
+      const customFile = new File([e.target.files[0]], fileName, {
+        type: e.target.files[0].type,
+      });
+      formData.append("images", customFile);
+      await axiosPost("/images/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (data) => {
+          dispatchLoading({
+            type: "WITHPROGRESSBAR",
+            payload: {
+              progressBar: Math.round((100 * data.loaded) / data.total),
+            },
+          });
+        },
+      }).then(async () => {
+        const data = {
+          profilePicture: profilePictureName,
+        };
+        await axiosPut("/users/update/profileInformation", data, headers).then(
+          (res) => {
+            dispatchAuth({
+              type: "SET_NEW_TOKEN",
+              payload: res.data.token
+            })
+            dispatch({
+              type: "UPDATE_USER",
+              payload: res.data.user,
+            });
+            dispatchLoading({ type: "FINISHED" });
+            dispatchNotif({
+              type: "NOTIF_SUCCESS",
+              title: "Success",
+              message: "Profile picture updated",
+            });
+            router.replace(router.asPath);
+          }
+        );
+      });
+    } catch (error) {
+      dispatchNotif({
+        type: "NOTIF_ERROR",
+        title: "Error",
+        message: error.message,
+      });
+    }
+  };
+
   return (
     <ul role="list" className="select-none">
       <div className="overflow-hidden sm:rounded-md shadow-slate-800">
@@ -143,10 +205,27 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
           <div className="w-full flex items-center justify-start relative px-8">
             <img
               src={user?.profilePicture || "/avatar.png"}
-              className="w-36 h-36 rounded-full absolute border-2 border-slate-800 object-cover"
+              className={`w-36 h-36 rounded-full absolute border-2 border-slate-800 object-cover ${
+                user?._id === currentUser?._id && "cursor-pointer"
+              }`}
               referrerPolicy="no-referrer"
               alt=""
+              onClick={() =>
+                user?._id === currentUser?._id && photoRef.current.click()
+              }
             />
+            <span className="sr-only">
+              Insert link
+              <input
+                accept="image/*"
+                className="input"
+                id="inputFile"
+                multiple
+                type="file"
+                ref={photoRef}
+                onChange={(e) => handlePhoto(e)}
+              />
+            </span>
           </div>
           <div className="flex items-center justify-end cursor-pointer p-2">
             <div className="rounded-full hover:bg-slate-700/20 p-4">

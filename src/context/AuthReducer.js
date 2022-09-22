@@ -53,12 +53,18 @@ const UserReducer = (state, action) => {
       return {
         ...state,
         rememberToken: action.payload,
-      }
+      };
     case "DELETE_REMEMBER_TOKEN": {
       return {
         ...state,
         rememberToken: null,
-      }
+      };
+    }
+    case "SET_NEW_TOKEN": {
+      return {
+        ...state,
+        token: action.payload,
+      };
     }
     default:
   }
