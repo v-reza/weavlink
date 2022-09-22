@@ -25,6 +25,7 @@ import { Tooltip } from "flowbite-react";
 import Modal from "@/uiComponents/Modal";
 import FooterChatFile from "./Modals/FooterChatFile";
 import FormChatFile from "./Modals/FormChatFile";
+import useLoading from "@/hooks/useLoading";
 // let socket;
 const ChatBox = ({
   socket,
@@ -46,7 +47,7 @@ const ChatBox = ({
   const [isOnline, setIsOnline] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [enabled, setEnabled] = useState(true);
-  const [file, setFile] = useState(false);
+  const [file, setFile] = useState([]);
   const [openEditFile, setOpenEditFile] = useState(false);
   const inputRef = useRef();
 
@@ -56,6 +57,7 @@ const ChatBox = ({
   const { selector, dispatch: dispatchGlobal } = useGlobal();
   const msgRef = useRef();
   const { user } = useUser();
+  const { dispatch: dispatchLoading } = useLoading();
 
   /* Socket check is Online users */
   useEffect(() => {
@@ -116,6 +118,14 @@ const ChatBox = ({
       setMessages((prev) => [...prev, arrivalMessages]);
   }, [arrivalMessages, currentChat?.members]);
 
+  const handleFile = (e) => {
+    const listFile = [];
+    listFile.push(e.target.files);
+    for (let i = 0; i < listFile.length; i++) {
+      setFile([...file, listFile[0][i]]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentChat) {
@@ -135,18 +145,42 @@ const ChatBox = ({
         text: enabled ? text : inputRef.current.value,
         conversationId: res.data._id,
       };
+
+      const formData = new FormData();
+      const fileNameList = [];
+      if (file.length > 0) {
+        for (const key of Object.keys(file)) {
+          const fileName =
+            Math.random().toString(36).substring(7) +
+            Math.random().toString(36).substring(7);
+          const customFile = new File([file[key]], fileName, {
+            type: file[key].type,
+          });
+          formData.append("images", customFile);
+          fileNameList.push(fileName + "." + file[key].type.split("/")[1]);
+        }
+        await axiosPost("/images/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        message.images = fileNameList;
+      }
+
       const receiverId = res.data.members.find((m) => m !== user?._id);
 
       socket.emit("sendMessage", {
         senderId: user?._id,
         receiverId: receiverId,
         text: enabled ? text : inputRef.current.value,
+        images: fileNameList,
       });
 
       try {
         const res = await axiosPost("/messages", message);
         setMessages([...messages, res.data]);
         setText("");
+        setFile([])
         dispatchGlobal({
           type: "GLOBAL_STATE",
           payload: {
@@ -168,11 +202,33 @@ const ChatBox = ({
         conversationId: currentChat?._id,
       };
 
+      const formData = new FormData();
+      const fileNameList = [];
+      if (file.length > 0) {
+        for (const key of Object.keys(file)) {
+          const fileName =
+            Math.random().toString(36).substring(7) +
+            Math.random().toString(36).substring(7);
+          const customFile = new File([file[key]], fileName, {
+            type: file[key].type,
+          });
+          formData.append("images", customFile);
+          fileNameList.push(fileName + "." + file[key].type.split("/")[1]);
+        }
+        await axiosPost("/images/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        message.images = fileNameList;
+      }
+
       const receiverId = currentChat?.members.find((m) => m !== user?._id);
       socket.emit("sendMessage", {
         senderId: user?._id,
         receiverId: receiverId,
         text: enabled ? text : inputRef.current.value,
+        images: fileNameList,
       });
       socket.emit("sendTyping", {
         isTyping: false,
@@ -184,6 +240,7 @@ const ChatBox = ({
         const res = await axiosPost("/messages", message);
         setMessages([...messages, res.data]);
         setText("");
+        setFile([]);
       } catch (error) {
         dispatchNotif({
           type: "NOTIF_ERROR",
@@ -215,12 +272,14 @@ const ChatBox = ({
       <div
         className={`hidden sm:block ${
           !open && "cursor-pointer"
-        } flex fixed bottom-0 right-0 mr-[22rem] ${openEditFile ? "z-10" : "z-30"}`}
+        } flex fixed bottom-0 right-0 mr-[22rem] ${
+          openEditFile ? "z-10" : "z-30"
+        }`}
       >
         <div>
           <div
             className={`block ${!open ? "w-56" : "w-96"} ${
-              !open ? "h-12" : `${file ? "h-[27rem]" : "h-96"}`
+              !open ? "h-12" : `${file.length > 0 ? "h-[27rem]" : "h-96"}`
             } bg-slate-800 rounded-t-md shadow hover:shadow-lg transition-all duration-300 ease-in-out border border-slate-600 ${
               !open && "hover:bg-slate-700/80"
             } `}
@@ -290,7 +349,7 @@ const ChatBox = ({
                 </div>
               ))}
             </div>
-            {file && (
+            {file.length > 0 && (
               <>
                 <Modal
                   title={"Edit File"}
@@ -298,16 +357,16 @@ const ChatBox = ({
                   setOpen={setOpenEditFile}
                   footer={<FooterChatFile setOpen={setOpenEditFile} />}
                 >
-                  <FormChatFile />
+                  <FormChatFile file={file} setFile={setFile} />
                 </Modal>
                 <div
                   className={`w-full border-t-2 ${
-                    file ? "border-green-600" : "border-slate-600"
+                    file.length > 0 ? "border-green-600" : "border-slate-600"
                   } px-2`}
                 >
                   <div className="flex items-center justify-between p-2">
                     <span className="text-green-500 text-xs font-medium">
-                      1 file attached
+                      {file.length} file attached
                     </span>
                     <div
                       className="p-2 rounded-full hover:bg-slate-700/50 cursor-pointer"
@@ -321,7 +380,7 @@ const ChatBox = ({
             )}
             <div
               className={`w-full border-t-2 ${
-                file ? "border-slate-600" : "border-green-600"
+                file.length > 0 ? "border-slate-600" : "border-green-600"
               } `}
             >
               <div className="flex space-x-2">
@@ -388,8 +447,7 @@ const ChatBox = ({
                           id="inputFile"
                           multiple
                           type="file"
-                          onChange={() => setFile(true)}
-                          // onChange={(e) => handleFile(e)}
+                          onChange={(e) => handleFile(e)}
                         />
                       </span>
                       <PhotographIcon className="h-5 w-5" />
@@ -400,12 +458,12 @@ const ChatBox = ({
                   {enabled && (
                     <button
                       onClick={(e) => handleSubmit(e)}
-                      disabled={!text ? true : false}
+                      disabled={text || file.length > 0 ? false : true}
                       type="button"
                       className={classNames(
-                        !text
-                          ? "bg-gray-600 hover:bg-gray-700 cursor-not-allowed"
-                          : "bg-indigo-600 hover:bg-indigo-700",
+                        text || file.length > 0
+                          ? "bg-indigo-600 hover:bg-indigo-700"
+                          : "bg-gray-600 hover:bg-gray-700 cursor-not-allowed",
                         "w-max inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium text-white sm:col-start-2 sm:text-sm"
                       )}
                     >

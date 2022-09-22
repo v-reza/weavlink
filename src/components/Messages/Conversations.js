@@ -128,7 +128,11 @@ const Conversations = ({
             ) : (
               <p className="text-xs text-slate-400 truncate">
                 {/* {conversation.lastMessage} */}
-                {lastMessages ? lastMessages?.text : "No messages yet"}
+                {lastMessages
+                  ? lastMessages?.images?.length > 0
+                    ? "Sent a photo"
+                    : lastMessages?.text
+                  : "No messages yet"}
               </p>
             )}
           </div>

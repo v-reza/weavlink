@@ -76,6 +76,7 @@ const MessageBox = () => {
         sender: data.senderId,
         text: data.text,
         createdAt: Date.now(),
+        images: data.images,
       });
     });
 
@@ -208,7 +209,10 @@ const MessageBox = () => {
                     </div>
                   ))
                 ) : !isConversationsFound ? (
-                  <DotsLoader className="flex items-center justify-center" color="gray"/>
+                  <DotsLoader
+                    className="flex items-center justify-center"
+                    color="gray"
+                  />
                 ) : (
                   <div className="text-white text-center mt-4">
                     No conversations

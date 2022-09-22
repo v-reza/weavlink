@@ -6,10 +6,12 @@ import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import useFolder from "@/hooks/useFolder";
 
 const Message = ({ message, receiveUser }) => {
   const [user, setUser] = useState(null);
   const { dispatch: dispatchNotif } = useNotif();
+  const folder = useFolder()
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -54,16 +56,19 @@ const Message = ({ message, receiveUser }) => {
                 {format(message.createdAt)}
               </a>
             </div>
-            <div className="space-y-2">
-              {/* <img src="/avatar.png" className="w-56 h-auto" /> */}
-              <LazyLoadImage
-                alt="Images"
-                effect="blur"
-                className="w-56 h-auto"
-                src="https://firebasestorage.googleapis.com/v0/b/velkey.appspot.com/o/images%2Fvq5os5agqsfhu3c8g6xko?alt=media&token=77c8b0ef-7c3d-424b-99c1-25dd2b7f1d2f"
-              />
-              {/* <img src="https://firebasestorage.googleapis.com/v0/b/velkey.appspot.com/o/images%2Fvq5os5agqsfhu3c8g6xko?alt=media&token=77c8b0ef-7c3d-424b-99c1-25dd2b7f1d2f" className="w-56 h-auto" /> */}
-            </div>
+            {message.images?.length > 0 && (
+              <div className="space-y-2">
+                {message.images.map((image, index) => (
+                  <LazyLoadImage
+                    key={index}
+                    alt="Images"
+                    effect="blur"
+                    className="w-56 h-auto"
+                    src={folder + image}
+                  />
+                ))}
+              </div>
+            )}
             <p className="text-sm text-slate-400">{message.text}</p>
           </div>
         </div>
