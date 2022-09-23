@@ -5,7 +5,15 @@ const useNotif = () => {
     (state) => state.Notifications
   );
   const dispatch = useDispatch();
-  return { isNotification, title, isError, message, dispatch };
+
+  const handleError = (message) => {
+    dispatch({
+      type: "NOTIF_ERROR",
+      title: "Error",
+      message: message,
+    });
+  };
+  return { isNotification, title, isError, message, dispatch, handleError };
 };
 
 export default useNotif;

@@ -14,7 +14,6 @@ import SkillsDetail from "@/components/ProfileDetailPages/SkillsDetail";
 
 const DetailSkills = (props) => {
   const { user, userProfile } = props;
-  console.log(user)
   const { user: currentUser } = useUser();
   const [isSSR, setIsSSR] = useState(false);
   const folder = useFolder();

@@ -53,7 +53,6 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
 
-
   const handleLoginRemember = async (id) => {
     try {
       dispatchLoading({ type: "LOADING" });
@@ -233,9 +232,7 @@ export default function Login() {
                                             removeCookie("remembertoken", {
                                               path: "/",
                                             });
-                                            console.log("keluar cookie");
                                           } else {
-                                            console.log("masuk cookie");
                                             setCookie(
                                               "remembertoken",
                                               cookies?.remembertoken?.filter(

@@ -26,7 +26,6 @@ const AddReplyComment = ({ comment, messageRef }) => {
   /* Hooks */
   const replyRef = useRef();
   // const messageRef = useRef();
-  console.log(messageRef);
   const { token } = useAuth();
   const headers = useHeader(token);
   const { dispatch: dispatchLoading } = useLoading();
