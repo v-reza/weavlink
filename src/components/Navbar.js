@@ -24,6 +24,12 @@ import classNames from "@/utils/classNames";
 import { useCookies } from "react-cookie";
 import SlideNotifications from "./SlideNotifications";
 import useSocket from "@/hooks/useSocket";
+import {
+  UsersIcon,
+  HomeIcon,
+  BriefcaseIcon,
+  ChatIcon,
+} from "@heroicons/react/solid";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -39,7 +45,7 @@ const Navbar = () => {
   const { user } = useUser();
   const { dispatch: dispatchNotif } = useNotif();
   const { selector, dispatch: dispatchGlobal } = useGlobal();
-  const { socket } = useSocket()
+  const { socket } = useSocket();
 
   /* End Hooks */
 
@@ -82,8 +88,8 @@ const Navbar = () => {
       } else {
         setIsNewNotifications(data.isNew);
       }
-    })
-  }, [openNotifications, socket])
+    });
+  }, [openNotifications, socket]);
 
   const username = user?.firstname + user?.lastname + "-" + user?._id;
 
@@ -93,15 +99,22 @@ const Navbar = () => {
       href: "/",
       current: router.pathname === "/" ? true : false,
       notif: true,
+      icon: HomeIcon,
+    },
+    {
+      name: "My Network",
+      href: "/",
+      current: false,
+      icon: UsersIcon,
     },
     {
       name: "Jobs",
       href: "/job",
       current: router.pathname === "/job" ? true : false,
-      notif: true,
+      icon: BriefcaseIcon,
+      // notif: true,
     },
-    { name: "Applicants", href: "#", current: false },
-    { name: "Company", href: "#", current: false },
+    { name: "Messaging", href: "/messaging", current: false, icon: ChatIcon },
   ];
   const userNavigation = [
     {
@@ -141,8 +154,18 @@ const Navbar = () => {
     };
   }, [keydownCtrlK]);
 
+  const navigationIcon = (icon) => {
+    if (icon === "Home") {
+      return <HomeIcon className="w-5 h-5" />;
+    } else if (icon === "My Network") {
+      return <UsersIcon className="w-5 h-5" />;
+    } else if (icon === "Jobs") {
+      return <BriefcaseIcon className="w-5 h-5" />;
+    } else if (icon === "Messaging") {
+      return <ChatIcon className="w-5 h-5" />;
+    }
+  };
 
-  // const RenderElement = () => {
   return (
     <div className="sticky top-0 z-40">
       {isSSR ? (
@@ -175,19 +198,22 @@ const Navbar = () => {
                               }
                               className={classNames(
                                 item.current
-                                  ? "bg-slate-500"
-                                  : "hover:text-slate-300",
-                                "cursor-pointer px-3 py-2 rounded-md text-sm font-medium text-white inline-flex relative"
+                                  ? "border-b border-amber-500 text-white"
+                                  : "hover:text-slate-300 rounded-md",
+                                "cursor-pointer px-3 py-3 text-sm font-medium text-white inline-flex relative"
                               )}
                               aria-current={item.current ? "page" : undefined}
                             >
-                              {item.name}
-                              {item.notif && (
-                                <>
-                                  <span className="absolute inline-flex top-0 right-0 rounded-full h-3 w-3 bg-rose-500"></span>
-                                  <span className="animate-ping absolute top-0 right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
-                                </>
-                              )}
+                              <div className="flex items-center flex-col">
+                                {navigationIcon(item.name)}
+                                <span>{item.name}</span>
+                                {item.notif && (
+                                  <>
+                                    <span className="absolute inline-flex  right-0 rounded-full h-3 w-3 bg-rose-500"></span>
+                                    <span className="animate-ping absolute right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>

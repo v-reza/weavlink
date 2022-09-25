@@ -9,7 +9,7 @@ import Card from "@/uiComponents/Card";
 import { PlusIcon, XIcon } from "@heroicons/react/outline";
 import useNotif from "@/hooks/useNotif";
 
-const FormProfileBox = ({ user, userProfile, currentUser }) => {
+const FormProfileBox = ({ user, userProfile, currentUser, setForm }) => {
   /* Hooks */
   const { handleError } = useNotif();
 
@@ -41,12 +41,54 @@ const FormProfileBox = ({ user, userProfile, currentUser }) => {
   const [query, setQuery] = useState("");
   const [listCountries, setListCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [listCity, setListCity] = useState([]);
+  const [queryCity, setQueryCity] = useState("");
+  const [isUpdateCountry, setIsUpdateCountry] = useState(
+    userProfile?.country ? false : true
+  );
+  const [isUpdateCity, setIsUpdateCity] = useState(
+    userProfile?.city ? false : true
+  );
+
   useEffect(() => {
-    const getListCountries = async (req, res) => {
+    if (!isUpdateCountry) {
+      const getMyCountries = async () => {
+        try {
+          const res = await axiosGet(
+            `/locations/all/countries?q=${userProfile?.country}`
+          );
+          setSelectedCountry(res.data[0]);
+        } catch (error) {
+          handleError(error.message);
+        }
+      };
+      getMyCountries();
+    }
+  }, [userProfile?.country, isUpdateCountry]);
+
+  useEffect(() => {
+    if (!isUpdateCity && selectedCountry) {
+      const getMyCity = async () => {
+        try {
+          const res = await axiosGet(
+            `/locations/countries/${selectedCountry?._id}/cities?q=${userProfile?.city}`
+          );
+          const city = res.data.find((city) => city === userProfile?.city);
+          setSelectedCity(city);
+        } catch (error) {
+          handleError(error.message);
+        }
+      };
+      getMyCity();
+    }
+  }, [isUpdateCity, selectedCountry?._id, userProfile?.city]);
+
+  useEffect(() => {
+    const getListCountries = async () => {
       try {
         const res = await axiosGet(`/locations/all/countries?q=${query}`);
         setListCountries(res.data);
-        // setSelectedCountry(res.data[0]);
       } catch (error) {
         handleError(error.message);
       }
@@ -55,13 +97,60 @@ const FormProfileBox = ({ user, userProfile, currentUser }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
+  useEffect(() => {
+    if (selectedCountry) {
+      const getListCity = async () => {
+        try {
+          const res = await axiosGet(
+            `/locations/countries/${selectedCountry?._id}/cities?q=${queryCity}`
+          );
+          setListCity(res.data);
+        } catch (error) {
+          handleError(error.message);
+        }
+      };
+
+      getListCity();
+    }
+  }, [queryCity, selectedCountry, selectedCountry?._id]);
+
   const filteredCountries =
     query === ""
       ? listCountries
       : listCountries.filter((item) =>
           item.country.toLowerCase().includes(query.toLowerCase())
         );
-  console.log(selectedCountry);
+
+  const filteredCity =
+    queryCity === ""
+      ? listCity
+      : listCity.filter((item) =>
+          item.toLowerCase().includes(queryCity.toLowerCase())
+        );
+
+  /* Set to form */
+  useEffect(() => {
+    setForm({
+      firstname,
+      lastname,
+      headline,
+      industry,
+      education: selectedEducation?.education,
+      country: selectedCountry?.country,
+      city: selectedCity,
+      showEducation,
+    });
+  }, [
+    firstname,
+    headline,
+    industry,
+    lastname,
+    selectedCity,
+    selectedCountry?.country,
+    selectedEducation?.education,
+    setForm,
+    showEducation,
+  ]);
 
   return (
     <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
@@ -244,11 +333,17 @@ const FormProfileBox = ({ user, userProfile, currentUser }) => {
           Location
         </label>
         <div className="mt-2">
+          {/* Country / Region */}
           <div className="mt-1">
             <Combobox
               as="div"
               value={selectedCountry}
-              onChange={setSelectedCountry}
+              onChange={(e) => {
+                setSelectedCountry(e);
+                setSelectedCity(null);
+                setIsUpdateCity(true);
+                setIsUpdateCountry(true);
+              }}
             >
               <Combobox.Label className="block text-sm font-medium text-slate-300 text-left">
                 Country/Region *
@@ -334,6 +429,102 @@ const FormProfileBox = ({ user, userProfile, currentUser }) => {
               </div>
             </Combobox>
           </div>
+
+          {/* City */}
+          {selectedCountry && (
+            <div className="mt-6 mb-4">
+              <Combobox
+                as="div"
+                value={selectedCity}
+                onChange={setSelectedCity}
+              >
+                <Combobox.Label className="block text-sm font-medium text-slate-300 text-left">
+                  City *
+                </Combobox.Label>
+                <div className="relative mt-1">
+                  <Combobox.Input
+                    className="w-full bg-transparent rounded-md border border-gray-300 text-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                    onChange={(event) => {
+                      setQueryCity(event.target.value);
+                    }}
+                    displayValue={(listCity) => listCity}
+                  />
+
+                  <Combobox.Options className="absolute z-10 bg-slate-700 border border-slate-600 mt-1 max-h-60 w-full overflow-auto rounded-md  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {filteredCity.length > 0 ? (
+                      filteredCity.map((item) => (
+                        <Combobox.Option
+                          key={item}
+                          value={item}
+                          className={({ active }) =>
+                            classNames(
+                              "relative cursor-pointer text-left select-none py-2 pl-8 pr-4",
+                              active
+                                ? "bg-slate-800/50 text-slate-300"
+                                : "text-slate-200"
+                            )
+                          }
+                        >
+                          {({ active, selected }) => (
+                            <>
+                              <span
+                                className={classNames(
+                                  "block truncate",
+                                  selected && "font-semibold"
+                                )}
+                              >
+                                {item}
+                              </span>
+
+                              {selected && (
+                                <span
+                                  className={classNames(
+                                    "absolute inset-y-0 left-0 flex items-center pl-1.5",
+                                    active ? "text-white" : "text-indigo-600"
+                                  )}
+                                >
+                                  <CheckIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </Combobox.Option>
+                      ))
+                    ) : (
+                      <Combobox.Option
+                        className={({ active }) =>
+                          classNames(
+                            "relative cursor-default select-none py-2 pl-3 pr-9",
+                            active
+                              ? "bg-indigo-600 text-white"
+                              : "text-gray-900"
+                          )
+                        }
+                      >
+                        {({ active, selected }) => (
+                          <>
+                            <div className="flex items-center">
+                              <span
+                                className={classNames(
+                                  "ml-3 truncate text-slate-200",
+                                  selected && "font-semibold"
+                                )}
+                              >
+                                No results found
+                              </span>
+                            </div>
+                          </>
+                        )}
+                      </Combobox.Option>
+                    )}
+                  </Combobox.Options>
+                </div>
+              </Combobox>
+            </div>
+          )}
         </div>
       </div>
     </div>

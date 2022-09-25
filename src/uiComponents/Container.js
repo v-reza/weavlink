@@ -8,12 +8,13 @@ const ContainerSidebar = ({ children, ...props }) => <>{children}</>;
 const ContainerMain = ({
   lg = "lg:col-span-9",
   xl = "xl:col-span-6",
+  md = "md:col-span-8",
   children,
   ...props
 }) => {
   return (
     <>
-      <main className={`${lg} ${xl}`}>{children}</main>
+      <main className={`${lg} ${xl} ${md}`}>{children}</main>
     </>
   );
 };

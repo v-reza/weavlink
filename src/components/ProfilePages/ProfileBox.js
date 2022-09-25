@@ -20,6 +20,7 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
   const [conversations, setConversations] = useState([]);
   const [conversationsUsers, setConversationsUsers] = useState(null);
   const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({});
 
   const { dispatch: dispatchLoading } = useLoading();
   const { token, dispatch: dispatchAuth } = useAuth();
@@ -124,8 +125,6 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
         process.env.NEXT_APP_API_IMAGES || "http://localhost:1000/images/";
       const profilePictureName =
         path + fileName + "." + e.target.files[0].type.split("/")[1];
-      console.log(fileName);
-      console.log(profilePictureName);
       const customFile = new File([e.target.files[0]], fileName, {
         type: e.target.files[0].type,
       });
@@ -146,7 +145,6 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
         const data = {
           profilePicture: profilePictureName,
         };
-        console.log(data);
         await axiosPut("/users/update/profileInformation", data, headers).then(
           (res) => {
             dispatchAuth({
@@ -182,13 +180,14 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
         title={"Edit intro"}
         open={open}
         setOpen={setOpen}
-        footer={<FooterProfileBox setOpen={setOpen} />}
+        footer={<FooterProfileBox setOpen={setOpen} form={form} />}
         maxWidth={"sm:max-w-2xl"}
       >
         <FormProfileBox
           user={user}
           userProfile={userProfile}
           currentUser={currentUser}
+          setForm={setForm}
         />
       </Modal>
       <ul role="list" className="select-none">
@@ -334,13 +333,13 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <img
+                          {/* <img
                             className="object-cover w-8 h-8"
                             src="/avatar.png"
                             alt=""
-                          />
+                          /> */}
                           <span className="text-slate-300 font-medium text-sm">
-                            SMKN 4 Malang
+                            {userProfile?.education}
                           </span>
                         </div>
                       </div>
@@ -456,13 +455,14 @@ const ProfileBox = ({ user, userProfile, currentUser }) => {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <img
+                      {/* <img
                         className="object-cover w-8 h-8"
                         src="/avatar.png"
                         alt=""
-                      />
+                      /> */}
+                      <span className="text-slate-300 font-medium text-md">Education :</span>
                       <span className="text-slate-300 font-medium text-sm">
-                        SMKN 4 Malang
+                        {userProfile?.education}
                       </span>
                     </div>
                   </div>

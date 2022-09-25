@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   env: {
     NEXT_APP_SOCKET: "https://weav-socket.fly.dev",
-    NEXT_APP_API: "https://api-weav.fly.dev/api",
+    // NEXT_APP_API: "https://api-weav.fly.dev/api",
     NEXT_APP_API_IMAGES : "https://api-weav.fly.dev/images/",
     // CI: false,
     // GENERATE_SOURCEMAP: false

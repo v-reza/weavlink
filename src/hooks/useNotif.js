@@ -13,7 +13,14 @@ const useNotif = () => {
       message: message,
     });
   };
-  return { isNotification, title, isError, message, dispatch, handleError };
+  const handleSuccess = (message) => {
+    dispatch({
+      type: "NOTIF_SUCCESS",
+      title: "Success",
+      message: message,
+    });
+  }
+  return { isNotification, title, isError, message, dispatch, handleError, handleSuccess };
 };
 
 export default useNotif;
