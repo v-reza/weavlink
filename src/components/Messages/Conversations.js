@@ -119,10 +119,7 @@ const Conversations = ({
               </a>
             </div>
             {isTyping ? (
-              <p
-                href="#"
-                className="animate-pulse text-xs font-medium text-slate-400"
-              >
+              <p className="animate-pulse text-xs font-medium text-slate-400">
                 typing....
               </p>
             ) : (

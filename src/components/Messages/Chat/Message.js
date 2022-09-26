@@ -26,6 +26,7 @@ const Message = ({ message, receiveUser }) => {
       }
     };
     getUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receiveUser]);
   return (
     <>

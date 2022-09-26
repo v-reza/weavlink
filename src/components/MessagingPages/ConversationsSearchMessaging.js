@@ -55,9 +55,9 @@ export default function ConversationsSearchMessaging() {
 
         <Combobox.Options className="absolute z-10 mt-1 max-h-56 w-max overflow-auto rounded-md bg-slate-800 border border-slate-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
           {filteredPeople.length > 0 ? (
-            filteredPeople.map((person) => (
+            filteredPeople.map((person, index) => (
               <Combobox.Option
-                key={person._id}
+                key={index}
                 value={person}
                 className={({ active }) =>
                   classNames(
