@@ -14,6 +14,7 @@ import { axiosGet } from "@/utils/axiosInstance";
 import ConversationsSearch from "./ConversationsSearch";
 import useSocket from "@/hooks/useSocket";
 import DotsLoader from "@/uiComponents/DotsLoader";
+import { useRouter } from "next/router";
 
 // let socket;
 const MessageBox = () => {
@@ -29,11 +30,14 @@ const MessageBox = () => {
   const [arrivalTyping, setArrivalTyping] = useState(null);
   const [isConversationsFound, setIsConversationsFound] = useState(false);
 
+  const [routerMessaging, setRouterMessaging] = useState(false);
+
   const { socket } = useSocket();
   const { isAuthenticated, token } = useAuth();
   const { user } = useUser();
   const headers = useHeader(token);
   const { selector, dispatch: dispatchGlobal } = useGlobal();
+  const router = useRouter()
 
   useEffect(() => {
     setIsSSR(isAuthenticated);
@@ -134,9 +138,18 @@ const MessageBox = () => {
     }, 2000);
   }, [conversations]);
 
+  useEffect(() => {
+    if (router.pathname === "/messaging") {
+      setRouterMessaging(true);
+    } else {
+      setRouterMessaging(false);
+    }
+  }, [router])
+  
+
   return (
     <div>
-      {isSSR && (
+      {isSSR && !routerMessaging && (
         <div className="flex items-center space-x-96 flex-row ">
           <div
             className={`hidden sm:block ${

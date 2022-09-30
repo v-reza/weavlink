@@ -51,7 +51,7 @@ const ConversationsMobileMessaging = ({ conversations }) => {
     });
 
     socket?.on("getMessage", (data) => {
-      dispatchGlobal({
+      dispatchGlobal({  
         type: "GLOBAL_STATE",
         payload: {
           refreshMessages: true,
