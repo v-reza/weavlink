@@ -69,7 +69,7 @@ const MessageMobile = ({ message, receiveUser, own }) => {
             {message.images?.length > 0 && (
               <div className={classNames(
                 !own ? "flex flex-row-reverse" : "flex",
-                "space-y-2 m-2")}>
+                "space-y-2 m-2 flex-wrap")}>
                 {message.images.map((image, index) => (
                   <LazyLoadImage
                     key={index}

@@ -30,6 +30,7 @@ import {
   BriefcaseIcon,
   ChatIcon,
 } from "@heroicons/react/solid";
+import Link from "next/link";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -191,30 +192,32 @@ const Navbar = () => {
                       <div className="hidden lg:block lg:ml-10">
                         <div className="flex space-x-4">
                           {navigation.map((item) => (
-                            <div
-                              key={item.name}
-                              onClick={() =>
-                                router.push(item.href, null, { shallow: true })
-                              }
-                              className={classNames(
-                                item.current
-                                  ? "border-b border-amber-500 text-white"
-                                  : "hover:text-slate-300 rounded-md",
-                                "cursor-pointer px-3 py-3 text-sm font-medium text-white inline-flex relative"
-                              )}
-                              aria-current={item.current ? "page" : undefined}
-                            >
-                              <div className="flex items-center flex-col">
-                                {navigationIcon(item.name)}
-                                <span>{item.name}</span>
-                                {item.notif && (
-                                  <>
-                                    <span className="absolute inline-flex  right-0 rounded-full h-3 w-3 bg-rose-500"></span>
-                                    <span className="animate-ping absolute right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
-                                  </>
+                            <Link key={item.name} href={item.href}>
+                              <div
+                                key={item.name}
+                                // onClick={() =>
+                                //   router.push(item.href, null, { shallow: true })
+                                // }
+                                className={classNames(
+                                  item.current
+                                    ? "border-b border-amber-500 text-white"
+                                    : "hover:text-slate-300 rounded-md",
+                                  "cursor-pointer px-3 py-3 text-sm font-medium text-white inline-flex relative"
                                 )}
+                                aria-current={item.current ? "page" : undefined}
+                              >
+                                <div className="flex items-center flex-col">
+                                  {navigationIcon(item.name)}
+                                  <span>{item.name}</span>
+                                  {item.notif && (
+                                    <>
+                                      <span className="absolute inline-flex  right-0 rounded-full h-3 w-3 bg-rose-500"></span>
+                                      <span className="animate-ping absolute right-0 inline-flex rounded-full bg-rose-400 opacity-75 h-3 w-3"></span>
+                                    </>
+                                  )}
+                                </div>
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>

@@ -1,9 +1,12 @@
+import FooterChatFile from "@/components/Messages/Chat/Modals/FooterChatFile";
+import FormChatFile from "@/components/Messages/Chat/Modals/FormChatFile";
 import useNotif from "@/hooks/useNotif";
 import useSocket from "@/hooks/useSocket";
 import useUser from "@/hooks/useUser";
+import Modal from "@/uiComponents/Modal";
 import { axiosGet, axiosPost } from "@/utils/axiosInstance";
 import classNames from "@/utils/classNames";
-import { DotsHorizontalIcon } from "@heroicons/react/outline";
+import { DotsHorizontalIcon, PencilIcon } from "@heroicons/react/outline";
 import { ArrowLeftIcon, PhotographIcon } from "@heroicons/react/solid";
 import { Tooltip } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,6 +26,7 @@ const ChatBoxMobile = ({
   const [receiveUser, setReceiveUser] = useState(null);
   const [text, setText] = useState("");
   const [file, setFile] = useState([]);
+  const [openEditFile, setOpenEditFile] = useState(false);
 
   const { socket } = useSocket();
   const { user } = useUser();
@@ -67,6 +71,15 @@ const ChatBoxMobile = ({
       currentChat?.members.includes(arrivalMessages.sender) &&
       setMessages((prev) => [...prev, arrivalMessages]);
   }, [arrivalMessages, currentChat?.members]);
+
+  /* Attach File */
+  const handleFile = (e) => {
+    const listFile = [];
+    listFile.push(e.target.files);
+    for (let i = 0; i < listFile.length; i++) {
+      setFile([...file, listFile[0][i]]);
+    }
+  };
 
   /* Send Messages */
   const handleSubmit = async (e) => {
@@ -163,8 +176,41 @@ const ChatBoxMobile = ({
           ))}
         </div>
       </div>
-      <div className="h-[10rem]">
-        <div className="px-3 py-2 border-t border-slate-600">
+      <div className={`${file.length > 0 ? "h-[14rem]" : "h-[10rem]"}`}>
+        {file.length > 0 && (
+          <>
+            <Modal
+              title={"Edit File"}
+              open={openEditFile}
+              setOpen={setOpenEditFile}
+              footer={<FooterChatFile setOpen={setOpenEditFile} />}
+            >
+              <FormChatFile file={file} setFile={setFile} />
+            </Modal>
+            <div
+              className={`w-full border-t-2 ${
+                file.length > 0 ? "border-green-600" : "border-slate-600"
+              } px-2`}
+            >
+              <div className="flex items-center justify-between p-2">
+                <span className="text-green-500 text-xs font-medium">
+                  {file.length} file attached
+                </span>
+                <div
+                  className="p-2 rounded-full hover:bg-slate-700/50 cursor-pointer"
+                  onClick={() => setOpenEditFile(true)}
+                >
+                  <PencilIcon className="w-4 h-4 text-slate-300" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        <div
+          className={`px-3 py-2 border-t-2 ${
+            file.length > 0 ? "border-slate-600" : "border-green-600"
+          }`}
+        >
           <div className="flex space-x-2">
             <div className="w-full flex relative items-center px-2 py-1">
               <textarea
@@ -204,7 +250,7 @@ const ChatBoxMobile = ({
                         id="inputFile"
                         multiple
                         type="file"
-                        // onChange={(e) => handleFile(e)}
+                        onChange={(e) => handleFile(e)}
                       />
                     </span>
                     <PhotographIcon className="h-5 w-5" />

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { Combobox } from "@headlessui/react";
+import classNames from "@/utils/classNames";
 
 const people = [
   {
@@ -14,9 +15,6 @@ const people = [
   // More users...
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function ConversationsSearchMessaging() {
   const [query, setQuery] = useState("");
