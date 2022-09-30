@@ -37,11 +37,15 @@ const MessageBox = () => {
   const { user } = useUser();
   const headers = useHeader(token);
   const { selector, dispatch: dispatchGlobal } = useGlobal();
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    setIsSSR(isAuthenticated);
-  }, [isAuthenticated]);
+    if (isAuthenticated && router.pathname !== "/messaging") {
+      setIsSSR(true);
+    } else {
+      setIsSSR(false);
+    }
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (selector?.openMessaging) {
@@ -138,17 +142,10 @@ const MessageBox = () => {
     }, 2000);
   }, [conversations]);
 
-  useEffect(() => {
-    if (router.pathname === "/messaging") {
-      setRouterMessaging(true);
-    } else {
-      setRouterMessaging(false);
-    }
-  }, [router])
 
   return (
     <div>
-      {isSSR && !routerMessaging && (
+      {isSSR && (
         <div className="flex items-center space-x-96 flex-row ">
           <div
             className={`hidden sm:block ${
