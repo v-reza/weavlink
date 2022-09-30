@@ -21,6 +21,7 @@ import {
   PhotographIcon,
 } from "@heroicons/react/outline";
 import { Tooltip } from "flowbite-react";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 
@@ -54,12 +55,16 @@ const Messaging = () => {
   const { socket } = useSocket();
   const msgRef = useRef();
   const { handleError } = useNotif();
+  const router = useRouter();
   const { dispatch: dispatchGlobal } = useGlobal();
 
   /* Middleware */
   useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/home");
+    }
     setIsSSR(isAuthenticated);
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   /* Conversations Hooks*/
   const [conversations, setConversations] = useState([]);

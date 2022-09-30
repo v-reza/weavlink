@@ -145,7 +145,6 @@ const MessageBox = () => {
       setRouterMessaging(false);
     }
   }, [router])
-  
 
   return (
     <div>

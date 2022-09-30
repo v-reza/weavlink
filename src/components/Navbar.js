@@ -38,6 +38,7 @@ const Navbar = () => {
   const [openNotifications, setOpenNotifications] = useState(false);
   const [isSSR, setIsSSR] = useState(false);
   const [isNewNotifications, setIsNewNotifications] = useState(false);
+  const [socketId, setSocketId] = useState(null);
   /* Hooks */
   const [cookie, setCookie, removeCookie] = useCookies();
   const router = useRouter();
@@ -90,7 +91,12 @@ const Navbar = () => {
         setIsNewNotifications(data.isNew);
       }
     });
-  }, [openNotifications, socket]);
+
+    socket?.on("getUsers", (data) => {
+      const thisUser = data.find((u) => u.userId === user?._id);
+      setSocketId(thisUser?.socketId);
+    });
+  }, [openNotifications, socket, user?._id]);
 
   const username = user?.firstname + user?.lastname + "-" + user?._id;
 
@@ -426,7 +432,10 @@ const Navbar = () => {
                                           item.ipAddress === selector?.ipAddress
                                       ).length > 0
                                         ? dispatch({ type: "LOGOUT" }) &&
-                                          router.push("/")
+                                          router.push("/") &&
+                                          socket?.emit("removeUsers", {
+                                            socketId: socketId,
+                                          })
                                         : setOpenLogout(true);
                                     }}
                                     className={classNames(
@@ -552,14 +561,14 @@ const Navbar = () => {
               </>
             )}
           </Disclosure>
+          <SlideNotifications
+            open={openNotifications}
+            setOpen={setOpenNotifications}
+          />
         </>
       ) : null}
       <SearchModal open={open} setOpen={setOpen} />
       <RememberLogout open={openLogout} setOpen={setOpenLogout} />
-      <SlideNotifications
-        open={openNotifications}
-        setOpen={setOpenNotifications}
-      />
     </div>
   );
 };

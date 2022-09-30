@@ -14,6 +14,11 @@ import Notification from "@/uiComponents/Notification";
 import MessageBox from "@/components/Messages/MessageBox";
 
 function MyApp({ Component, pageProps }) {
+  const [isAuth, setIsAuth] = useState(false);
+  const { isAuthenticated } = useAuth();
+  useEffect(() => {
+    setIsAuth(isAuthenticated);
+  }, [isAuthenticated])
   return (
     <Provider store={store}>
       <Head>
@@ -29,7 +34,7 @@ function MyApp({ Component, pageProps }) {
               <LoadingBackdrop />
               <Notification />
               <Navbar />
-              <MessageBox />
+              {isAuth && <MessageBox />}
               <Component {...pageProps} />
             </SocketConnect>
           </AuthGuard>
