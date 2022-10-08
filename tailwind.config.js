@@ -14,6 +14,7 @@ module.exports = {
       },
       animation: {
         'bounce-short': 'bounce 0.5s ease-in-out 1.5'
+        
       },
       screens: {
         xs: "320px",
